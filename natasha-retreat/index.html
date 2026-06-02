@@ -31,13 +31,17 @@
 
     /* ── VIDEO BG ── */
     .video-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .video-bg video,
     .video-bg iframe {
       position: absolute; top: 50%; left: 50%;
       width: max(100%, 177.78vh); height: max(56.25vw, 100%);
       min-width: 100%; min-height: 100%;
       transform: translate(-50%, -50%);
-      opacity: .13; filter: blur(1.5px) saturate(.35) sepia(.55) brightness(.65);
+      opacity: .16; filter: blur(1px) saturate(.4) sepia(.5) brightness(.6);
+      object-fit: cover;
     }
+    /* hide iframe fallback when video loads */
+    .video-bg video:not([error]) ~ iframe { display: none; }
     .video-overlay {
       position: absolute; inset: 0; z-index: 1; pointer-events: none;
       background: radial-gradient(ellipse at 50% 40%, rgba(8,6,3,.55) 0%, rgba(8,6,3,.82) 100%);
