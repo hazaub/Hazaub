@@ -814,29 +814,36 @@ function scrollTabIntoView(idx) {
   trackWrap.scrollTo({ left: targetScroll, behavior: 'smooth' });
 }
 
+// goTo WITH page scroll — only called when user explicitly picks a tab
 function goTo(idx) {
   setActive(idx);
   scrollTabIntoView(idx);
-  // scroll page so panel is just below the section header
   setTimeout(() => {
     const rect = panelWrap.getBoundingClientRect();
     window.scrollTo({ top: window.scrollY + rect.top - 100, behavior: 'smooth' });
   }, 80);
 }
 
-// Click on tab
+// navigate WITHOUT page scroll — only moves the slider strip
+function navigate(idx) {
+  setActive(idx);
+  scrollTabIntoView(idx);
+  // no page scroll
+}
+
+// Click on tab = explicit pick → scroll page too
 bmTabs.forEach((tab, i) => {
-  tab.addEventListener('click', () => goTo(i));
+  tab.addEventListener('click', () => { if (!didDrag) goTo(i); });
 });
 
-// Dots
+// Dots = explicit pick
 bmDots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
 
-// Arrows
-document.getElementById('bmPrev').addEventListener('click', () => goTo(current - 1));
-document.getElementById('bmNext').addEventListener('click', () => goTo(current + 1));
+// Arrows = navigate only, no page scroll
+document.getElementById('bmPrev').addEventListener('click', () => navigate(current - 1));
+document.getElementById('bmNext').addEventListener('click', () => navigate(current + 1));
 
-// Drag scroll on desktop
+// Drag scroll on desktop — pure scroll, no page jump
 let dragActive = false, dragStartX = 0, dragScrollStart = 0, didDrag = false;
 trackWrap.addEventListener('mousedown', e => {
   dragActive = true; didDrag = false;
@@ -848,19 +855,26 @@ window.addEventListener('mousemove', e => {
   if (!dragActive) return;
   const dx = e.pageX - dragStartX;
   if (Math.abs(dx) > 5) didDrag = true;
-  trackWrap.scrollLeft = dragScrollStart - dx;
+  if (didDrag) trackWrap.scrollLeft = dragScrollStart - dx;
 });
 window.addEventListener('mouseup', () => {
+  if (dragActive && didDrag) {
+    // snap to nearest tab after drag — no page scroll
+    const wrapRect = trackWrap.getBoundingClientRect();
+    const wrapCenter = wrapRect.left + wrapRect.width / 2;
+    let closest = 0, minDist = Infinity;
+    bmTabs.forEach((tab, i) => {
+      const r = tab.getBoundingClientRect();
+      const dist = Math.abs(r.left + r.width / 2 - wrapCenter);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+    navigate(closest);
+  }
   dragActive = false;
   trackWrap.classList.remove('dragging');
 });
-// Prevent click-firing after drag
-bmTabs.forEach(tab => {
-  tab.addEventListener('mouseup', e => { if (didDrag) e.stopImmediatePropagation(); });
-});
 
-// Touch: distinguish horizontal swipe from vertical scroll — let the browser handle naturally
-// but detect swipe end to snap to nearest
+// Touch: horizontal swipe navigates, vertical scroll passes through
 let tStartX = 0, tStartY = 0, tIsH = false;
 trackWrap.addEventListener('touchstart', e => {
   tStartX = e.touches[0].clientX;
@@ -870,12 +884,22 @@ trackWrap.addEventListener('touchstart', e => {
 trackWrap.addEventListener('touchmove', e => {
   const dx = Math.abs(e.touches[0].clientX - tStartX);
   const dy = Math.abs(e.touches[0].clientY - tStartY);
-  if (!tIsH && dx > dy && dx > 6) tIsH = true;
+  if (!tIsH && dx > dy && dx > 8) tIsH = true;
 }, { passive: true });
 trackWrap.addEventListener('touchend', e => {
-  if (!tIsH) return;
-  const diff = tStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 30) goTo(current + (diff > 0 ? 1 : -1));
+  if (!tIsH) return; // vertical scroll — do nothing
+  // snap to nearest after swipe
+  setTimeout(() => {
+    const wrapRect = trackWrap.getBoundingClientRect();
+    const wrapCenter = wrapRect.left + wrapRect.width / 2;
+    let closest = 0, minDist = Infinity;
+    bmTabs.forEach((tab, i) => {
+      const r = tab.getBoundingClientRect();
+      const dist = Math.abs(r.left + r.width / 2 - wrapCenter);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+    navigate(closest); // no page scroll
+  }, 50);
 });
 
 // ── FAQ (kept for potential future use) ──// ── FAQ (kept for potential future use) ──
