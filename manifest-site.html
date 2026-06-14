@@ -1032,6 +1032,7 @@ revEls.forEach(el => revObs.observe(el));
 
 // ─── Stone Bookmarks ───
 const tabs = document.querySelectorAll('.bm-tab');
+const panelWrap = document.querySelector('.bm-panel-wrap');
 tabs.forEach(tab => {
   tab.addEventListener('click', () => {
     tabs.forEach(t => t.classList.remove('active'));
@@ -1039,6 +1040,12 @@ tabs.forEach(tab => {
     tab.classList.add('active');
     const panelId = tab.getAttribute('data-panel');
     document.getElementById(panelId).classList.add('active');
+    // Scroll so the panel is centered in the viewport
+    setTimeout(() => {
+      const rect = panelWrap.getBoundingClientRect();
+      const targetY = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    }, 50);
   });
 });
 
