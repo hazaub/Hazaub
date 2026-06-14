@@ -99,9 +99,9 @@ section{padding:96px 0}
 .bm-arrow-r{left:16px}
 .bm-arrow-l{right:16px}
 /* track */
-.bm-track-wrap{overflow:hidden;padding:0 80px}
-.bm-track{display:flex;gap:20px;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
-.bm-tab{flex-shrink:0;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform var(--tr);width:120px}
+.bm-track-wrap{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:12px 40px 20px;scrollbar-width:none;cursor:grab}.bm-track-wrap::-webkit-scrollbar{display:none}.bm-track-wrap.dragging{cursor:grabbing;scroll-behavior:auto}
+.bm-track{display:flex;gap:16px;width:max-content}
+.bm-tab{flex-shrink:0;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform var(--tr);width:120px;scroll-snap-align:center}
 .bm-tab:hover{transform:translateY(-4px)}
 .bm-stone{width:108px;height:148px;background:linear-gradient(160deg,#E8DECE,#D4C8B0);border-radius:54px 54px 8px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:inset 0 2px 8px rgba(255,255,255,.6),0 4px 18px rgba(0,0,0,.1),inset 0 -2px 6px rgba(0,0,0,.08);position:relative;overflow:hidden;transition:background var(--tr),box-shadow var(--tr);border:1px solid rgba(255,255,255,.5)}
 .bm-stone::before{content:'';position:absolute;top:8px;left:8px;right:8px;bottom:8px;border-radius:48px 48px 4px 4px;border:1px solid rgba(255,255,255,.35);pointer-events:none}
@@ -791,79 +791,94 @@ const revObs = new IntersectionObserver((entries) => {
 revEls.forEach(el => revObs.observe(el));
 
 // ── Bookmark Slider ──
-const bmTabs   = Array.from(document.querySelectorAll('.bm-tab'));
-const bmPanels = Array.from(document.querySelectorAll('.bm-panel'));
-const bmDots   = Array.from(document.querySelectorAll('.bm-dot'));
-const track    = document.getElementById('bmTrack');
+const bmTabs    = Array.from(document.querySelectorAll('.bm-tab'));
+const bmPanels  = Array.from(document.querySelectorAll('.bm-panel'));
+const bmDots    = Array.from(document.querySelectorAll('.bm-dot'));
 const panelWrap = document.getElementById('bmContent');
+const trackWrap = document.querySelector('.bm-track-wrap');
+const track     = document.getElementById('bmTrack');
 let current = 0;
-const TAB_W = 140;
 
-function goTo(idx) {
+function setActive(idx) {
   current = (idx + bmTabs.length) % bmTabs.length;
-  bmTabs.forEach((t, i) => t.classList.toggle('active', i === current));
+  bmTabs.forEach((t, i)  => t.classList.toggle('active', i === current));
   bmPanels.forEach((p, i) => p.classList.toggle('active', i === current));
-  bmDots.forEach((d, i) => d.classList.toggle('active', i === current));
-  const trackWrap = document.querySelector('.bm-track-wrap');
-  const wrapW = trackWrap.offsetWidth;
-  const offset = Math.max(0, current * TAB_W - wrapW / 2 + TAB_W / 2);
-  track.style.transform = `translateX(-${offset}px)`;
-  // scroll so panel appears just below the tabs — NOT to top of page
-  setTimeout(() => {
-    const rect = panelWrap.getBoundingClientRect();
-    const navH = 80;
-    const targetY = window.scrollY + rect.top - navH - 24;
-    window.scrollTo({ top: targetY, behavior: 'smooth' });
-  }, 60);
+  bmDots.forEach((d, i)   => d.classList.toggle('active', i === current));
 }
 
-// Drag-to-scroll on desktop (prevent accidental tab clicks)
-let isDragging = false;
-let dragStartX = 0;
-let dragScrollLeft = 0;
-const trackWrapEl = document.querySelector('.bm-track-wrap');
-trackWrapEl.style.overflowX = 'auto';
-trackWrapEl.style.scrollbarWidth = 'none';
-trackWrapEl.addEventListener('mousedown', e => {
-  isDragging = false;
-  dragStartX = e.clientX;
-  dragScrollLeft = trackWrapEl.scrollLeft;
-  trackWrapEl.style.cursor = 'grabbing';
-});
-window.addEventListener('mousemove', e => {
-  if (!e.buttons) return;
-  const diff = e.clientX - dragStartX;
-  if (Math.abs(diff) > 6) { isDragging = true; }
-  if (isDragging) trackWrapEl.scrollLeft = dragScrollLeft - diff;
-});
-window.addEventListener('mouseup', () => { trackWrapEl.style.cursor = ''; });
+function scrollTabIntoView(idx) {
+  const tab = bmTabs[idx];
+  const tabRect = tab.getBoundingClientRect();
+  const wrapRect = trackWrap.getBoundingClientRect();
+  const targetScroll = trackWrap.scrollLeft + tabRect.left - wrapRect.left - (wrapRect.width / 2) + (tabRect.width / 2);
+  trackWrap.scrollTo({ left: targetScroll, behavior: 'smooth' });
+}
 
+function goTo(idx) {
+  setActive(idx);
+  scrollTabIntoView(idx);
+  // scroll page so panel is just below the section header
+  setTimeout(() => {
+    const rect = panelWrap.getBoundingClientRect();
+    window.scrollTo({ top: window.scrollY + rect.top - 100, behavior: 'smooth' });
+  }, 80);
+}
+
+// Click on tab
 bmTabs.forEach((tab, i) => {
-  tab.addEventListener('click', () => { if (!isDragging) goTo(i); isDragging = false; });
+  tab.addEventListener('click', () => goTo(i));
 });
+
+// Dots
 bmDots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+// Arrows
 document.getElementById('bmPrev').addEventListener('click', () => goTo(current - 1));
 document.getElementById('bmNext').addEventListener('click', () => goTo(current + 1));
 
-// Touch swipe — distinguish horizontal swipe from vertical scroll
-let touchStartX = 0, touchStartY = 0, isSwiping = false;
-track.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-  isSwiping = false;
-}, { passive: true });
-track.addEventListener('touchmove', e => {
-  const dx = Math.abs(e.touches[0].clientX - touchStartX);
-  const dy = Math.abs(e.touches[0].clientY - touchStartY);
-  if (dx > dy && dx > 8) isSwiping = true;
-}, { passive: true });
-track.addEventListener('touchend', e => {
-  if (!isSwiping) return;
-  const diff = touchStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+// Drag scroll on desktop
+let dragActive = false, dragStartX = 0, dragScrollStart = 0, didDrag = false;
+trackWrap.addEventListener('mousedown', e => {
+  dragActive = true; didDrag = false;
+  dragStartX = e.pageX;
+  dragScrollStart = trackWrap.scrollLeft;
+  trackWrap.classList.add('dragging');
+});
+window.addEventListener('mousemove', e => {
+  if (!dragActive) return;
+  const dx = e.pageX - dragStartX;
+  if (Math.abs(dx) > 5) didDrag = true;
+  trackWrap.scrollLeft = dragScrollStart - dx;
+});
+window.addEventListener('mouseup', () => {
+  dragActive = false;
+  trackWrap.classList.remove('dragging');
+});
+// Prevent click-firing after drag
+bmTabs.forEach(tab => {
+  tab.addEventListener('mouseup', e => { if (didDrag) e.stopImmediatePropagation(); });
 });
 
-// ── FAQ (kept for potential future use) ──
+// Touch: distinguish horizontal swipe from vertical scroll — let the browser handle naturally
+// but detect swipe end to snap to nearest
+let tStartX = 0, tStartY = 0, tIsH = false;
+trackWrap.addEventListener('touchstart', e => {
+  tStartX = e.touches[0].clientX;
+  tStartY = e.touches[0].clientY;
+  tIsH = false;
+}, { passive: true });
+trackWrap.addEventListener('touchmove', e => {
+  const dx = Math.abs(e.touches[0].clientX - tStartX);
+  const dy = Math.abs(e.touches[0].clientY - tStartY);
+  if (!tIsH && dx > dy && dx > 6) tIsH = true;
+}, { passive: true });
+trackWrap.addEventListener('touchend', e => {
+  if (!tIsH) return;
+  const diff = tStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 30) goTo(current + (diff > 0 ? 1 : -1));
+});
+
+// ── FAQ (kept for potential future use) ──// ── FAQ (kept for potential future use) ──
 document.querySelectorAll('.fq-q').forEach(q => {
   q.addEventListener('click', () => {
     const item = q.closest('.fq-item');
