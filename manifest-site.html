@@ -32,7 +32,7 @@ a{text-decoration:none;color:inherit}
 ul{list-style:none}
 
 /* ── NAVBAR ── */
-#navbar{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 56px;display:flex;align-items:center;justify-content:space-between;transition:background var(--tr),box-shadow var(--tr),padding var(--tr)}
+#navbar{position:fixed;top:0;left:0;right:0;z-index:200;padding:14px 56px;display:flex;align-items:center;justify-content:space-between;transition:background var(--tr),box-shadow var(--tr),padding var(--tr);overflow:visible}
 #navbar.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);box-shadow:0 2px 24px rgba(0,0,0,.06);padding:13px 56px}
 .nav-logo{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:.2em;transition:color var(--tr)}
 #navbar.scrolled .nav-logo{color:var(--turq-dk)}
@@ -83,7 +83,7 @@ section{padding:96px 0}
 #welcome{background:var(--white)}
 .welcome-inner{max-width:860px;margin:0 auto;text-align:center}
 .welcome-body p{font-size:.97rem;color:var(--text-lt);line-height:2;font-weight:300;margin-bottom:20px}
-.welcome-highlight{font-size:.97rem;font-weight:300;color:var(--text-lt);line-height:2;border-right:3px solid var(--turq);padding-right:24px;margin:36px 0;text-align:right}
+.welcome-highlight{font-size:.97rem;font-weight:300;color:var(--text-lt);line-height:2;margin:24px 0;text-align:center}
 .welcome-highlight span{display:block}
 .dispenza-note{background:linear-gradient(135deg,rgba(71,196,201,.06),rgba(29,143,150,.04));border:1px solid rgba(71,196,201,.18);border-radius:var(--r);padding:30px 38px;margin:36px 0;font-size:.92rem;color:var(--text-lt);line-height:1.88;font-weight:300;text-align:right}
 .sukkot-note{font-family:var(--serif);font-size:1.05rem;font-style:italic;color:var(--warm-lt);line-height:1.78;margin-top:18px}
@@ -314,9 +314,9 @@ footer a{color:var(--turq)}
 
 <!-- NAVBAR -->
 <nav id="navbar">
-  <div class="nav-logo" style="display:flex;align-items:center;gap:10px;">
-    <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781467802/ChatGPT_Image_Jun_14_2026_11_14_05_PM_qsi8px.png" alt="לוגו" style="height:36px;width:auto;object-fit:contain;transition:filter .35s">
-    <span id="navLogoText">Natasha Friends</span>
+  <div class="nav-logo" style="display:flex;align-items:center;gap:12px;">
+    <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781467802/ChatGPT_Image_Jun_14_2026_11_14_05_PM_qsi8px.png" alt="לוגו" style="height:52px;width:52px;object-fit:contain;border-radius:50%;background:rgba(255,255,255,.12);padding:4px;flex-shrink:0;">
+    <span id="navLogoText" style="font-size:1.1rem;letter-spacing:.12em;">Natasha Friends</span>
   </div>
   <ul class="nav-links">
     <li><a href="#welcome">על הריטריט</a></li>
@@ -734,7 +734,7 @@ footer a{color:var(--turq)}
 </section>
 
 <footer>
-  <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781467802/ChatGPT_Image_Jun_14_2026_11_14_05_PM_qsi8px.png" alt="לוגו" style="height:44px;width:auto;object-fit:contain;margin:0 auto 14px;display:block;opacity:.6">
+  <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781467802/ChatGPT_Image_Jun_14_2026_11_14_05_PM_qsi8px.png" alt="לוגו" style="height:64px;width:64px;object-fit:contain;border-radius:50%;background:rgba(255,255,255,.08);padding:4px;margin:0 auto 14px;display:block;">
   <p style="margin-bottom:4px;font-size:.88rem;color:rgba(255,255,255,.5)">Natasha Friends</p>
   <p>© 2026 MANIFEST · נטע-לי שורייץ · <a href="mailto:info@manifest.co.il">info@manifest.co.il</a></p>
 </footer>
