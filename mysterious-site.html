@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unveil The Mystery</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a0033 50%, #0f0f2e 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body.hebrew {
+            direction: rtl;
+            text-align: right;
+        }
+
+        body.hebrew .text-ltr {
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* Animated background elements */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #ff006e, transparent);
+            top: -100px;
+            left: -100px;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #00d4ff, transparent);
+            bottom: 10%;
+            right: -50px;
+            animation: float 25s infinite ease-in-out reverse;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #a000ff, transparent);
+            top: 30%;
+            right: 5%;
+            animation: float 30s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff006e, #00d4ff, #a000ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 0, 110, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #a0a0c0;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        /* Mystery box */
+        .mystery-content {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 0, 110, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mystery-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.1), transparent);
+            animation: shimmer 3s infinite;
+            z-index: 1;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .content-inside {
+            position: relative;
+            z-index: 2;
+        }
+
+        .teaser-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #d0d0e0;
+            margin-bottom: 30px;
+        }
+
+        .reveal-hint {
+            font-size: 0.95rem;
+            color: #ff006e;
+            font-style: italic;
+            margin: 30px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Pixelated reveal effect */
+        .blurred-section {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .blur-box {
+            background: linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 212, 255, 0.1));
+            padding: 20px;
+            border-radius: 10px;
+            filter: blur(3px);
+            color: #888;
+            user-select: none;
+        }
+
+        /* Payment Button */
+        .payment-container {
+            margin-top: 50px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .pay-button {
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ff006e, #a000ff);
+            color: white;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.4), 0 0 60px rgba(160, 0, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .pay-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: 0;
+        }
+
+        .pay-button:hover::before {
+            left: 100%;
+        }
+
+        .pay-button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.6), 0 0 80px rgba(160, 0, 255, 0.4);
+        }
+
+        .pay-button:active {
+            transform: scale(0.98);
+        }
+
+        .button-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Interactive elements */
+        .interactive-zone {
+            margin: 40px auto;
+            padding: 30px;
+            border: 2px dashed rgba(255, 0, 110, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-zone:hover {
+            border-color: rgba(255, 0, 110, 0.6);
+            background: rgba(255, 0, 110, 0.05);
+        }
+
+        .click-hint {
+            color: #a000ff;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal for payment */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0a0e27, #1a0033);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 0, 110, 0.3);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #ff006e;
+        }
+
+        .modal-title {
+            color: #ff006e;
+            margin: 20px 0;
+            font-size: 1.8rem;
+        }
+
+        .payment-info {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 0, 110, 0.05);
+            border-left: 3px solid #ff006e;
+            border-radius: 5px;
+        }
+
+        .payment-amount {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .mystery-content {
+                padding: 25px;
+            }
+
+            .pay-button {
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Success state */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .full-content {
+            display: none;
+            margin: 30px auto;
+            max-width: 800px;
+            padding: 40px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+        }
+
+        .full-content.revealed {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .full-content h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .full-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #d0d0e0;
+        }
+
+        /* Language switcher */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            gap: 10px;
+        }
+
+        body.hebrew .language-switcher {
+            right: auto;
+            left: 20px;
+        }
+
+        .lang-btn {
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 0, 110, 0.4);
+            background: rgba(255, 0, 110, 0.1);
+            color: #a0a0c0;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #ff006e, #a000ff);
+            color: white;
+            border-color: #ff006e;
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+        }
+
+        .lang-btn:hover {
+            border-color: rgba(255, 0, 110, 0.8);
+            color: #e0e0e0;
+        }
+
+        /* Features list */
+        .feature-item {
+            display: block;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        /* Canvas animation */
+        #animationCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="he">עברית</button>
+    </div>
+
+    <!-- Canvas for 2D animations -->
+    <canvas id="animationCanvas"></canvas>
+
+    <!-- Background elements -->
+    <div class="stars" id="starfield"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <header>
+            <h1 data-en="🔮 UNVEIL THE MYSTERY 🔮" data-he="🔮 חשוף את התעלומה 🔮">🔮 UNVEIL THE MYSTERY 🔮</h1>
+            <p class="subtitle" data-en="Something extraordinary awaits..." data-he="משהו מיוחד מחכה...">Something extraordinary awaits...</p>
+        </header>
+
+        <div class="mystery-content">
+            <div class="content-inside">
+                <p class="teaser-text" data-en="There's something hidden here. Something that will change the way you see things." data-he="יש משהו מוסתר כאן. משהו שישנה את הדרך בה אתה רואה דברים.">
+                    There's something hidden here. Something that will change the way you see things.
+                </p>
+
+                <div class="blurred-section">
+                    <div class="blur-box" data-en="🌌 The secrets revealed only to those who dare to look 🌌" data-he="🌌 הסודות חשופים רק למי שמעיז להסתכל 🌌">
+                        🌌 The secrets revealed only to those who dare to look 🌌
+                    </div>
+                </div>
+
+                <p class="teaser-text" data-en="Glimpses of wonder, fragments of truth, and revelations that will expand your mind. But the full experience? That's reserved for those who take the leap." data-he="הבזקי תמהון, שברי אמת, והתגלויות שיהרחיבו את המוח שלך. אבל החוויה המלאה? זה שמור לאלה שלוקחים את הקפיצה.">
+                    Glimpses of wonder, fragments of truth, and revelations that will expand your mind. But the full experience? That's reserved for those who take the leap.
+                </p>
+
+                <p class="reveal-hint" data-en="✨ Click below to unlock the complete journey ✨" data-he="✨ לחץ למטה כדי לפתוח את המסע השלם ✨">✨ Click below to unlock the complete journey ✨</p>
+
+                <div class="blurred-section">
+                    <div class="blur-box" data-en="Exclusive interactive experience with hidden content, mysteries to solve, and paths only available to members..." data-he="חוויה אינטראקטיבית בלעדית עם תוכן מוסתר, תעלומות לפתרון, ונתיבים זמינים רק לחברים...">
+                        Exclusive interactive experience with hidden content, mysteries to solve, and paths only available to members...
+                    </div>
+                </div>
+
+                <div class="interactive-zone" id="interactiveZone">
+                    <div data-en="Hover here to interact... 👁️" data-he="עבור מעל כאן כדי לקיים אינטראקציה... 👁️">Hover here to interact... 👁️</div>
+                    <p class="click-hint" data-en="There's more to discover..." data-he="יש עוד הרבה לגלות...">There's more to discover...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-container">
+            <button class="pay-button" id="payButton">
+                <span class="button-text" data-en="💎 $1 - PAY NOW & SEE FOR YOURSELF 💎" data-he="💎 $1 - שלם עכשיו וראה בעצמך 💎">💎 $1 - PAY NOW & SEE FOR YOURSELF 💎</span>
+            </button>
+        </div>
+
+        <!-- Success message (shown after payment) -->
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">✅</div>
+            <h2 data-en="Welcome to the Mystery!" data-he="!ברוכים הבאים לתעלומה">Welcome to the Mystery!</h2>
+            <p data-en="Your payment was successful. The full experience is now unlocked." data-he="התשלום שלך בוצע בהצלחה. החוויה המלאה כעת פתוחה.">Your payment was successful. The full experience is now unlocked.</p>
+        </div>
+
+        <!-- Full content revealed after payment -->
+        <div class="full-content" id="fullContent">
+            <h2 data-en="✨ The Complete Experience ✨" data-he="✨ החוויה המלאה ✨">✨ The Complete Experience ✨</h2>
+            <p data-en="You've unlocked the full experience. Welcome to the realm of mysteries and wonders that lie beyond the veil." data-he="פתחת את החוויה המלאה. ברוכים הבאים לעולם התעלומות והפלאים שמעבר לוילון.">
+                You've unlocked the full experience. Welcome to the realm of mysteries and wonders that lie beyond the veil.
+            </p>
+            <p id="featuresText">
+                <strong data-en="What you now have access to:" data-he="למה יש לך גישה כעת:">What you now have access to:</strong>
+                <br><br>
+                <div class="feature-item" data-en="🔓 Exclusive interactive challenges" data-he="🔓 אתגרים אינטראקטיביים בלעדיים">🔓 Exclusive interactive challenges</div>
+                <div class="feature-item" data-en="🎨 Hidden galleries and visual experiences" data-he="🎨 גלריות נסתרות וחוויות ויזואליות">🎨 Hidden galleries and visual experiences</div>
+                <div class="feature-item" data-en="🎵 Ambient soundscapes tailored to your journey" data-he="🎵 נופי קול סביבתיים המותאמים למסעך">🎵 Ambient soundscapes tailored to your journey</div>
+                <div class="feature-item" data-en="📖 Exclusive stories and lore" data-he="📖 סיפורים וידע בלעדיים">📖 Exclusive stories and lore</div>
+                <div class="feature-item" data-en="🌠 Interactive mind-bending puzzles" data-he="🌠 חידות אינטראקטיביות המטלטלות את המוח">🌠 Interactive mind-bending puzzles</div>
+                <div class="feature-item" data-en="⚡ Real-time interactive features" data-he="⚡ תכונות אינטראקטיביות בזמן אמת">⚡ Real-time interactive features</div>
+                <div class="feature-item" data-en="🎯 Personalized mystery paths based on your choices" data-he="🎯 נתיבי תעלומה מותאמים אישית בהתאם לבחירות שלך">🎯 Personalized mystery paths based on your choices</div>
+            </p>
+            <p style="margin-top: 30px; font-style: italic; color: #a000ff;" data-en="Thank you for taking the leap. Enjoy your journey through the unknown." data-he="תודה שלקחת את הקפיצה. תהנה מהמסע שלך דרך הלא-ידוע.">
+                Thank you for taking the leap. Enjoy your journey through the unknown.
+            </p>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <h2 class="modal-title" data-en="Complete Your Purchase" data-he="השלם את הרכישה שלך">Complete Your Purchase</h2>
+
+            <div class="payment-info">
+                <p data-en="Unlock the complete mysterious experience" data-he="פתח את החוויה המיסתורית השלמה">Unlock the complete mysterious experience</p>
+                <div class="payment-amount">$1.00</div>
+                <p style="color: #a0a0c0; font-size: 0.9rem;" data-en="Secure payment powered by Stripe" data-he="תשלום מאובטח על ידי Stripe">
+                    Secure payment powered by Stripe
+                </p>
+            </div>
+
+            <form id="paymentForm">
+                <div id="card-element" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255,0,110,0.2);"></div>
+                <div id="card-errors" style="color: #ff006e; margin-bottom: 15px;"></div>
+                <button type="submit" class="pay-button" style="width: 100%;">
+                    <span class="button-text" data-en="CONFIRM PAYMENT" data-he="אשר תשלום">CONFIRM PAYMENT</span>
+                </button>
+            </form>
+
+            <p style="margin-top: 20px; font-size: 0.85rem; color: #a0a0c0; text-align: center;" data-en="This is a demo. Use test card: 4242 4242 4242 4242" data-he="זה הדגמה. השתמש בכרטיס בדיקה: 4242 4242 4242 4242">
+                This is a demo. Use test card: 4242 4242 4242 4242
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ============ 2D CANVAS ANIMATION ============
+        const canvas = document.getElementById('animationCanvas');
+        const ctx = canvas.getContext('2d');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Particle class
+        class Particle {
+            constructor(x, y) {
+                this.x = x + (Math.random() - 0.5) * 50;
+                this.y = y + (Math.random() - 0.5) * 50;
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 3;
+                this.life = 1;
+                this.decay = Math.random() * 0.02 + 0.01;
+                this.size = Math.random() * 3 + 1;
+                this.color = ['#ff006e', '#00d4ff', '#a000ff'][Math.floor(Math.random() * 3)];
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Wave class for flowing animation
+        class Wave {
+            constructor() {
+                this.offset = 0;
+                this.speed = 0.02;
+                this.amplitude = 30;
+                this.frequency = 0.01;
+                this.y = canvas.height * 0.7;
+            }
+
+            update() {
+                this.offset += this.speed;
+            }
+
+            draw(ctx) {
+                ctx.strokeStyle = 'rgba(255, 0, 110, 0.2)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                for (let x = 0; x < canvas.width; x += 10) {
+                    const yOffset = Math.sin((x + this.offset) * this.frequency) * this.amplitude;
+                    const y = this.y + yOffset;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+
+        // Orb class for floating animation
+        class FloatingOrb {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 30 + 20;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = (Math.random() - 0.5) * 1;
+                this.colors = ['rgba(255, 0, 110, 0.3)', 'rgba(0, 212, 255, 0.3)', 'rgba(160, 0, 255, 0.3)'];
+                this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) this.vx *= -1;
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) this.vy *= -1;
+
+                this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particles = [];
+        const waves = [new Wave()];
+        const floatingOrbs = [new FloatingOrb(), new FloatingOrb()];
+
+        // Mouse follow
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Create particles on mouse move
+            if (Math.random() > 0.7) {
+                particles.push(new Particle(mouseX, mouseY));
+            }
+        });
+
+        // Touch support
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+                if (Math.random() > 0.7) {
+                    particles.push(new Particle(mouseX, mouseY));
+                }
+            }
+        });
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+
+            // Update and draw waves
+            waves.forEach(wave => {
+                wave.update();
+                wave.draw(ctx);
+            });
+
+            // Update and draw floating orbs
+            floatingOrbs.forEach(orb => {
+                orb.update();
+                orb.draw(ctx);
+            });
+
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                if (particles[i].life > 0) {
+                    particles[i].draw(ctx);
+                } else {
+                    particles.splice(i, 1);
+                }
+            }
+
+            // Draw connecting lines between particles
+            ctx.strokeStyle = 'rgba(255, 0, 110, 0.15)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw lines from particles to mouse
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
+            particles.forEach(particle => {
+                const dx = mouseX - particle.x;
+                const dy = mouseY - particle.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 200) {
+                    ctx.beginPath();
+                    ctx.moveTo(particle.x, particle.y);
+                    ctx.lineTo(mouseX, mouseY);
+                    ctx.stroke();
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Start animation
+        animate();
+
+        // Initialize Stripe (using a test public key for demo)
+        const stripe = Stripe('pk_test_51234567890123456789012345', {
+            appearance: {
+                theme: 'night',
+                variables: {
+                    colorPrimary: '#ff006e',
+                    colorBackground: '#0a0e27',
+                    colorText: '#e0e0e0',
+                    borderRadius: '8px'
+                }
+            }
+        });
+
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+
+        // Generate starfield
+        function generateStars() {
+            const starfield = document.getElementById('starfield');
+            const starCount = 100;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        // Interactive zone hover effect
+        const interactiveZone = document.getElementById('interactiveZone');
+        let clickCount = 0;
+
+        interactiveZone.addEventListener('click', function() {
+            clickCount++;
+            const messages = [
+                '👁️ You sense a presence watching...',
+                '🌊 Ripples in the fabric of reality...',
+                '⚡ Energy crackling around you...',
+                '🎭 Multiple realities converging...',
+                '🌌 The mystery deepens...'
+            ];
+
+            const randomMessage = messages[clickCount % messages.length];
+            interactiveZone.querySelector('div').textContent = randomMessage;
+
+            interactiveZone.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                interactiveZone.style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        // Payment modal handling
+        const payButton = document.getElementById('payButton');
+        const paymentModal = document.getElementById('paymentModal');
+        const closeModal = document.getElementById('closeModal');
+
+        // Create particle burst on button hover/click
+        payButton.addEventListener('mouseenter', function() {
+            const rect = this.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 20; i++) {
+                particles.push(new Particle(centerX, centerY));
+            }
+        });
+
+        payButton.addEventListener('click', function() {
+            const rect = this.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // Create explosion of particles
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(centerX, centerY));
+            }
+
+            paymentModal.classList.add('show');
+            if (!cardElement.parentElement.querySelector('#card-element')) {
+                cardElement.mount('#card-element');
+            }
+        });
+
+        closeModal.addEventListener('click', function() {
+            paymentModal.classList.remove('show');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === paymentModal) {
+                paymentModal.classList.remove('show');
+            }
+        });
+
+        // Handle form submission
+        const paymentForm = document.getElementById('paymentForm');
+        paymentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // For demo purposes, simulate successful payment
+            const cardNumber = document.querySelector('input[placeholder*="4242"]');
+
+            // Show success
+            setTimeout(function() {
+                paymentModal.classList.remove('show');
+                document.getElementById('successMessage').classList.add('show');
+                document.getElementById('fullContent').classList.add('revealed');
+
+                // Scroll to success
+                setTimeout(() => {
+                    document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }, 800);
+        });
+
+        // Language switching
+        const langButtons = document.querySelectorAll('.lang-btn');
+        let currentLang = 'en';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            const body = document.body;
+
+            if (lang === 'he') {
+                body.classList.add('hebrew');
+            } else {
+                body.classList.remove('hebrew');
+            }
+
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-en][data-he]').forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                element.textContent = text;
+            });
+
+            // Update language button states
+            langButtons.forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Save preference
+            localStorage.setItem('selectedLanguage', lang);
+        }
+
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                switchLanguage(lang);
+            });
+        });
+
+        // Load saved language preference
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        switchLanguage(savedLang);
+
+        // Initialize
+        generateStars();
+
+        // Add some magic animations on scroll
+        window.addEventListener('scroll', function() {
+            const container = document.querySelector('.container');
+            const scrolled = window.scrollY;
+            container.style.opacity = Math.max(0.5, 1 - scrolled / 1000);
+        });
+    </script>
+</body>
+</html>
