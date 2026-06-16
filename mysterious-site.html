@@ -514,6 +514,164 @@
             z-index: 1;
             pointer-events: none;
         }
+
+        /* Mini Game Styles */
+        .mini-game-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255, 0, 110, 0.05);
+            border: 2px solid rgba(255, 0, 110, 0.3);
+            border-radius: 20px;
+            animation: fadeInUp 1s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-header h2 {
+            color: #ff006e;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            color: #a0a0c0;
+            font-size: 1rem;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.8), rgba(26, 0, 51, 0.8));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            display: block;
+            margin: 20px auto;
+            cursor: crosshair;
+        }
+
+        .game-ui {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .score-display {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            font-weight: bold;
+            padding: 15px 25px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .combo-display {
+            font-size: 1.3rem;
+            color: #ff006e;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: rgba(255, 0, 110, 0.1);
+            border-radius: 10px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        .game-button {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #00d4ff, #a000ff);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .game-button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .game-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #ff006e;
+            text-align: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .game-over.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .game-over h3 {
+            color: #ff006e;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .game-over p {
+            color: #d0d0e0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .final-score {
+            color: #00d4ff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .game-over-btn {
+            padding: 12px 30px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ff006e, #a000ff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .game-over-btn:hover {
+            transform: scale(1.05);
+        }
+
+        body.hebrew .score-display,
+        body.hebrew .combo-display {
+            direction: ltr;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -574,6 +732,23 @@
             <button class="pay-button" id="payButton">
                 <span class="button-text" data-en="💎 $1 - PAY NOW & SEE FOR YOURSELF 💎" data-he="💎 $1 - שלם עכשיו וראה בעצמך 💎">💎 $1 - PAY NOW & SEE FOR YOURSELF 💎</span>
             </button>
+        </div>
+
+        <!-- Mini Game Section -->
+        <div class="mini-game-container" id="miniGameContainer">
+            <div class="game-header">
+                <h2 data-en="🎮 PROVE YOUR WORTH 🎮" data-he="🎮 הוכח את כדאיותך 🎮">🎮 PROVE YOUR WORTH 🎮</h2>
+                <p data-en="Reach 100 points to unlock for FREE!" data-he="הגע ל-100 נקודות כדי לפתוח בחינם!">Reach 100 points to unlock for FREE!</p>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+            <div class="game-ui">
+                <div class="score-display">
+                    <span data-en="Score:" data-he="ניקוד:">Score:</span>
+                    <span id="gameScore">0</span>
+                </div>
+                <div class="combo-display" id="comboDisplay"></div>
+                <button class="game-button" id="startGameBtn" data-en="START GAME" data-he="התחל משחק">START GAME</button>
+            </div>
         </div>
 
         <!-- Success message (shown after payment) -->
@@ -835,6 +1010,223 @@
 
         // Start animation
         animate();
+
+        // ============ MINI GAME LOGIC ============
+        const gameCanvas = document.getElementById('gameCanvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        const gameScore = document.getElementById('gameScore');
+        const startGameBtn = document.getElementById('startGameBtn');
+        const comboDisplay = document.getElementById('comboDisplay');
+        const miniGameContainer = document.getElementById('miniGameContainer');
+
+        let gameActive = false;
+        let score = 0;
+        let combo = 0;
+        let gameOrbs = [];
+        let gameRunning = false;
+        let gameTime = 30;
+        let originalGameTime = 30;
+
+        // Resize canvas properly
+        function resizeGameCanvas() {
+            const rect = gameCanvas.getBoundingClientRect();
+            gameCanvas.width = rect.width;
+            gameCanvas.height = rect.height;
+        }
+        resizeGameCanvas();
+        window.addEventListener('resize', resizeGameCanvas);
+
+        class GameOrb {
+            constructor() {
+                this.x = Math.random() * (gameCanvas.width - 40) + 20;
+                this.y = -30;
+                this.radius = Math.random() * 15 + 15;
+                this.vy = Math.random() * 2 + 2;
+                this.color = ['#ff006e', '#00d4ff', '#a000ff'][Math.floor(Math.random() * 3)];
+                this.glow = 0;
+                this.clicked = false;
+            }
+
+            update() {
+                this.y += this.vy;
+                this.glow = (this.glow + 0.05) % (Math.PI * 2);
+            }
+
+            draw(ctx) {
+                // Glow effect
+                const glowSize = Math.sin(this.glow) * 5 + 10;
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = 0.3;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius + glowSize, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Main orb
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Shine
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(this.x - this.radius / 3, this.y - this.radius / 3, this.radius / 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            isClicked(mx, my) {
+                const dist = Math.sqrt((mx - this.x) ** 2 + (my - this.y) ** 2);
+                return dist < this.radius;
+            }
+        }
+
+        function startGame() {
+            gameActive = true;
+            gameRunning = true;
+            gameOrbs = [];
+            score = 0;
+            combo = 0;
+            gameTime = originalGameTime;
+            startGameBtn.disabled = true;
+            startGameBtn.textContent = currentLang === 'en' ? 'GAME IN PROGRESS...' : 'משחק בתהליך...';
+
+            // Spawn first orb
+            for (let i = 0; i < 3; i++) {
+                gameOrbs.push(new GameOrb());
+            }
+
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            // Draw background
+            gameCtx.fillStyle = 'rgba(10, 14, 39, 0.3)';
+            gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            // Draw game info
+            gameCtx.fillStyle = '#00d4ff';
+            gameCtx.font = 'bold 24px Arial';
+            gameCtx.textAlign = 'left';
+            gameCtx.fillText(`Time: ${Math.ceil(gameTime)}s`, 20, 40);
+
+            // Update and draw orbs
+            for (let i = gameOrbs.length - 1; i >= 0; i--) {
+                gameOrbs[i].update();
+                gameOrbs[i].draw(gameCtx);
+
+                // Remove if off screen
+                if (gameOrbs[i].y > gameCanvas.height + 50) {
+                    if (!gameOrbs[i].clicked) {
+                        combo = 0;
+                    }
+                    gameOrbs.splice(i, 1);
+                }
+            }
+
+            // Spawn new orbs randomly
+            if (Math.random() > 0.95 && gameOrbs.length < 8) {
+                gameOrbs.push(new GameOrb());
+            }
+
+            // Update game time
+            gameTime -= 0.016; // ~60fps
+            gameScore.textContent = score;
+
+            if (combo > 0) {
+                comboDisplay.textContent = `🔥 COMBO x${combo}`;
+            } else {
+                comboDisplay.textContent = '';
+            }
+
+            if (gameTime > 0) {
+                requestAnimationFrame(gameLoop);
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            gameRunning = false;
+
+            // Create game over modal
+            const gameOverDiv = document.createElement('div');
+            gameOverDiv.className = 'game-over show';
+            gameOverDiv.innerHTML = `
+                <h3 data-en="GAME OVER!" data-he="!המשחק הסתיים">GAME OVER!</h3>
+                <p data-en="Your Final Score:" data-he="הניקוד הסופי שלך:">Your Final Score:</p>
+                <div class="final-score">${score}</div>
+                <p id="gameOverMsg"></p>
+                <button class="game-over-btn" id="closeGameOver">Close</button>
+            `;
+
+            miniGameContainer.style.position = 'relative';
+            miniGameContainer.appendChild(gameOverDiv);
+
+            // Show message based on score
+            const msgEl = gameOverDiv.querySelector('#gameOverMsg');
+            if (score >= 100) {
+                msgEl.innerHTML = currentLang === 'en'
+                    ? '🎉 YOU WON! Your mystery is unlocked for FREE!'
+                    : '🎉 ניצחת! התעלומה שלך פתוחה בחינם!';
+                msgEl.style.color = '#00d4ff';
+                // Auto unlock
+                setTimeout(() => {
+                    unlockContent();
+                }, 1000);
+            } else {
+                msgEl.innerHTML = currentLang === 'en'
+                    ? `Almost there! You need ${100 - score} more points.`
+                    : `כמעט שם! אתה צריך ${100 - score} נקודות נוספות.`;
+                msgEl.style.color = '#ff006e';
+            }
+
+            document.getElementById('closeGameOver').addEventListener('click', () => {
+                gameOverDiv.remove();
+                gameActive = false;
+                startGameBtn.disabled = false;
+                startGameBtn.textContent = currentLang === 'en' ? 'START GAME' : 'התחל משחק';
+            });
+        }
+
+        function unlockContent() {
+            document.getElementById('successMessage').classList.add('show');
+            document.getElementById('fullContent').classList.add('revealed');
+            setTimeout(() => {
+                document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // Game canvas click handling
+        gameCanvas.addEventListener('click', (e) => {
+            if (!gameRunning) return;
+
+            const rect = gameCanvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            for (let i = gameOrbs.length - 1; i >= 0; i--) {
+                if (gameOrbs[i].isClicked(mouseX, mouseY) && !gameOrbs[i].clicked) {
+                    gameOrbs[i].clicked = true;
+                    score += 10 * (combo + 1);
+                    combo++;
+
+                    // Create explosion effect
+                    for (let j = 0; j < 15; j++) {
+                        particles.push(new Particle(gameOrbs[i].x, gameOrbs[i].y));
+                    }
+
+                    gameOrbs.splice(i, 1);
+                    break;
+                }
+            }
+        });
+
+        startGameBtn.addEventListener('click', startGame);
 
         // Initialize Stripe (using a test public key for demo)
         const stripe = Stripe('pk_test_51234567890123456789012345', {
