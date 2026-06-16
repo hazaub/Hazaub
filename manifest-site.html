@@ -50,7 +50,7 @@ ul{list-style:none}
 section{padding:96px 0}
 .container{max-width:1200px;margin:0 auto;padding:0 48px}
 .s-eye{font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--turq-dk);font-weight:500;margin-bottom:12px}
-.s-title{font-family:var(--serif);font-size:clamp(30px,5vw,54px);font-weight:500;color:var(--text);line-height:1.15;margin-bottom:16px}
+.s-title{font-family:var(--serif);font-size:clamp(30px,5vw,54px);font-weight:500;color:var(--turq-dk);line-height:1.15;margin-bottom:16px}
 .s-sub{font-size:.97rem;color:var(--text-lt);line-height:1.85;font-weight:300}
 .center{text-align:center}
 .center .s-sub{max-width:580px;margin:0 auto}
@@ -70,7 +70,7 @@ section{padding:96px 0}
 .hero-content{position:relative;z-index:2;max-width:860px;padding:80px 32px 0}
 .hero-eye{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:26px}
 .hero-title{font-family:var(--serif);font-size:clamp(80px,13vw,150px);font-weight:700;color:#fff;line-height:.88;letter-spacing:.09em;margin-bottom:22px}
-.hero-tagline{font-family:var(--serif);font-size:clamp(15px,2.2vw,20px);font-weight:300;color:rgba(255,255,255,.65);font-style:italic;letter-spacing:.06em;margin-bottom:18px}
+.hero-tagline{font-family:var(--serif);font-size:clamp(15px,2.2vw,20px);font-weight:300;font-style:italic;letter-spacing:.08em;margin-bottom:18px;background:linear-gradient(90deg,#c8a84b,#f5e17a,#e8c84a,#f5e17a,#c8a84b);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldshine 3s linear infinite}@keyframes goldshine{0%{background-position:0%}100%{background-position:200%}}
 .hero-desc{font-size:1rem;color:rgba(255,255,255,.58);line-height:1.8;margin-bottom:14px;font-weight:300}
 .hero-dates{font-family:var(--serif);font-size:1.25rem;color:var(--turq);letter-spacing:.06em;margin-bottom:6px}
 .hero-loc{font-size:.78rem;color:rgba(255,255,255,.42);letter-spacing:.18em;text-transform:uppercase;margin-bottom:44px}
@@ -138,7 +138,7 @@ section{padding:96px 0}
 .aw-desc{font-size:.83rem;color:var(--text-lt);line-height:1.65;font-weight:300;padding-right:38px}
 
 /* ══ 5. FOR WHOM ══ */
-#forwhom{background:var(--sand)}
+#forwhom{background:#e8f7f8}
 .fw-inner{max-width:820px;margin:0 auto}
 .fw-intro{font-size:1rem;color:var(--text-lt);line-height:1.88;font-weight:300;margin-bottom:40px}
 .fw-list{display:flex;flex-direction:column;gap:16px}
@@ -308,6 +308,35 @@ footer a{color:var(--turq)}
   .bm-stone{width:82px;height:116px;border-radius:41px 41px 6px 6px}
 }
 @media(prefers-reduced-motion:reduce){*,.reveal{transition:none!important;animation:none!important}}
+
+/* ══ GALLERY CAROUSEL ══ */
+#gallery{background:#F5F7F8;padding-bottom:48px}
+.gc-outer{overflow:hidden;margin-top:32px;position:relative;cursor:grab}
+.gc-outer:active{cursor:grabbing}
+.gc-outer::before,.gc-outer::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.gc-outer::before{right:0;background:linear-gradient(to right,transparent,#F5F7F8)}
+.gc-outer::after{left:0;background:linear-gradient(to left,transparent,#F5F7F8)}
+.gc-track{display:flex;gap:14px;padding:8px 40px;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
+.gc-item{flex-shrink:0;width:260px;height:200px;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.gc-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.gc-item:hover img{transform:scale(1.05)}
+.gc-controls{display:flex;justify-content:center;gap:16px;margin-top:24px}
+.gc-arrow{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(71,196,201,.4);background:#fff;color:var(--turq-dk);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--tr),border-color var(--tr),transform var(--tr);line-height:1}
+.gc-arrow:hover{background:var(--turq);border-color:var(--turq);color:#fff;transform:scale(1.08)}
+@media(max-width:600px){.gc-item{width:200px;height:160px}}
+
+/* ══ REVIEW CAROUSEL ══ */
+.rv-outer{overflow:hidden;margin-top:32px;cursor:grab;position:relative}
+.rv-outer:active{cursor:grabbing}
+.rv-outer::before,.rv-outer::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none}
+.rv-outer::before{right:0;background:linear-gradient(to right,transparent,var(--white))}
+.rv-outer::after{left:0;background:linear-gradient(to left,transparent,var(--white))}
+.rv-track{display:flex;gap:16px;padding:8px 40px;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
+.rv-item{flex-shrink:0;width:280px;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);background:#f0f0f0}
+.rv-item img{width:100%;height:auto;display:block;transition:transform .4s ease}
+.rv-item:hover img{transform:scale(1.03)}
+.rv-controls{display:flex;justify-content:center;gap:16px;margin-top:20px}
+@media(max-width:600px){.rv-item{width:220px}}
 </style>
 </head>
 <body>
@@ -342,7 +371,6 @@ footer a{color:var(--turq)}
     <p class="hero-desc reveal">ארבעה ימים ליצירת המציאות הבאה שלך</p>
     <p class="hero-dates reveal">24–27.09.2026</p>
     <p class="hero-loc reveal">סוכות · פאפוס · קפריסין</p>
-    <a href="#register" class="btn reveal">אני רוצה להצטרף</a>
   </div>
   <div class="hero-scroll"><p>גלול</p><span></span></div>
 </section>
@@ -359,11 +387,7 @@ footer a{color:var(--turq)}
         <p>רבים מאיתנו יודעים מה הם רוצים ליצור בחייהם.</p>
       </div>
       <div class="welcome-highlight reveal">
-        <span>יותר אהבה.</span>
-        <span>יותר שפע.</span>
-        <span>יותר ביטחון.</span>
-        <span>יותר חופש.</span>
-        <span>יותר משמעות.</span>
+        יותר אהבה. יותר שפע. יותר ביטחון. יותר חופש. יותר משמעות.
       </div>
       <div class="welcome-body reveal">
         <p>אך בין הרצון לבין המציאות קיים לעיתים פער. במשך השנים אנחנו אוספים אמונות, פחדים, הרגלים ודפוסים שמלווים אותנו גם כשהם כבר אינם משרתים אותנו.</p>
@@ -468,7 +492,6 @@ footer a{color:var(--turq)}
           <span class="bm-panel-icon">🦋</span>
           <h3 class="bm-panel-title">שחרור</h3>
           <p class="bm-panel-desc">כדי לפנות מקום לחדש, עלינו להסכים לשחרר את הישן. השחרור אינו ויתור — הוא בחירה מודעת ומעצימה שפותחת את הדלת למציאות חדשה.</p>
-          <a href="#register" class="btn-outline">לעוד פרטים</a>
         </div>
       </div>
       <div class="bm-panel" data-panel="1">
@@ -477,7 +500,6 @@ footer a{color:var(--turq)}
           <span class="bm-panel-icon">👁️</span>
           <h3 class="bm-panel-title">תודעה</h3>
           <p class="bm-panel-desc">הדרך שבה אנחנו מפרשים את המציאות יוצרת את החוויה שלנו ממנה. שינוי התודעה מתחיל בפגישה מחדש עם הדרך שאנחנו רואים את עצמנו ואת העולם.</p>
-          <a href="#register" class="btn-outline">לעוד פרטים</a>
         </div>
       </div>
       <div class="bm-panel" data-panel="2">
@@ -486,7 +508,6 @@ footer a{color:var(--turq)}
           <span class="bm-panel-icon">🌳</span>
           <h3 class="bm-panel-title">ביטחון</h3>
           <p class="bm-panel-desc">יציבות פנימית מאפשרת לנו לפעול מתוך בחירה ולא מתוך פחד. מהביטחון הזה נולדת הנועזות לשנות ולצאת אל מחוץ לאזור הנוחות.</p>
-          <a href="#register" class="btn-outline">לעוד פרטים</a>
         </div>
       </div>
       <div class="bm-panel" data-panel="3">
@@ -495,7 +516,6 @@ footer a{color:var(--turq)}
           <span class="bm-panel-icon">≈</span>
           <h3 class="bm-panel-title">אנרגיה</h3>
           <p class="bm-panel-desc">הגוף והרגש משדרים הרבה לפני שהמילים יוצאות החוצה. חיבור לאנרגיית הגוף הוא אחד הכלים החזקים ביותר לשינוי מציאות.</p>
-          <a href="#register" class="btn-outline">לעוד פרטים</a>
         </div>
       </div>
       <div class="bm-panel" data-panel="4">
@@ -504,7 +524,6 @@ footer a{color:var(--turq)}
           <span class="bm-panel-icon">☀️</span>
           <h3 class="bm-panel-title">אמונה</h3>
           <p class="bm-panel-desc">האמונות שלנו מגדירות מה אנחנו חושבים שאפשרי עבורנו. כשמשנים אמונה — משנים גבול. ב-MANIFEST נעמיק להבין אילו אמונות מגבילות אותנו ונלמד לשחרר אותן.</p>
-          <a href="#register" class="btn-outline">לעוד פרטים</a>
         </div>
       </div>
     </div>
@@ -526,7 +545,7 @@ footer a{color:var(--turq)}
       <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">סדנת אורחת</span></div><p class="aw-desc">מומחית מיוחדת שתוסיף עומק ונדבך ייחודי לחוויה.</p></div>
       <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">כתיבת הזמנת מציאות</span></div><p class="aw-desc">תרגיל כתיבה עוצמתי שהופך כוונות לכלי מניפסטציה אמיתי.</p></div>
       <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">יצירת Vision Board</span></div><p class="aw-desc">בניית לוח חזון שישאיר אתכם מחוברים למטרות גם אחרי הריטריט.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">כלים מעולמו של ג'ו דיספנזה</span></div><p class="aw-desc">שיטות מדעיות מוכחות לשינוי מוח, גוף ומציאות.</p></div>
+      <div class="aw-item" style="grid-column:1/-1"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">כלים מעולמו של ג'ו דיספנזה</span></div><p class="aw-desc">שיטות מדעיות מוכחות לשינוי מוח, גוף ומציאות.</p></div>
     </div>
   </div>
 </section>
@@ -578,11 +597,15 @@ footer a{color:var(--turq)}
   </div>
 </section>
 
+<!-- Hotel CTA -->
+<div style="text-align:center;padding:0 0 72px;background:var(--white)">
+  <a href="#pricing" class="btn">לעוד פרטים על המלון</a>
+</div>
+
 <!-- ══ 7. HOSTS ══ -->
 <section id="hosts">
   <div class="container">
     <p class="s-eye center reveal">הכירו את המנחים</p>
-    <h2 class="s-title center reveal">המנחים</h2>
     <div class="tline c reveal"></div>
     <div class="hosts-grid reveal">
       <div class="host-card">
@@ -605,23 +628,88 @@ footer a{color:var(--turq)}
   </div>
 </section>
 
+<!-- Hosts CTA -->
+<div style="text-align:center;padding:0 0 72px;background:var(--sand)">
+  <a href="#pricing" class="btn">אני בפנים</a>
+</div>
+
 <!-- ══ 8. GALLERY ══ -->
 <section id="gallery">
   <div class="container">
     <p class="s-eye center reveal">רגעים מריטריטים קודמים</p>
     <h2 class="s-title center reveal">גלריה</h2>
     <div class="tline c reveal"></div>
-    <div class="g3 reveal">
-      <div class="g3-item"><div class="g3-img c1"></div></div>
-      <div class="g3-item"><div class="g3-img c2"></div></div>
-      <div class="g3-item"><div class="g3-img c3"></div></div>
-      <div class="g3-item"><div class="g3-img c4"></div></div>
-      <div class="g3-item"><div class="g3-img c5"></div></div>
-      <div class="g3-item"><div class="g3-img c6"></div></div>
-      <div class="g3-item"><div class="g3-img c7"></div></div>
-      <div class="g3-item"><div class="g3-img c8"></div></div>
-      <div class="g3-item"><div class="g3-img c9"></div></div>
+  </div>
+  <!-- Carousel -->
+  <div class="gc-outer reveal">
+    <div class="gc-track" id="gcTrack">
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617308/WhatsApp_Image_2026-06-16_at_12.56.43_5_agrwr7.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_4_vemob0.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_3_a922zu.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_2_y70tbo.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.43_1_l50nf1.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.42_ijfqog.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.42_6_b31zqg.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.42_7_f2hsgf.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617305/WhatsApp_Image_2026-06-16_at_12.56.42_5_hwkgux.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617305/WhatsApp_Image_2026-06-16_at_12.56.42_4_hzinax.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617305/WhatsApp_Image_2026-06-16_at_12.56.42_3_xyxj8o.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.42_2_tgbutx.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.42_1_h86bvv.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.41_qwk4xh.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.41_2_wvvenk.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617303/WhatsApp_Image_2026-06-16_at_12.56.41_1_m2gfum.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617303/WhatsApp_Image_2026-06-16_at_12.56.44_mjliil.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617303/WhatsApp_Image_2026-06-16_at_12.56.44_8_fpfxi2.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_4_d5cnb7.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_7_xbnyua.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_6_ytsdmm.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_5_grk3zd.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_1_f3asmz.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_3_lbzzlm.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_7_tdsg6f.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_2_ntdvat.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_pkily1.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_9_yuk7jj.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_8_huxlqq.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_6_a89k2v.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617308/WhatsApp_Image_2026-06-16_at_12.56.43_5_agrwr7.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_4_vemob0.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_3_a922zu.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_2_y70tbo.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.43_1_l50nf1.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.42_ijfqog.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.42_6_b31zqg.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617306/WhatsApp_Image_2026-06-16_at_12.56.42_7_f2hsgf.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617305/WhatsApp_Image_2026-06-16_at_12.56.42_5_hwkgux.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617305/WhatsApp_Image_2026-06-16_at_12.56.42_4_hzinax.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617305/WhatsApp_Image_2026-06-16_at_12.56.42_3_xyxj8o.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.42_2_tgbutx.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.42_1_h86bvv.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.41_qwk4xh.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617304/WhatsApp_Image_2026-06-16_at_12.56.41_2_wvvenk.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617303/WhatsApp_Image_2026-06-16_at_12.56.41_1_m2gfum.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617303/WhatsApp_Image_2026-06-16_at_12.56.44_mjliil.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617303/WhatsApp_Image_2026-06-16_at_12.56.44_8_fpfxi2.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_4_d5cnb7.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_7_xbnyua.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_6_ytsdmm.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_5_grk3zd.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_1_f3asmz.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_3_lbzzlm.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_7_tdsg6f.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617302/WhatsApp_Image_2026-06-16_at_12.56.44_2_ntdvat.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_pkily1.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_9_yuk7jj.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_8_huxlqq.jpg" alt="גלריה" loading="lazy"></div>
+      <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617301/WhatsApp_Image_2026-06-16_at_12.56.43_6_a89k2v.jpg" alt="גלריה" loading="lazy"></div>
+      
     </div>
+  </div>
+  <!-- Nav dots + arrows -->
+  <div class="gc-controls">
+    <button class="gc-arrow" id="gcPrev" aria-label="הקודם">&#8249;</button>
+    <button class="gc-arrow" id="gcNext" aria-label="הבא">&#8250;</button>
   </div>
 </section>
 
@@ -629,26 +717,80 @@ footer a{color:var(--turq)}
 <section id="testimonials">
   <div class="container">
     <p class="s-eye center reveal">מה המשתתפים מספרים</p>
-    <h2 class="s-title center reveal">חוויות אמיתיות</h2>
+    <h2 class="s-title center reveal">עדויות מהמסע</h2>
     <div class="tline c reveal"></div>
   </div>
-  <div class="testi-row reveal">
-    <div class="testi-track">
-      <!-- video placeholder -->
-      <div class="testi-video"><div class="testi-video-ph"><svg viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.3"><circle cx="22" cy="22" r="18"/><polygon points="18,14 32,22 18,30" fill="white" opacity=".4"/></svg><p>סרטון המלצה</p></div></div>
-      <div class="testi-card"><span class="testi-q">"</span><p class="testi-txt">הריטריט עם נטע שינה לי פשוט הכל. חזרתי הביתה עם בהירות שלא הכרתי. כלים אמיתיים, אנשים מדהימים, ומקום שגרם לי להרגיש שלם.</p><div class="testi-auth"><div class="testi-av">מ</div><div><p class="testi-name">מיכל כ.</p><p class="testi-city">ירושלים</p></div></div></div>
-      <div class="testi-video"><div class="testi-video-ph"><svg viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.3"><circle cx="22" cy="22" r="18"/><polygon points="18,14 32,22 18,30" fill="white" opacity=".4"/></svg><p>סרטון המלצה</p></div></div>
-      <div class="testi-card"><span class="testi-q">"</span><p class="testi-txt">באתי לבד וחזרתי עם חברים לחיים. נטע יוצרת מרחב כל כך בטוח ונוכח. הסדנאות פשוט פתחו לי עיניים.</p><div class="testi-auth"><div class="testi-av">ד</div><div><p class="testi-name">דניאל א.</p><p class="testi-city">תל אביב</p></div></div></div>
-      <div class="testi-card"><span class="testi-q">"</span><p class="testi-txt">קפריסין, הבריכה, השמש, ועל זה נטע שמדהימה אותך בכל שיחה — זה פשוט קסם. אני כבר רוצה להירשם לבא.</p><div class="testi-auth"><div class="testi-av">ש</div><div><p class="testi-name">שירה ל.</p><p class="testi-city">רמת גן</p></div></div></div>
-      <div class="testi-video"><div class="testi-video-ph"><svg viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.3"><circle cx="22" cy="22" r="18"/><polygon points="18,14 32,22 18,30" fill="white" opacity=".4"/></svg><p>סרטון המלצה</p></div></div>
-      <div class="testi-card"><span class="testi-q">"</span><p class="testi-txt">חויתי ריטריטים רבים בחיי, אך זה היה שונה לגמרי. העומק של הכלים והחיבור לאנשים — לא ציפיתי לזה.</p><div class="testi-auth"><div class="testi-av">ר</div><div><p class="testi-name">רון מ.</p><p class="testi-city">חיפה</p></div></div></div>
-      <!-- Clone -->
-      <div class="testi-video"><div class="testi-video-ph"><svg viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.3"><circle cx="22" cy="22" r="18"/><polygon points="18,14 32,22 18,30" fill="white" opacity=".4"/></svg><p>סרטון המלצה</p></div></div>
-      <div class="testi-card"><span class="testi-q">"</span><p class="testi-txt">הריטריט עם נטע שינה לי פשוט הכל. חזרתי הביתה עם בהירות שלא הכרתי. כלים אמיתיים, אנשים מדהימים, ומקום שגרם לי להרגיש שלם.</p><div class="testi-auth"><div class="testi-av">מ</div><div><p class="testi-name">מיכל כ.</p><p class="testi-city">ירושלים</p></div></div></div>
-      <div class="testi-card"><span class="testi-q">"</span><p class="testi-txt">באתי לבד וחזרתי עם חברים לחיים. נטע יוצרת מרחב כל כך בטוח ונוכח. הסדנאות פשוט פתחו לי עיניים.</p><div class="testi-auth"><div class="testi-av">ד</div><div><p class="testi-name">דניאל א.</p><p class="testi-city">תל אביב</p></div></div></div>
+  <div class="rv-outer reveal">
+    <div class="rv-track" id="rvTrack">
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.07_paigzh.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.06_sluejr.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_1_fybv4e.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_3_oyo6i7.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_4_xoeclo.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_5_oeyhd5.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617308/WhatsApp_Image_2026-06-16_at_12.56.43_5_agrwr7.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.07_paigzh.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.06_sluejr.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_1_fybv4e.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_3_oyo6i7.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_4_xoeclo.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_5_oeyhd5.jpg" alt="ביקורת" loading="lazy">
+      </div>
+      <div class="rv-item">
+        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617308/WhatsApp_Image_2026-06-16_at_12.56.43_5_agrwr7.jpg" alt="ביקורת" loading="lazy">
+      </div>
     </div>
   </div>
+  <div class="rv-controls">
+    <button class="gc-arrow" id="rvPrev">&#8249;</button>
+    <button class="gc-arrow" id="rvNext">&#8250;</button>
+  </div>
 </section>
+
+<!-- Testimony Video -->
+<div style="background:var(--white);padding:0 0 80px;text-align:center;">
+  <div style="max-width:420px;margin:0 auto;padding:0 24px;">
+    <div style="
+      position:relative;
+      border-radius:50%;
+      overflow:hidden;
+      aspect-ratio:1/1;
+      box-shadow:0 0 0 6px rgba(71,196,201,.15), 0 0 0 12px rgba(71,196,201,.08), 0 20px 60px rgba(0,0,0,.15);
+      border:3px solid rgba(71,196,201,.35);
+    ">
+      <video
+        autoplay muted loop playsinline
+        style="width:100%;height:100%;object-fit:cover;display:block;"
+        src="https://res.cloudinary.com/dpqheuznj/video/upload/v1781618021/WhatsApp_Video_2026-06-16_at_00.25.13_jwzpkf.mp4">
+      </video>
+    </div>
+  </div>
+</div>
 
 <!-- ══ 10. PRICING ══ -->
 <section id="pricing">
@@ -743,7 +885,6 @@ footer a{color:var(--turq)}
         </div>
       </div>
     </div>
-    <a href="#" class="reg-cta-btn reveal">אני רוצה להצטרף</a>
   </div>
 </section>
 
@@ -901,6 +1042,85 @@ document.getElementById('hamburger').addEventListener('click', () => {
   nl.style.cssText = isOpen ? '' :
     'display:flex;flex-direction:column;position:absolute;top:62px;right:0;left:0;background:#fff;padding:18px 26px;gap:14px;box-shadow:0 8px 28px rgba(0,0,0,.08);z-index:99';
 });
+
+// ── Gallery Carousel ──
+(function(){
+  const track = document.getElementById('gcTrack');
+  if (!track) return;
+  const items = track.querySelectorAll('.gc-item');
+  const total = items.length / 2; // real count (duplicated)
+  const itemW = () => items[0].offsetWidth + 14; // width + gap
+  let idx = 0;
+
+  function goTo(i) {
+    idx = ((i % total) + total) % total;
+    track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+    track.style.transform = 'translateX(' + (idx * itemW()) + 'px)';
+  }
+
+  document.getElementById('gcNext').addEventListener('click', () => goTo(idx - 1));
+  document.getElementById('gcPrev').addEventListener('click', () => goTo(idx + 1));
+
+  // Auto advance
+  let auto = setInterval(() => goTo(idx - 1), 3000);
+  track.addEventListener('mouseenter', () => clearInterval(auto));
+  track.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(idx - 1), 3000); });
+
+  // Drag
+  let dragStart = null, dragScroll = 0, dragging = false;
+  track.addEventListener('mousedown', e => { dragStart = e.clientX; dragScroll = idx; dragging = false; });
+  window.addEventListener('mousemove', e => {
+    if (dragStart === null) return;
+    const diff = e.clientX - dragStart;
+    if (Math.abs(diff) > 6) { dragging = true; track.style.transition = 'none'; track.style.transform = 'translateX(' + (dragScroll * itemW() + diff) + 'px)'; }
+  });
+  window.addEventListener('mouseup', e => {
+    if (dragStart === null) return;
+    const diff = e.clientX - dragStart;
+    if (dragging) goTo(Math.round(-diff / itemW()) + dragScroll > 0 ? dragScroll - Math.round(diff/itemW()) : dragScroll - Math.round(diff/itemW()));
+    dragStart = null;
+  });
+
+  // Touch
+  let tStart = 0;
+  track.addEventListener('touchstart', e => { tStart = e.touches[0].clientX; }, {passive:true});
+  track.addEventListener('touchend', e => {
+    const diff = tStart - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(diff > 0 ? idx - 1 : idx + 1);
+  });
+})();
+
+
+// ── Review Carousel ──
+(function(){
+  const track = document.getElementById('rvTrack');
+  if (!track) return;
+  const items = track.querySelectorAll('.rv-item');
+  const total = items.length / 2;
+  const itemW = () => items[0].offsetWidth + 16;
+  let idx = 0;
+
+  function goTo(i) {
+    idx = ((i % total) + total) % total;
+    track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+    track.style.transform = 'translateX(' + (idx * itemW()) + 'px)';
+  }
+
+  document.getElementById('rvNext').addEventListener('click', () => goTo(idx - 1));
+  document.getElementById('rvPrev').addEventListener('click', () => goTo(idx + 1));
+
+  let auto = setInterval(() => goTo(idx - 1), 3500);
+  track.addEventListener('mouseenter', () => clearInterval(auto));
+  track.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(idx - 1), 3500); });
+
+  let tStart = 0;
+  track.addEventListener('touchstart', e => { tStart = e.touches[0].clientX; }, {passive:true});
+  track.addEventListener('touchend', e => {
+    const diff = tStart - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(diff > 0 ? idx - 1 : idx + 1);
+  });
+})();
+
 </script>
 </body>
 </html>
