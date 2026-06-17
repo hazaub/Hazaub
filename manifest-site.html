@@ -341,16 +341,49 @@ footer a{color:var(--turq)}
 @keyframes lbfade{from{opacity:0}to{opacity:1}}
 #lightbox button:hover{background:rgba(255,255,255,.3)!important}
 .hg-item.lb-trigger{cursor:zoom-in}
+
+/* ══ PAYMENT MODAL ══ */
+#payModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;animation:lbfade .25s ease}
+#payModal.open{display:flex}
+.pm-box{background:#fff;border-radius:24px;padding:44px 36px;max-width:420px;width:90%;text-align:center;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.pm-close{position:absolute;top:14px;left:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-lt);line-height:1;padding:4px 8px;border-radius:50%;transition:background .2s}
+.pm-close:hover{background:rgba(0,0,0,.06)}
+.pm-title{font-family:var(--serif);font-size:1.6rem;font-weight:500;color:var(--turq-dk);margin-bottom:8px}
+.pm-sub{font-size:.88rem;color:var(--text-lt);margin-bottom:32px;line-height:1.6}
+.pm-btns{display:flex;flex-direction:column;gap:14px}
+.pm-btn{display:flex;align-items:center;justify-content:center;gap:14px;padding:16px 24px;border-radius:50px;font-size:1rem;font-weight:600;letter-spacing:.04em;cursor:pointer;border:none;transition:transform .2s,box-shadow .2s;text-decoration:none}
+.pm-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.pm-btn-bit{background:linear-gradient(135deg,#00b4d8,#0096c7);color:#fff}
+.pm-btn-paybox{background:linear-gradient(135deg,#6c63ff,#4a42d6);color:#fff}
+.pm-btn img{height:28px;width:auto;object-fit:contain;filter:brightness(0) invert(1)}
+.pm-note{font-size:.76rem;color:var(--text-lt);margin-top:20px;line-height:1.6}
+
+/* ══ MOBILE DRAWER ══ */
+#drawer{position:fixed;top:0;right:0;bottom:0;width:280px;background:#fff;z-index:500;transform:translateX(110%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.12);display:flex;flex-direction:column;padding:0}
+#drawer.open{transform:translateX(0)}
+#drawer-overlay{display:none;position:fixed;inset:0;z-index:499;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
+#drawer-overlay.open{display:block}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(71,196,201,.15)}
+.drawer-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--turq-dk);letter-spacing:.15em}
+.drawer-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-lt);padding:4px 8px;border-radius:50%;transition:background .2s;line-height:1}
+.drawer-close:hover{background:rgba(0,0,0,.06)}
+.drawer-links{display:flex;flex-direction:column;padding:16px 0;flex:1;overflow-y:auto}
+.drawer-links a{font-size:1rem;color:var(--text);padding:14px 28px;font-weight:400;letter-spacing:.04em;border-bottom:1px solid rgba(71,196,201,.08);transition:background .2s,color .2s;display:flex;align-items:center;gap:12px}
+.drawer-links a:hover{background:rgba(71,196,201,.06);color:var(--turq-dk)}
+.drawer-links a .dl-icon{font-size:1.1rem;width:24px;text-align:center}
+.drawer-cta{margin:20px 24px}
+.drawer-cta a{display:block;background:var(--turq);color:#fff;text-align:center;padding:14px;border-radius:50px;font-size:.95rem;font-weight:500;letter-spacing:.08em;transition:background .2s}
+.drawer-cta a:hover{background:var(--turq-dk)}
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav id="navbar">
-  <div class="nav-logo" style="display:flex;align-items:center;gap:10px;">
+  <a href="#hero" class="nav-logo" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
     <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781468801/d8c52be7-4d7d-443c-9e80-10f3bf96a13f_removalai_preview_glyiaj.png" alt="לוגו" style="height:56px;width:auto;object-fit:contain;flex-shrink:0;mix-blend-mode:normal;background:transparent;">
     <span id="navLogoText" style="font-size:1.1rem;letter-spacing:.12em;">Natasha Friends</span>
-  </div>
+  </a>
   <ul class="nav-links">
     <li><a href="#welcome">על הריטריט</a></li>
     <li><a href="#awaits">מה כלול</a></li>
@@ -373,7 +406,7 @@ footer a{color:var(--turq)}
     <h1 class="hero-title reveal">MANIFEST</h1>
     <p class="hero-tagline reveal">Think Beyond. Feel Beyond. Live Beyond.</p>
     <p class="hero-desc reveal">ארבעה ימים ליצירת המציאות הבאה שלך</p>
-    <p class="hero-dates reveal">24–27.09.2026</p>
+    <p class="hero-dates reveal" dir="ltr" style="unicode-bidi:plaintext">24–27.09.2026</p>
     <p class="hero-loc reveal">סוכות · פאפוס · קפריסין</p>
   </div>
   <div class="hero-scroll"><p>גלול</p><span></span></div>
@@ -387,20 +420,13 @@ footer a{color:var(--turq)}
       <h2 class="s-title center reveal">ברוכים הבאים ל-MANIFEST</h2>
       <div class="tline c reveal"></div>
       <div class="welcome-body reveal">
-        <p>MANIFEST נולד מתוך חקירה עמוקה של הקשר בין תודעה, אמונה, רגש, גוף ומציאות — ומתוך ההבנה שכדי ליצור חיים חדשים, עלינו להתחיל לפגוש את עצמנו ואת העולם ממקום חדש.</p>
-        <p>רבים מאיתנו יודעים מה הם רוצים ליצור בחייהם.</p>
+        <p>MANIFEST נולד מתוך סקרנות עמוקה לחקור את הקשר שבין העולם הפנימי שלנו לבין המציאות שאנחנו פוגשים בחיינו.</p>
+        <p>בשנים האחרונות יותר ויותר מחקרים, לצד עבודתו של ד"ר ג'ו דיספנזה, מצביעים על הקשר בין תודעה, רגש, אמונות ודפוסי חשיבה לבין הדרך שבה אנחנו חווים את המציאות שלנו.</p>
+        <p>רבים מאיתנו רוצים יותר שפע, אהבה, ביטחון, חופש או הגשמה, אך לעיתים אנחנו ממשיכים לפעול מתוך אותם דפוסים, אותם פחדים ואותן אמונות שמחזיקים אותנו במקום.</p>
+        <p>כדי ליצור מציאות חדשה, לא תמיד מספיק לדעת מה אנחנו רוצים. עלינו להבין מה מפעיל אותנו מבפנים, מה אנחנו מאמינים על עצמנו ועל העולם, ומה הקשר בין תחושת שפע לבין תחושת חוסר, בין מחשבה לרגש, ובין מי שאנחנו היום לבין מי שאנחנו מבקשים להיות.</p>
+        <p>במהלך הריטריט נצא למסע של חקירה, התבוננות והתנסות, ונפגוש כלים שיאפשרו לנו להתחבר לעצמנו ממקום מודע יותר, פתוח יותר ומדויק יותר — ומתוך המקום הזה להתחיל ליצור את המציאות שאנחנו רוצים להזמין לחיינו.</p>
       </div>
-      <div class="welcome-highlight reveal">
-        יותר אהבה. יותר שפע. יותר ביטחון. יותר חופש. יותר משמעות.
-      </div>
-      <div class="welcome-body reveal">
-        <p>אך בין הרצון לבין המציאות קיים לעיתים פער. במשך השנים אנחנו אוספים אמונות, פחדים, הרגלים ודפוסים שמלווים אותנו גם כשהם כבר אינם משרתים אותנו.</p>
-      </div>
-      <div class="dispenza-note reveal">
-        <p>בשנים האחרונות זוכה גישה זו לתשומת לב רבה בעולם התודעה וההתפתחות האישית, בין היתר דרך עבודתו של <strong>ג'ו דיספנזה</strong>, החוקר את הקשר בין המוח, הרגש והמציאות שאנו חווים.</p>
-        <p style="margin-top:14px">הרעיון אינו לחשוב חיובי — אלא להבין שכאשר אנחנו משנים את הדרך שבה אנחנו חושבים, מרגישים ופוגשים את החיים — אנחנו פותחים אפשרות למציאות חדשה להיווצר.</p>
-      </div>
-      <p class="sukkot-note reveal">הבחירה לקיים את הריטריט דווקא בסוכות אינה מקרית. לאחר ראש השנה ויום הכיפורים מגיע זמן של התחדשות — זמן לשחרר את הישן, לפתוח דף חדש ולבחור מחדש את הכיוון שלנו. וזו בדיוק מהות המסע של MANIFEST.</p>
+      <p class="sukkot-note reveal">סוכות הוא זמן של מעבר, התחדשות ופתיחת דף חדש. אחרי תקופה של התבוננות, שחרור וניקוי, ניפגש יחד בפאפוס כדי לעצור לרגע, להתרחק מהרעש של היום־יום, ולהקדיש זמן לעצמנו, לכוונות שלנו ולמציאות שאנחנו מבקשים ליצור. זו תקופה מיוחדת בשנה שמביאה איתה אנרגיה של פתיחות לאפשרויות חדשות, ומאפשרת לנו לבחור מחדש מתוך מודעות את הכיוון שאליו אנחנו רוצים לצעוד.</p>
     </div>
   </div>
 </section>
@@ -408,8 +434,8 @@ footer a{color:var(--turq)}
 <!-- ══ 3. BOOKMARKS ══ -->
 <section id="bookmarks">
   <div class="container">
-    <p class="s-eye center reveal">מרכיבי יצירת המציאות</p>
-    <h2 class="s-title center reveal">סימניות יצירת המציאות</h2>
+    <p class="s-eye center reveal">עקרונות</p>
+    <h2 class="s-title center reveal">עקרונות ה-MANIFEST</h2>
     <div class="tline c reveal"></div>
   </div>
   <div class="bm-slider-outer reveal">
@@ -495,7 +521,7 @@ footer a{color:var(--turq)}
         <div class="bm-panel-text-wrap">
           <span class="bm-panel-icon">🦋</span>
           <h3 class="bm-panel-title">שחרור</h3>
-          <p class="bm-panel-desc">כדי לפנות מקום לחדש, עלינו להסכים לשחרר את הישן. השחרור אינו ויתור — הוא בחירה מודעת ומעצימה שפותחת את הדלת למציאות חדשה.</p>
+          <p class="bm-panel-desc">כדי לפנות מקום לחדש, עלינו להסכים לשחרר את הישן. במהלך הריטריט נזהה אמונות, דפוסים והרגלים שכבר אינם משרתים אותנו, וניצור מרחב לשחרר את מה שמעכב אותנו בדרך למציאות שאנחנו מבקשים ליצור.</p>
         </div>
       </div>
       <div class="bm-panel" data-panel="1">
@@ -503,7 +529,7 @@ footer a{color:var(--turq)}
         <div class="bm-panel-text-wrap">
           <span class="bm-panel-icon">👁️</span>
           <h3 class="bm-panel-title">תודעה</h3>
-          <p class="bm-panel-desc">הדרך שבה אנחנו מפרשים את המציאות יוצרת את החוויה שלנו ממנה. שינוי התודעה מתחיל בפגישה מחדש עם הדרך שאנחנו רואים את עצמנו ואת העולם.</p>
+          <p class="bm-panel-desc">האם אנחנו פועלים מתוך תחושה שיש לנו, או מתוך פחד שאין מספיק? נחקור את ההבדל בין תודעת שפע לתודעת חוסר, ונבין כיצד כל אחת מהן משפיעה על הבחירות, מערכות היחסים והמציאות שאנחנו יוצרים.</p>
         </div>
       </div>
       <div class="bm-panel" data-panel="2">
@@ -511,7 +537,7 @@ footer a{color:var(--turq)}
         <div class="bm-panel-text-wrap">
           <span class="bm-panel-icon">🌳</span>
           <h3 class="bm-panel-title">ביטחון</h3>
-          <p class="bm-panel-desc">יציבות פנימית מאפשרת לנו לפעול מתוך בחירה ולא מתוך פחד. מהביטחון הזה נולדת הנועזות לשנות ולצאת אל מחוץ לאזור הנוחות.</p>
+          <p class="bm-panel-desc">ביטחון אמיתי מתחיל בהכרה בערך שלנו. נחקור את הקשר בין ערך עצמי, ראויות וביטחון פנימי, ונלמד כיצד לבנות תחושת יציבות מבפנים במקום לחפש אישורים מבחוץ.</p>
         </div>
       </div>
       <div class="bm-panel" data-panel="3">
@@ -519,7 +545,7 @@ footer a{color:var(--turq)}
         <div class="bm-panel-text-wrap">
           <span class="bm-panel-icon">≈</span>
           <h3 class="bm-panel-title">אנרגיה</h3>
-          <p class="bm-panel-desc">הגוף והרגש משדרים הרבה לפני שהמילים יוצאות החוצה. חיבור לאנרגיית הגוף הוא אחד הכלים החזקים ביותר לשינוי מציאות.</p>
+          <p class="bm-panel-desc">האנרגיה שאנחנו נושאים בתוכנו משפיעה על הדרך שבה אנחנו חווים את החיים. נחקור את הקשר בין הגוף, הרגש והתדר שאנחנו משדרים, ונקבל כלים לזהות, לשחרר ולהעלות את האנרגיה שלנו באופן מודע. ככל שנלמד לעבוד עם האנרגיה שבתוכנו, נוכל למגנט אל חיינו יותר שפע, הזדמנויות ואפשרויות חדשות.</p>
         </div>
       </div>
       <div class="bm-panel" data-panel="4">
@@ -527,7 +553,7 @@ footer a{color:var(--turq)}
         <div class="bm-panel-text-wrap">
           <span class="bm-panel-icon">☀️</span>
           <h3 class="bm-panel-title">אמונה</h3>
-          <p class="bm-panel-desc">האמונות שלנו מגדירות מה אנחנו חושבים שאפשרי עבורנו. כשמשנים אמונה — משנים גבול. ב-MANIFEST נעמיק להבין אילו אמונות מגבילות אותנו ונלמד לשחרר אותן.</p>
+          <p class="bm-panel-desc">אמונה היא היכולת להמשיך לצעוד גם כשעדיין לא רואים את כל הדרך. דרך מדיטציות, תרגולים והתבוננות פנימית נחזק את היכולת לסמוך על עצמנו, על הדרך שלנו ועל האפשרויות שעדיין אינן נראות לעין. לא המציאות מכתיבה את האמונה שלנו — האמונה שלנו היא זו שמקדימה את המציאות ופותחת את הדרך למה שאנחנו מבקשים להגשים.</p>
         </div>
       </div>
     </div>
@@ -541,15 +567,13 @@ footer a{color:var(--turq)}
     <h2 class="s-title center reveal">מה מחכה לכם ב-MANIFEST</h2>
     <div class="tline c reveal"></div>
     <div class="awaits-grid reveal">
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">סדנאות עומק ליצירת מציאות</span></div><p class="aw-desc">כלים מעשיים לשינוי דפוסי חשיבה ויצירת חיים מכוונים ומודעים.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">תרגולי מדיטציה</span></div><p class="aw-desc">טכניקות מדיטציה עמוקות שיחברו אתכם לרגע הנוכחי ולעצמכם.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">דמיון מודרך</span></div><p class="aw-desc">מסעות פנימיים מונחים שיאפשרו לכם לחוות את המציאות הרצויה.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">יוגה</span></div><p class="aw-desc">שיעורי יוגה מותאמים לכל הרמות, בוקר מול הים התיכון.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">פילאטיס בוקר</span></div><p class="aw-desc">חיזוק הגוף ויצירת קשב גופני שיתמוך בכל התהליך.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">סדנת אורחת</span></div><p class="aw-desc">מומחית מיוחדת שתוסיף עומק ונדבך ייחודי לחוויה.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">כתיבת הזמנת מציאות</span></div><p class="aw-desc">תרגיל כתיבה עוצמתי שהופך כוונות לכלי מניפסטציה אמיתי.</p></div>
-      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">יצירת Vision Board</span></div><p class="aw-desc">בניית לוח חזון שישאיר אתכם מחוברים למטרות גם אחרי הריטריט.</p></div>
-      <div class="aw-item" style="grid-column:1/-1"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">כלים מעולמו של ג'ו דיספנזה</span></div><p class="aw-desc">שיטות מדעיות מוכחות לשינוי מוח, גוף ומציאות.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">סדנאות עומק ליצירת מציאות</span></div><p class="aw-desc">תהליכים קבוצתיים, שיח, תרגולים וכלים מעשיים שיעזרו לכם לזהות מה מעכב אתכם, לדייק את הכיוון שלכם וליצור שינוי מבפנים החוצה.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">עקרונות ה-MANIFEST בהשראת ד"ר ג'ו דיספנזה</span></div><p class="aw-desc">היכרות עם עקרונות מרכזיים מעבודתו של ד"ר ג'ו דיספנזה, המחברים בין מדע, תודעה, מחשבה ורגש. נבין כיצד מחשבות ורגשות משפיעים על המציאות שלנו, ונחווה מדיטציה מעולמו של ד"ר ג'ו דיספנזה כחלק מהתהליך.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">עצב הוואגוס – המפתח לאיזון הגוף והנפש</span></div><p class="aw-desc">בהנחיית אירינה גאורגייב. נלמד כיצד מערכת העצבים משפיעה על הגוף והרגש, נכיר את תפקידו של עצב הוואגוס ביצירת רוגע ואיזון, ונקבל כלים מעשיים להפחתת סטרס ולחיזוק תחושת הביטחון הפנימי.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">יוגה</span></div><p class="aw-desc">חיבור בין גוף, נשימה ותודעה דרך תרגול המותאם לכל הרמות.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">פילאטיס בוקר</span></div><p class="aw-desc">פתיחת היום עם תנועה, חיזוק הגוף והעלאת האנרגיה לקראת יום מלא חוויות.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">כתיבת הזמנת מציאות</span></div><p class="aw-desc">תרגיל כתיבה עוצמתי שיעזור לכם לדייק כוונות ולנסח את המציאות שאתם מבקשים ליצור.</p></div>
+      <div class="aw-item"><div class="aw-top"><span class="aw-check">✓</span><span class="aw-name">Vision Board</span></div><p class="aw-desc">יצירת לוח חזון אישי שילווה אתכם הרבה אחרי שהריטריט יסתיים.</p></div>
     </div>
   </div>
 </section>
@@ -631,12 +655,12 @@ footer a{color:var(--turq)}
         <p class="host-bio">במהלך השנים ליוויתי מאות אנשים בתהליכי שינוי, חיבור פנימי וצמיחה דרך עבודה המשלבת גוף, רגש ותודעה.<br><br>MANIFEST נולד מתוך הרצון ליצור מרחב שמשלב חופשה, קהילה, עומק וכלים מעשיים לחיים.</p>
       </div>
       <div class="host-card">
-        <div class="host-img-wrap">
-          <svg viewBox="0 0 80 100" fill="none" stroke="white" stroke-width="1.3" opacity=".4" width="70"><ellipse cx="40" cy="24" rx="16" ry="16"/><path d="M12 100 Q14 60 40 48 Q66 60 68 100"/></svg>
+        <div class="host-img-wrap" style="background:none">
+          <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781726332/WhatsApp_Image_2026-06-16_at_23.16.31_psfbq2.jpg" alt="אירינה גאורגייב" style="width:100%;height:100%;object-fit:cover;border-radius:14px">
         </div>
-        <p class="host-name">מדריכת הפילאטיס</p>
-        <p class="host-role">מדריכת פילאטיס</p>
-        <p class="host-bio host-tba">פרטים נוספים יתווספו בקרוב.</p>
+        <p class="host-name">אירינה גאורגייב</p>
+        <p class="host-role">מדריכת פילאטיס מוסמכת · ביומכניקה · עיסוי רפואי</p>
+        <p class="host-bio">אירינה גאורגייב היא מדריכת פילאטיס מוסמכת, בעלת הכשרה בביומכניקה ועיסוי רפואי. במשך השנים צברה ניסיון רב בעבודה עם אנשים המעוניינים לשפר את איכות התנועה, לחזק את הגוף, להפחית כאבים ולפתח מודעות גופנית.<br><br>גישתה משלבת ידע מקצועי מעולם התנועה והאנטומיה, מתוך הבנה שהגוף והנפש קשורים זה בזה ומשפיעים זה על זה באופן משמעותי. אירינה מאמינה שתנועה נכונה, נשימה ומודעות לגוף הם כלים רבי עוצמה ליצירת איזון פנימי, חוסן גופני ורווחה נפשית.</p>
       </div>
     </div>
   </div>
@@ -847,7 +871,7 @@ footer a{color:var(--turq)}
     </div>
     <div class="pricing-cta reveal">
       <a href="#register" class="btn">אני רוצה להצטרף</a>
-      <p>מקומות מוגבלים · 24–27.09.2026 · פאפוס, קפריסין</p>
+      <p>מקומות מוגבלים · <span dir="ltr" style="display:inline-block">24–27.09.2026</span> · פאפוס, קפריסין</p>
     </div>
   </div>
 </section>
@@ -879,11 +903,11 @@ footer a{color:var(--turq)}
         <p class="reg-block-title">יצירת קשר</p>
         <div class="reg-social">
           <!-- Instagram -->
-          <a href="#" class="soc-btn" aria-label="Instagram">
+          <a href="https://www.instagram.com/neta_lee_natasha?igsh=MXB6bzdlejJlMTRpYQ%3D%3D&utm_source=qr" target="_blank" class="soc-btn" aria-label="Instagram">
             <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <!-- Facebook -->
-          <a href="#" class="soc-btn" aria-label="Facebook">
+          <a href="https://www.facebook.com/share/1Ld2oAcB19/?mibextid=wwXIfr" target="_blank" class="soc-btn" aria-label="Facebook">
             <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
           </a>
           <!-- WhatsApp -->
@@ -1043,13 +1067,41 @@ document.querySelectorAll('.fq-q').forEach(q => {
   });
 });
 
-// ── Hamburger ──
-document.getElementById('hamburger').addEventListener('click', () => {
-  const nl = document.querySelector('.nav-links');
-  const isOpen = nl.style.display === 'flex';
-  nl.style.cssText = isOpen ? '' :
-    'display:flex;flex-direction:column;position:absolute;top:62px;right:0;left:0;background:#fff;padding:18px 26px;gap:14px;box-shadow:0 8px 28px rgba(0,0,0,.08);z-index:99';
-});
+// ── Mobile Drawer ──
+(function(){
+  const drawer  = document.getElementById('drawer');
+  const overlay = document.getElementById('drawer-overlay');
+
+  function openDrawer()  { drawer.classList.add('open');  overlay.classList.add('open');  document.body.style.overflow='hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow=''; }
+
+  document.getElementById('hamburger').addEventListener('click', openDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  // Close on link click and smooth scroll
+  drawer.querySelectorAll('.drawer-links a, .drawer-cta a').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        closeDrawer();
+        setTimeout(() => {
+          const target = document.querySelector(href);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 320);
+      }
+    });
+  });
+
+  // Logo → top
+  document.querySelectorAll('a[href="#hero"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
 
 // ── Gallery Carousel ──
 (function(){
@@ -1164,6 +1216,86 @@ document.getElementById('hamburger').addEventListener('click', () => {
   });
 })();
 
+
+// ── Payment Modal ──
+(function(){
+  const modal = document.getElementById('payModal');
+  const close = document.getElementById('pmClose');
+
+  // Open on any "אני רוצה להצטרף" / "אני בפנים" buttons that link to #pricing or #register
+  document.querySelectorAll('a.btn, a.reg-cta-btn').forEach(btn => {
+    const href = btn.getAttribute('href') || '';
+    const txt  = btn.textContent.trim();
+    if ((href === '#register' || href === '#pricing') && (txt === 'אני רוצה להצטרף' || txt === 'אני בפנים')) {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+  });
+
+  // Also wire pricing section CTA
+  document.querySelectorAll('.pricing-cta .btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  close.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+})();
+
 </script>
+
+<!-- Payment Modal -->
+<div id="payModal">
+  <div class="pm-box">
+    <button class="pm-close" id="pmClose">✕</button>
+    <p class="pm-title">בחרו אמצעי תשלום</p>
+    <p class="pm-sub">לחצו על אמצעי התשלום הנוח לכם<br>ותועברו לדף התשלום המאובטח</p>
+    <div class="pm-btns">
+      <a href="https://www.bitpay.co.il/app/share-info?i=200947113129_19ns4gUY" target="_blank" class="pm-btn pm-btn-bit">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="white" opacity=".2"/><text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="bold" fill="white">BIT</text></svg>
+        תשלום ב־Bit
+      </a>
+      <a href="https://links.payboxapp.com/Qt9IYczx23b" target="_blank" class="pm-btn pm-btn-paybox">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="white" opacity=".2"/><text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="bold" fill="white">PAY</text></svg>
+        תשלום ב־PayBox
+      </a>
+    </div>
+    <p class="pm-note">לאחר התשלום נחזור אליכם לאישור המקום<br>מקומות מוגבלים — ממהרים! 🙏</p>
+  </div>
+</div>
+
+<!-- Mobile Drawer -->
+<div id="drawer-overlay"></div>
+<div id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-logo">MANIFEST</span>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <div class="drawer-links">
+    <a href="#hero"><span class="dl-icon">🏠</span>בית</a>
+    <a href="#welcome"><span class="dl-icon">✨</span>מה זה MANIFEST</a>
+    <a href="#awaits"><span class="dl-icon">🌿</span>מה מחכה לכם</a>
+    <a href="#hotel"><span class="dl-icon">🏨</span>הבית שלנו בפאפוס</a>
+    <a href="#gallery"><span class="dl-icon">📸</span>גלריה</a>
+    <a href="#testimonials"><span class="dl-icon">💬</span>עדויות מהמסע</a>
+    <a href="#pricing"><span class="dl-icon">💎</span>מחירים</a>
+    <a href="#register"><span class="dl-icon">📋</span>הרשמה</a>
+  </div>
+  <div class="drawer-cta">
+    <a href="#pricing" id="drawerJoin">אני רוצה להצטרף</a>
+  </div>
+</div>
 </body>
 </html>
