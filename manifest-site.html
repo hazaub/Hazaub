@@ -153,8 +153,8 @@ section{padding:96px 0}
 .hotel-video-placeholder{text-align:center;color:rgba(255,255,255,.4)}
 .hotel-video-placeholder svg{width:64px;margin:0 auto 12px}
 .hotel-video-placeholder p{font-size:.82rem;letter-spacing:.12em}
-.hotel-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:44px}
-.hg-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:pointer}
+.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:44px}
+.hg-item{border-radius:16px;overflow:hidden;aspect-ratio:3/2;position:relative;cursor:pointer}
 .hg-img{width:100%;height:100%;transition:transform .5s var(--tr);display:flex;align-items:flex-end}
 .hg-item:hover .hg-img{transform:scale(1.06)}
 .hg1{background:linear-gradient(135deg,#1D8F96,#47C4C9)}
@@ -222,7 +222,7 @@ section{padding:96px 0}
 /* ══ 10. PRICING ══ */
 #pricing{background:var(--sand)}
 .pricing-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
-.pc{border-radius:20px;padding:38px 30px;text-align:center;border:1.5px solid rgba(196,180,154,.3);background:#fff;transition:transform var(--tr),box-shadow var(--tr);position:relative}
+.pc{border-radius:20px;padding:38px 30px;text-align:center;border:1.5px solid rgba(196,180,154,.3);background:#fff;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);position:relative;cursor:pointer}.pc.selected{border-color:var(--turq);box-shadow:0 0 0 3px rgba(71,196,201,.2),var(--shadow-md);transform:translateY(-4px)}.pc.selected::after{content:"✓ נבחר";position:absolute;top:-13px;right:50%;transform:translateX(50%);background:var(--turq-dk);color:#fff;font-size:.68rem;letter-spacing:.12em;padding:4px 16px;border-radius:50px}
 .pc:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
 .pc.feat{background:linear-gradient(160deg,#1D8F96,#47C4C9);border-color:transparent;box-shadow:0 20px 60px rgba(71,196,201,.32)}
 .pc-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--warm);color:#fff;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:5px 16px;border-radius:50px}
@@ -325,38 +325,11 @@ footer a{color:var(--turq)}
 .gc-arrow:hover{background:var(--turq);border-color:var(--turq);color:#fff;transform:scale(1.08)}
 @media(max-width:600px){.gc-item{width:200px;height:160px}}
 
-/* ══ REVIEW CAROUSEL ══ */
-.rv-outer{overflow:hidden;margin-top:32px;cursor:grab;position:relative}
-.rv-outer:active{cursor:grabbing}
-.rv-outer::before,.rv-outer::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none}
-.rv-outer::before{right:0;background:linear-gradient(to right,transparent,var(--white))}
-.rv-outer::after{left:0;background:linear-gradient(to left,transparent,var(--white))}
-.rv-track{display:flex;gap:16px;padding:8px 40px;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
-.rv-item{flex-shrink:0;width:280px;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);background:#f0f0f0}
-.rv-item img{width:100%;height:auto;display:block;transition:transform .4s ease}
-.rv-item:hover img{transform:scale(1.03)}
-.rv-controls{display:flex;justify-content:center;gap:16px;margin-top:20px}
-@media(max-width:600px){.rv-item{width:220px}}
+
 
 @keyframes lbfade{from{opacity:0}to{opacity:1}}
 #lightbox button:hover{background:rgba(255,255,255,.3)!important}
 .hg-item.lb-trigger{cursor:zoom-in}
-
-/* ══ PAYMENT MODAL ══ */
-#payModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;animation:lbfade .25s ease}
-#payModal.open{display:flex}
-.pm-box{background:#fff;border-radius:24px;padding:44px 36px;max-width:420px;width:90%;text-align:center;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.2)}
-.pm-close{position:absolute;top:14px;left:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-lt);line-height:1;padding:4px 8px;border-radius:50%;transition:background .2s}
-.pm-close:hover{background:rgba(0,0,0,.06)}
-.pm-title{font-family:var(--serif);font-size:1.6rem;font-weight:500;color:var(--turq-dk);margin-bottom:8px}
-.pm-sub{font-size:.88rem;color:var(--text-lt);margin-bottom:32px;line-height:1.6}
-.pm-btns{display:flex;flex-direction:column;gap:14px}
-.pm-btn{display:flex;align-items:center;justify-content:center;gap:14px;padding:16px 24px;border-radius:50px;font-size:1rem;font-weight:600;letter-spacing:.04em;cursor:pointer;border:none;transition:transform .2s,box-shadow .2s;text-decoration:none}
-.pm-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.pm-btn-bit{background:linear-gradient(135deg,#00b4d8,#0096c7);color:#fff}
-.pm-btn-paybox{background:linear-gradient(135deg,#6c63ff,#4a42d6);color:#fff}
-.pm-btn img{height:28px;width:auto;object-fit:contain;filter:brightness(0) invert(1)}
-.pm-note{font-size:.76rem;color:var(--text-lt);margin-top:20px;line-height:1.6}
 
 /* ══ MOBILE DRAWER ══ */
 #drawer{position:fixed;top:0;right:0;bottom:0;width:280px;background:#fff;z-index:500;transform:translateX(110%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.12);display:flex;flex-direction:column;padding:0}
@@ -374,6 +347,20 @@ footer a{color:var(--turq)}
 .drawer-cta{margin:20px 24px}
 .drawer-cta a{display:block;background:var(--turq);color:#fff;text-align:center;padding:14px;border-radius:50px;font-size:.95rem;font-weight:500;letter-spacing:.08em;transition:background .2s}
 .drawer-cta a:hover{background:var(--turq-dk)}
+
+/* ══ TEXT CAROUSEL ══ */
+.txt-carousel{position:relative;display:flex;align-items:center;gap:16px;margin-top:40px}
+.txt-window{flex:1;overflow:hidden}
+.txt-track{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
+.txt-slide{flex-shrink:0;width:100%;padding:40px 48px;background:var(--sand);border-radius:20px;text-align:center;box-sizing:border-box}
+.txt-slide-q{font-family:var(--serif);font-size:5rem;color:rgba(71,196,201,.25);line-height:.4;display:block;margin-bottom:16px;font-weight:300}
+.txt-slide-body{font-family:var(--serif);font-size:clamp(1rem,2.2vw,1.25rem);color:var(--text);line-height:1.9;font-weight:300;font-style:italic;max-width:700px;margin:0 auto}
+.txt-arrow{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(71,196,201,.35);background:#fff;color:var(--turq-dk);font-size:1.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--tr),border-color var(--tr),transform var(--tr);line-height:1}
+.txt-arrow:hover{background:var(--turq);border-color:var(--turq);color:#fff;transform:scale(1.08)}
+.txt-dots{display:flex;justify-content:center;gap:8px;margin-top:24px}
+.txt-dot{width:7px;height:7px;border-radius:50%;background:rgba(71,196,201,.25);cursor:pointer;transition:background var(--tr),transform var(--tr)}
+.txt-dot.active{background:var(--turq);transform:scale(1.35)}
+@media(max-width:600px){.txt-slide{padding:28px 20px}.txt-slide-body{font-size:.97rem}}
 </style>
 </head>
 <body>
@@ -563,7 +550,6 @@ footer a{color:var(--turq)}
 <!-- ══ 4. AWAITS ══ -->
 <section id="awaits">
   <div class="container">
-    <p class="s-eye center reveal">מה מחכה לכם</p>
     <h2 class="s-title center reveal">מה מחכה לכם ב-MANIFEST</h2>
     <div class="tline c reveal"></div>
     <div class="awaits-grid reveal">
@@ -582,7 +568,6 @@ footer a{color:var(--turq)}
 <section id="forwhom">
   <div class="container">
     <div class="fw-inner">
-      <p class="s-eye reveal">למי הריטריט מתאים</p>
       <h2 class="s-title reveal">למי הריטריט מתאים?</h2>
       <div class="tline reveal"></div>
       <p class="fw-intro reveal">MANIFEST מיועד לנשים ולגברים שמרגישים שהגיע הזמן להפסיק לחכות לשינוי ולהתחיל ליצור אותו.</p>
@@ -604,11 +589,7 @@ footer a{color:var(--turq)}
     <p class="s-eye center reveal">המקום שיהיה הבית שלנו ל-4 ימים</p>
     <h2 class="s-title center reveal">Leonardo Cypria Maris<br>Beach Hotel &amp; Spa</h2>
     <div class="tline c reveal"></div>
-    <div class="hotel-video-wrap reveal">
-      <video autoplay muted loop playsinline style="width:100%;height:auto;display:block;border-radius:20px;"
-        src="https://res.cloudinary.com/dpqheuznj/video/upload/v1781465685/WhatsApp_Video_2026-06-14_at_22.34.14_x5mrx1.mp4">
-      </video>
-    </div>
+
     <div class="hotel-gallery reveal" style="grid-template-columns:repeat(3,1fr)">
       <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_1_ohdxu2.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_1_ohdxu2.jpg" alt="מלון" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">המלון</span></div>
       <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_aju29e.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_aju29e.jpg" alt="מלון" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">המלון</span></div>
@@ -635,10 +616,6 @@ footer a{color:var(--turq)}
   </div>
 </section>
 
-<!-- Hotel CTA -->
-<div style="text-align:center;padding:0 0 72px;background:var(--white)">
-  <a href="#pricing" class="btn">לעוד פרטים על המלון</a>
-</div>
 
 <!-- ══ 7. HOSTS ══ -->
 <section id="hosts">
@@ -754,59 +731,102 @@ footer a{color:var(--turq)}
 <!-- ══ 9. TESTIMONIALS ══ -->
 <section id="testimonials">
   <div class="container">
-    <p class="s-eye center reveal">מה המשתתפים מספרים</p>
+    <p class="s-eye center reveal">עדויות מהמסע</p>
     <h2 class="s-title center reveal">עדויות מהמסע</h2>
     <div class="tline c reveal"></div>
-  </div>
-  <div class="rv-outer reveal">
-    <div class="rv-track" id="rvTrack">
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.07_paigzh.jpg" alt="ביקורת" loading="lazy">
+
+    <!-- Text carousel -->
+    <div class="txt-carousel reveal">
+      <button class="txt-arrow txt-arrow-r" id="txtPrev">&#8249;</button>
+      <div class="txt-window">
+        <div class="txt-track" id="txtTrack">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">תודה שהייתה לי את הזכות להכיר, להתחבר, לשמוע, להבין ובעיקר להבין מי אני ומה אני רוצה באמת. כל אחת מיוחדת בדרך שלה, והדשא של האחר לא ירוק יותר. דרך המסע האישי אפשר לשנות את הדברים הנכונים והטובים לנו.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.06_sluejr.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">אני רוצה להגיד לך שאת אור לעולם. איזו זכות גדולה להכיר נשמות כאלה יפות. תודה על חוויה מדהימה, על המרחב, על ההקשבה ועל כל הצחוקים בדרך.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_1_fybv4e.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">לא ידעתי כמה נהניתי וכמה הנפש שלי הייתה צריכה את זה. זה היה מעצים ואני עד היום מרגישה את ההשפעה.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_3_oyo6i7.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">ריטריט מרגש וכל כך מדויק. זה היה יום מלא חיבור, למידה, צמיחה והקשבה. הרגשתי חופשייה לדבר, לשתף ולהיות בדיוק מי שאני.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_4_xoeclo.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">הצעד הראשון למותג שאני בונה יצא לדרך. תודה על חוויה מעצימה ומלמדת. בסוף זו הייתה התחלה הרבה יותר גדולה ממה שחשבתי.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_5_oeyhd5.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">רציתי להגיד תודה ענקית. היה יום משמעותי מאוד, השאלות היו מעולות והשיחות בין האנשים היו מרתקות. תודה על ההדרכה ועל הדרך שבה הזכרת לי שכל אדם הוא מורה.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.07_paigzh.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">כל אחת ואחת מכן הייתה מהממת. חלק מכן לא הכרתי לעומק, אבל נהניתי מאוד מהפתיחות ומהחיבור. תודה על הכל.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617896/WhatsApp_Image_2026-06-16_at_00.10.06_sluejr.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">חוויה מדהימה. הכרתי נשים מרתקות, יצאתי חזקה יותר והרבה מעבר לכך. הכרתי תחושה של שייכות והרבה אהבה שלא מובנת מאליה.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_1_fybv4e.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">תודה על ריטריט מושלם. הייתה חוויה עמוקה, מדויקת ומלאת משמעות. החיבור עם כולן והתרגולים השונים יצרו עבורי חוויה מיוחדת במינה. תודה על הכל.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_3_oyo6i7.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">תודה שהייתה לי את הזכות להכיר, להתחבר, לשמוע, להבין ובעיקר להבין מי אני ומה אני רוצה באמת. כל אחת מיוחדת בדרך שלה, והדשא של האחר לא ירוק יותר. דרך המסע האישי אפשר לשנות את הדברים הנכונים והטובים לנו.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_4_xoeclo.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">אני רוצה להגיד לך שאת אור לעולם. איזו זכות גדולה להכיר נשמות כאלה יפות. תודה על חוויה מדהימה, על המרחב, על ההקשבה ועל כל הצחוקים בדרך.</p>
       </div>
-      <div class="rv-item">
-        <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617895/WhatsApp_Image_2026-06-16_at_00.10.06_5_oeyhd5.jpg" alt="ביקורת" loading="lazy">
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">לא ידעתי כמה נהניתי וכמה הנפש שלי הייתה צריכה את זה. זה היה מעצים ואני עד היום מרגישה את ההשפעה.</p>
       </div>
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">ריטריט מרגש וכל כך מדויק. זה היה יום מלא חיבור, למידה, צמיחה והקשבה. הרגשתי חופשייה לדבר, לשתף ולהיות בדיוק מי שאני.</p>
+      </div>
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">הצעד הראשון למותג שאני בונה יצא לדרך. תודה על חוויה מעצימה ומלמדת. בסוף זו הייתה התחלה הרבה יותר גדולה ממה שחשבתי.</p>
+      </div>
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">רציתי להגיד תודה ענקית. היה יום משמעותי מאוד, השאלות היו מעולות והשיחות בין האנשים היו מרתקות. תודה על ההדרכה ועל הדרך שבה הזכרת לי שכל אדם הוא מורה.</p>
+      </div>
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">כל אחת ואחת מכן הייתה מהממת. חלק מכן לא הכרתי לעומק, אבל נהניתי מאוד מהפתיחות ומהחיבור. תודה על הכל.</p>
+      </div>
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">חוויה מדהימה. הכרתי נשים מרתקות, יצאתי חזקה יותר והרבה מעבר לכך. הכרתי תחושה של שייכות והרבה אהבה שלא מובנת מאליה.</p>
+      </div>
+      <div class="txt-slide">
+        <span class="txt-slide-q">"</span>
+        <p class="txt-slide-body">תודה על ריטריט מושלם. הייתה חוויה עמוקה, מדויקת ומלאת משמעות. החיבור עם כולן והתרגולים השונים יצרו עבורי חוויה מיוחדת במינה. תודה על הכל.</p>
+      </div>
+        </div>
+      </div>
+      <button class="txt-arrow txt-arrow-l" id="txtNext">&#8250;</button>
     </div>
-  </div>
-  <div class="rv-controls">
-    <button class="gc-arrow" id="rvPrev">&#8249;</button>
-    <button class="gc-arrow" id="rvNext">&#8250;</button>
+
+    <!-- Dots -->
+    <div class="txt-dots" id="txtDots">
+      <div class="txt-dot active" data-idx="0"></div><div class="txt-dot" data-idx="1"></div><div class="txt-dot" data-idx="2"></div><div class="txt-dot" data-idx="3"></div><div class="txt-dot" data-idx="4"></div><div class="txt-dot" data-idx="5"></div><div class="txt-dot" data-idx="6"></div><div class="txt-dot" data-idx="7"></div><div class="txt-dot" data-idx="8"></div>
+    </div>
   </div>
 </section>
 
 <!-- Testimony Video -->
 <div style="background:var(--white);padding:0 0 80px;text-align:center;">
-  <div style="max-width:420px;margin:0 auto;padding:0 24px;">
+  <div style="max-width:480px;margin:0 auto;padding:0 24px;">
     <div style="
       position:relative;
       border-radius:50%;
@@ -818,9 +838,10 @@ footer a{color:var(--turq)}
       <video
         autoplay muted loop playsinline
         style="width:100%;height:100%;object-fit:cover;display:block;"
-        src="https://res.cloudinary.com/dpqheuznj/video/upload/v1781618021/WhatsApp_Video_2026-06-16_at_00.25.13_jwzpkf.mp4">
+        src="https://res.cloudinary.com/dpqheuznj/video/upload/v1781465685/WhatsApp_Video_2026-06-14_at_22.34.14_x5mrx1.mp4">
       </video>
     </div>
+    <p style="margin-top:16px;font-size:.82rem;color:var(--text-lt);letter-spacing:.1em">Leonardo Cypria Maris Beach Hotel & Spa</p>
   </div>
 </div>
 
@@ -831,47 +852,78 @@ footer a{color:var(--turq)}
     <h2 class="s-title center reveal">הצטרפו אלינו</h2>
     <div class="tline c reveal"></div>
     <div class="pricing-wrap reveal">
-      <div class="pc">
+      <div class="pc" onclick="selectPackage(this,'Early Manifest · ₪4,500')">
         <p class="pc-label">Early Manifest</p>
         <p class="pc-amt"><span class="pc-cur">₪</span>4,500</p>
-        <p class="pc-note">הרשמה מוקדמת</p>
+        <p class="pc-note" dir="ltr">עד 10.07.2026</p>
         <div class="pc-divider"></div>
         <div class="pc-inc">
           <div class="pc-row"><span class="pc-check">✔</span>4 ימים / 3 לילות</div>
           <div class="pc-row"><span class="pc-check">✔</span>מלון הכל כלול</div>
+          <div class="pc-row"><span class="pc-check">✔</span>טיסות הלוך ושוב</div>
           <div class="pc-row"><span class="pc-check">✔</span>כל הסדנאות והפעילויות</div>
-          <div class="pc-row"><span class="pc-check">✔</span>טיסות</div>
+          <div class="pc-row"><span class="pc-check">✔</span>ליווי אישי וקבוצתי לאורך הריטריט</div>
         </div>
+        <div style="margin-top:22px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'">אני בפנים</button></div>
       </div>
-      <div class="pc feat">
+      <div class="pc feat" onclick="selectPackage(this,'Regular Manifest · ₪5,000')">
         <div class="pc-badge">הכי פופולרי</div>
         <p class="pc-label">Regular Manifest</p>
         <p class="pc-amt"><span class="pc-cur">₪</span>5,000</p>
-        <p class="pc-note">מחיר רגיל</p>
+        <p class="pc-note" dir="ltr">11.07.2026 – 31.08.2026</p>
         <div class="pc-divider"></div>
         <div class="pc-inc">
           <div class="pc-row"><span class="pc-check">✔</span>4 ימים / 3 לילות</div>
           <div class="pc-row"><span class="pc-check">✔</span>מלון הכל כלול</div>
+          <div class="pc-row"><span class="pc-check">✔</span>טיסות הלוך ושוב</div>
           <div class="pc-row"><span class="pc-check">✔</span>כל הסדנאות והפעילויות</div>
-          <div class="pc-row"><span class="pc-check">✔</span>טיסות</div>
+          <div class="pc-row"><span class="pc-check">✔</span>ליווי אישי וקבוצתי לאורך הריטריט</div>
         </div>
+        <div style="margin-top:22px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.15);color:#fff;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:var(--sans)" onmouseover="this.style.background='rgba(255,255,255,.3)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">אני בפנים</button></div>
       </div>
-      <div class="pc">
+      <div class="pc" onclick="selectPackage(this,'Final Manifest · ₪5,400')">
         <p class="pc-label">Final Manifest</p>
         <p class="pc-amt"><span class="pc-cur">₪</span>5,400</p>
-        <p class="pc-note">מקומות אחרונים</p>
+        <p class="pc-note" dir="ltr">01.09.2026 – 23.09.2026</p>
         <div class="pc-divider"></div>
         <div class="pc-inc">
           <div class="pc-row"><span class="pc-check">✔</span>4 ימים / 3 לילות</div>
           <div class="pc-row"><span class="pc-check">✔</span>מלון הכל כלול</div>
+          <div class="pc-row"><span class="pc-check">✔</span>טיסות הלוך ושוב</div>
           <div class="pc-row"><span class="pc-check">✔</span>כל הסדנאות והפעילויות</div>
-          <div class="pc-row"><span class="pc-check">✔</span>טיסות</div>
+          <div class="pc-row"><span class="pc-check">✔</span>ליווי אישי וקבוצתי לאורך הריטריט</div>
         </div>
+        <p style="font-size:.78rem;color:var(--warm);font-weight:500;margin-top:14px;letter-spacing:.06em">⚠ מספר המקומות מוגבל</p>
+        <div style="margin-top:12px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'">אני בפנים</button></div>
       </div>
     </div>
-    <div class="pricing-cta reveal">
-      <a href="#register" class="btn">אני רוצה להצטרף</a>
-      <p>מקומות מוגבלים · <span dir="ltr" style="display:inline-block">24–27.09.2026</span> · פאפוס, קפריסין</p>
+    <!-- Inline payment panel (hidden until card selected) -->
+    <div id="payPanel" style="display:none;margin-top:40px;animation:lbfade .3s ease">
+      <div style="background:linear-gradient(135deg,rgba(71,196,201,.06),rgba(29,143,150,.04));border:1.5px solid rgba(71,196,201,.25);border-radius:24px;padding:40px 36px;max-width:500px;margin:0 auto;text-align:center;">
+        <p style="font-family:var(--serif);font-size:1.4rem;font-weight:500;color:var(--turq-dk);margin-bottom:6px">מעולה! בחרתם את החבילה</p>
+        <p id="payPanelPkg" style="font-size:.88rem;color:var(--text-lt);margin-bottom:28px;letter-spacing:.05em"></p>
+        <p style="font-size:.9rem;color:var(--text-lt);margin-bottom:24px;line-height:1.6">בחרו את אמצעי התשלום הנוח לכם ותועברו לדף התשלום המאובטח</p>
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:320px;margin:0 auto">
+          <a href="https://www.bitpay.co.il/app/share-info?i=200947113129_19ns4gUY" target="_blank"
+             style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px 24px;border-radius:50px;background:linear-gradient(135deg,#00b4d8,#0096c7);color:#fff;font-size:1rem;font-weight:600;letter-spacing:.04em;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(0,180,216,.3)"
+             onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <svg width="24" height="24" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="rgba(255,255,255,.25)"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="bold" fill="white">BIT</text></svg>
+            תשלום ב־Bit
+          </a>
+          <a href="https://links.payboxapp.com/Qt9IYczx23b" target="_blank"
+             style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px 24px;border-radius:50px;background:linear-gradient(135deg,#6c63ff,#4a42d6);color:#fff;font-size:1rem;font-weight:600;letter-spacing:.04em;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(108,99,255,.3)"
+             onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <svg width="24" height="24" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="rgba(255,255,255,.25)"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="bold" fill="white">PAY</text></svg>
+            תשלום ב־PayBox
+          </a>
+        </div>
+        <p style="font-size:.76rem;color:var(--text-lt);margin-top:20px;line-height:1.6">לאחר התשלום נחזור אליכם לאישור המקום 🙏<br>מקומות מוגבלים — ממהרים!</p>
+        <button onclick="document.getElementById('payPanel').style.display='none';document.querySelectorAll('.pc').forEach(c=>c.classList.remove('selected'))"
+          style="margin-top:18px;background:none;border:none;color:var(--text-lt);font-size:.82rem;cursor:pointer;text-decoration:underline">ביטול הבחירה</button>
+      </div>
+    </div>
+    <div class="pricing-cta reveal" style="margin-top:32px">
+      <p style="font-size:.82rem;color:var(--text-lt)">מקומות מוגבלים · <span dir="ltr" style="display:inline-block">24–27.09.2026</span> · פאפוס, קפריסין</p>
     </div>
   </div>
 </section>
@@ -889,15 +941,7 @@ footer a{color:var(--turq)}
           <a href="#">לתקנון המלא</a>
         </div>
       </div>
-      <!-- תשלום -->
-      <div>
-        <p class="reg-block-title">אפשרויות תשלום</p>
-        <div class="reg-pay-icons">
-          <span class="pay-badge">Bit</span>
-          <span class="pay-badge">PayBox</span>
-          <span class="pay-badge">Israel Card</span>
-        </div>
-      </div>
+
       <!-- סושיאל -->
       <div>
         <p class="reg-block-title">יצירת קשר</p>
@@ -1151,35 +1195,7 @@ document.querySelectorAll('.fq-q').forEach(q => {
 })();
 
 
-// ── Review Carousel ──
-(function(){
-  const track = document.getElementById('rvTrack');
-  if (!track) return;
-  const items = track.querySelectorAll('.rv-item');
-  const total = items.length / 2;
-  const itemW = () => items[0].offsetWidth + 16;
-  let idx = 0;
 
-  function goTo(i) {
-    idx = ((i % total) + total) % total;
-    track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
-    track.style.transform = 'translateX(' + (idx * itemW()) + 'px)';
-  }
-
-  document.getElementById('rvNext').addEventListener('click', () => goTo(idx - 1));
-  document.getElementById('rvPrev').addEventListener('click', () => goTo(idx + 1));
-
-  let auto = setInterval(() => goTo(idx - 1), 3500);
-  track.addEventListener('mouseenter', () => clearInterval(auto));
-  track.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(idx - 1), 3500); });
-
-  let tStart = 0;
-  track.addEventListener('touchstart', e => { tStart = e.touches[0].clientX; }, {passive:true});
-  track.addEventListener('touchend', e => {
-    const diff = tStart - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goTo(diff > 0 ? idx - 1 : idx + 1);
-  });
-})();
 
 
 // ── Lightbox ──
@@ -1217,61 +1233,52 @@ document.querySelectorAll('.fq-q').forEach(q => {
 })();
 
 
-// ── Payment Modal ──
+// ── Pricing selection ──
+function selectPackage(card, pkgName) {
+  document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const panel = document.getElementById('payPanel');
+  document.getElementById('payPanelPkg').textContent = pkgName;
+  panel.style.display = 'block';
+  setTimeout(() => {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 60);
+}
+
+
+// ── Text Carousel ──
 (function(){
-  const modal = document.getElementById('payModal');
-  const close = document.getElementById('pmClose');
+  const track  = document.getElementById('txtTrack');
+  if (!track) return;
+  const total  = 9;
+  const dots   = Array.from(document.querySelectorAll('.txt-dot'));
+  let cur = 0;
 
-  // Open on any "אני רוצה להצטרף" / "אני בפנים" buttons that link to #pricing or #register
-  document.querySelectorAll('a.btn, a.reg-cta-btn').forEach(btn => {
-    const href = btn.getAttribute('href') || '';
-    const txt  = btn.textContent.trim();
-    if ((href === '#register' || href === '#pricing') && (txt === 'אני רוצה להצטרף' || txt === 'אני בפנים')) {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        modal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      });
-    }
-  });
-
-  // Also wire pricing section CTA
-  document.querySelectorAll('.pricing-cta .btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-  });
-
-  function closeModal() {
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
+  function goTo(i) {
+    cur = ((i % total) + total) % total;
+    track.style.transform = 'translateX(' + (cur * 100) + '%)';
+    dots.forEach((d,j) => d.classList.toggle('active', j === cur));
   }
 
-  close.addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.getElementById('txtNext').addEventListener('click', () => goTo(cur - 1));
+  document.getElementById('txtPrev').addEventListener('click', () => goTo(cur + 1));
+  dots.forEach((d,i) => d.addEventListener('click', () => goTo(i)));
+
+  // Auto
+  let auto = setInterval(() => goTo(cur + 1), 5000);
+  track.parentElement.addEventListener('mouseenter', () => clearInterval(auto));
+  track.parentElement.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(cur + 1), 5000); });
+
+  // Touch
+  let tX = 0;
+  track.addEventListener('touchstart', e => { tX = e.touches[0].clientX; }, {passive:true});
+  track.addEventListener('touchend',   e => {
+    const d = tX - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 40) goTo(d > 0 ? cur + 1 : cur - 1);
+  });
 })();
 
 </script>
-
-<!-- Payment Modal -->
-<div id="payModal">
-  <div class="pm-box">
-    <button class="pm-close" id="pmClose">✕</button>
-    <p class="pm-title">בחרו אמצעי תשלום</p>
-    <p class="pm-sub">לחצו על אמצעי התשלום הנוח לכם<br>ותועברו לדף התשלום המאובטח</p>
-    <div class="pm-btns">
-      <a href="https://www.bitpay.co.il/app/share-info?i=200947113129_19ns4gUY" target="_blank" class="pm-btn pm-btn-bit">
-        <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="white" opacity=".2"/><text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="bold" fill="white">BIT</text></svg>
-        תשלום ב־Bit
-      </a>
-      <a href="https://links.payboxapp.com/Qt9IYczx23b" target="_blank" class="pm-btn pm-btn-paybox">
-        <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="white" opacity=".2"/><text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="bold" fill="white">PAY</text></svg>
-        תשלום ב־PayBox
-      </a>
-    </div>
     <p class="pm-note">לאחר התשלום נחזור אליכם לאישור המקום<br>מקומות מוגבלים — ממהרים! 🙏</p>
   </div>
 </div>
