@@ -153,9 +153,9 @@ section{padding:96px 0}
 .hotel-video-placeholder{text-align:center;color:rgba(255,255,255,.4)}
 .hotel-video-placeholder svg{width:64px;margin:0 auto 12px}
 .hotel-video-placeholder p{font-size:.82rem;letter-spacing:.12em}
-.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:44px}
-.hg-item{border-radius:16px;overflow:hidden;aspect-ratio:3/2;position:relative;cursor:pointer}
-.hg-img{width:100%;height:100%;transition:transform .5s var(--tr);display:flex;align-items:flex-end}
+.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:44px}
+.hg-item{border-radius:16px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+.hg-img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--tr)}
 .hg-item:hover .hg-img{transform:scale(1.06)}
 .hg1{background:linear-gradient(135deg,#1D8F96,#47C4C9)}
 .hg2{background:linear-gradient(135deg,#8aaac8,#c8d8e8)}
@@ -311,7 +311,7 @@ footer a{color:var(--turq)}
 
 /* ══ GALLERY CAROUSEL ══ */
 #gallery{background:#F5F7F8;padding-bottom:48px}
-.gc-outer{overflow:hidden;margin-top:32px;position:relative;cursor:grab}
+.gc-outer{overflow:hidden;margin-top:32px;position:relative}
 .gc-outer:active{cursor:grabbing}
 .gc-outer::before,.gc-outer::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
 .gc-outer::before{right:0;background:linear-gradient(to right,transparent,#F5F7F8)}
@@ -351,7 +351,7 @@ footer a{color:var(--turq)}
 /* ══ TEXT CAROUSEL ══ */
 .txt-carousel{position:relative;display:flex;align-items:center;gap:16px;margin-top:40px}
 .txt-window{flex:1;overflow:hidden}
-.txt-track{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
+.txt-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
 .txt-slide{flex-shrink:0;width:100%;padding:40px 48px;background:var(--sand);border-radius:20px;text-align:center;box-sizing:border-box}
 .txt-slide-q{font-family:var(--serif);font-size:5rem;color:rgba(71,196,201,.25);line-height:.4;display:block;margin-bottom:16px;font-weight:300}
 .txt-slide-body{font-family:var(--serif);font-size:clamp(1rem,2.2vw,1.25rem);color:var(--text);line-height:1.9;font-weight:300;font-style:italic;max-width:700px;margin:0 auto}
@@ -591,14 +591,14 @@ footer a{color:var(--turq)}
     <div class="tline c reveal"></div>
 
     <div class="hotel-gallery reveal" style="grid-template-columns:repeat(3,1fr)">
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_1_ohdxu2.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_1_ohdxu2.jpg" alt="מלון" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">המלון</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_aju29e.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_aju29e.jpg" alt="מלון" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">המלון</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619189/WhatsApp_Image_2026-06-16_at_17.01.14_3_cp9whz.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619189/WhatsApp_Image_2026-06-16_at_17.01.14_3_cp9whz.jpg" alt="מלון" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">המלון</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_2_fsa7gk.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_2_fsa7gk.jpg" alt="חדר" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">חדרים</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464586/WhatsApp_Image_2026-06-14_at_22.15.28_3_meinkb.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464586/WhatsApp_Image_2026-06-14_at_22.15.28_3_meinkb.jpg" alt="חדר" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">חדרים</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_2_akfvgh.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_2_akfvgh.jpg" alt="חדר" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">חדרים</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_1_n51zsv.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_1_n51zsv.jpg" alt="ספא" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">ספא</span></div>
-      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_rdkfgc.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_rdkfgc.jpg" alt="ספא" style="object-fit:cover;width:100%;height:100%"><span class="hg-lbl">ספא</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_1_ohdxu2.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_1_ohdxu2.jpg" alt="מלון" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">המלון</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_aju29e.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_aju29e.jpg" alt="מלון" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">המלון</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619189/WhatsApp_Image_2026-06-16_at_17.01.14_3_cp9whz.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619189/WhatsApp_Image_2026-06-16_at_17.01.14_3_cp9whz.jpg" alt="מלון" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">המלון</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_2_fsa7gk.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464587/WhatsApp_Image_2026-06-14_at_22.15.28_2_fsa7gk.jpg" alt="חדר" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">חדרים</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464586/WhatsApp_Image_2026-06-14_at_22.15.28_3_meinkb.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781464586/WhatsApp_Image_2026-06-14_at_22.15.28_3_meinkb.jpg" alt="חדר" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">חדרים</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_2_akfvgh.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_2_akfvgh.jpg" alt="חדר" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">חדרים</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_1_n51zsv.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_1_n51zsv.jpg" alt="ספא" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">ספא</span></div>
+      <div class="hg-item lb-trigger" data-src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_rdkfgc.jpg"><img class="hg-img" src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781619188/WhatsApp_Image_2026-06-16_at_17.01.14_rdkfgc.jpg" alt="ספא" style="width:100%;height:100%;object-fit:cover;display:block"><span class="hg-lbl">ספא</span></div>
     </div>
 
     <!-- Lightbox -->
@@ -609,9 +609,12 @@ footer a{color:var(--turq)}
       <button id="lbNext" style="position:absolute;top:50%;left:20px;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;color:#fff;font-size:2rem;width:48px;height:48px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s">&#8249;</button>
     </div>
     <div class="hotel-text reveal">
-      <p>ארבעה ימים של אירוח מפנק במלון יוקרתי על קו החוף של פאפוס.</p>
-      <p>בריכות מול הים, מתחם ספא, חדרים מרווחים, נוף פתוח לים התיכון ואווירה שמאפשרת להתנתק מהשגרה ולהתמסר לתהליך.</p>
-      <p>האירוח כולל ארוחות בוקר, צהריים וערב עשירות, בר חופשי לאורך היום ופינות ישיבה מול הים שיעניקו מרחב לנשימה, מנוחה והטענה מחדש.</p>
+      <p>ארבעה ימים של ניתוק, מנוחה והתחדשות במלון Leonardo Cypria Maris Beach Hotel &amp; Spa, הממוקם על קו החוף של פאפוס.</p>
+      <p>האירוח כולל מלון הכל כלול למבוגרים בלבד, עם בריכות, ספא, סאונה, בר חופשי, מסעדות, פינות ישיבה מול הים ואווירה שמאפשרת לעצור לרגע ולהתמסר לחוויה.</p>
+      <p>הלינה בריטריט היא בחדרים מרווחים ומפנקים של שלושה משתתפים בכל חדר, עם מרפסת פרטית, חדר רחצה מאובזר ואזור ישיבה נעים.</p>
+      <p>בין הסדנאות והפעילויות תוכלו ליהנות מזמן חופשי מול הים, משקיעות מרהיבות, מרחבי המלון המפנקים, בריכות, ספא ופינות שקטות למנוחה, קריאה והטענה מחדש של הגוף והנפש.</p>
+      <p>זהו מרחב שנועד לאפשר לכם לנוח, להתמלא באנרגיה חדשה וליהנות מחופשה שמשלבת בין התפתחות אישית, חיבור לעצמכם ופינוק אמיתי.</p>
+      <p style="font-style:italic;color:var(--warm-lt)">למעוניינים, קיימת אפשרות לשדרוג לחדר זוגי בתוספת תשלום ובכפוף לזמינות המלון.</p>
     </div>
   </div>
 </section>
@@ -971,6 +974,8 @@ footer a{color:var(--turq)}
 </footer>
 
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+
 // ── Navbar ──
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
@@ -1152,141 +1157,99 @@ document.querySelectorAll('.fq-q').forEach(q => {
   const track = document.getElementById('gcTrack');
   if (!track) return;
   const items = track.querySelectorAll('.gc-item');
-  const total = items.length / 2; // real count (duplicated)
-  const itemW = () => items[0].offsetWidth + 14; // width + gap
-  let idx = 0;
-
-  function goTo(i) {
-    idx = ((i % total) + total) % total;
-    track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
-    track.style.transform = 'translateX(-' + (idx * itemW()) + 'px)';
-  }
-
-  document.getElementById('gcNext').addEventListener('click', () => goTo(idx + 1));
-  document.getElementById('gcPrev').addEventListener('click', () => goTo(idx - 1));
-
-  // Auto advance
-  let auto = setInterval(() => goTo(idx + 1), 3000);
-  track.addEventListener('mouseenter', () => clearInterval(auto));
-  track.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(idx + 1), 3000); });
-
-  // Drag
-  let dragStart = null, dragScroll = 0, dragging = false;
-  track.addEventListener('mousedown', e => { dragStart = e.clientX; dragScroll = idx; dragging = false; });
-  window.addEventListener('mousemove', e => {
-    if (dragStart === null) return;
-    const diff = e.clientX - dragStart;
-    if (Math.abs(diff) > 6) { dragging = true; track.style.transition = 'none'; track.style.transform = 'translateX(' + (dragScroll * itemW() + diff) + 'px)'; }
-  });
-  window.addEventListener('mouseup', e => {
-    if (dragStart === null) return;
-    const diff = e.clientX - dragStart;
-    if (dragging) goTo(Math.round(-diff / itemW()) + dragScroll > 0 ? dragScroll - Math.round(diff/itemW()) : dragScroll - Math.round(diff/itemW()));
-    dragStart = null;
-  });
-
-  // Touch
-  let tStart = 0;
-  track.addEventListener('touchstart', e => { tStart = e.touches[0].clientX; }, {passive:true});
-  track.addEventListener('touchend', e => {
-    const diff = tStart - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goTo(diff > 0 ? idx + 1 : idx - 1);
-  });
-})();
-
-
-
-
-
-// ── Lightbox ──
-(function(){
-  const triggers = Array.from(document.querySelectorAll('.lb-trigger'));
-  const lb   = document.getElementById('lightbox');
-  const img  = document.getElementById('lbImg');
-  const srcs = triggers.map(t => t.getAttribute('data-src'));
+  const total = items.length / 2;
   let cur = 0;
 
-  function open(i) {
-    cur = i;
-    img.src = srcs[cur];
-    lb.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+  function getItemW() {
+    if (!items[0]) return 274;
+    const w = items[0].offsetWidth;
+    return w > 0 ? w + 14 : 274;
   }
-  function close() {
-    lb.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  function prev() { cur = (cur - 1 + srcs.length) % srcs.length; img.src = srcs[cur]; }
-  function next() { cur = (cur + 1) % srcs.length; img.src = srcs[cur]; }
 
-  triggers.forEach((t, i) => t.addEventListener('click', () => open(i)));
-  lb.addEventListener('click', e => { if (e.target === lb) close(); });
-  document.getElementById('lbClose').addEventListener('click', close);
-  document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); prev(); });
-  document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); next(); });
-  document.addEventListener('keydown', e => {
-    if (lb.style.display !== 'flex') return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowRight') prev();
-    if (e.key === 'ArrowLeft')  next();
+  function goTo(i) {
+    cur = ((i % total) + total) % total;
+    track.style.transform = 'translateX(' + (-cur * getItemW()) + 'px)';
+  }
+
+  // Buttons — direct, robust
+  const prev = document.getElementById('gcPrev');
+  const next = document.getElementById('gcNext');
+  if (prev) prev.onclick = function(){ goTo(cur - 1); };
+  if (next) next.onclick = function(){ goTo(cur + 1); };
+
+  // Auto
+  let auto = setInterval(function(){ goTo(cur + 1); }, 3500);
+  const outer = track.parentElement;
+  outer.addEventListener('mouseenter', function(){ clearInterval(auto); });
+  outer.addEventListener('mouseleave', function(){ auto = setInterval(function(){ goTo(cur + 1); }, 3500); });
+
+  // Touch swipe
+  let tStartX = 0, tStartY = 0, swiping = false;
+  outer.addEventListener('touchstart', function(e){
+    tStartX = e.touches[0].clientX;
+    tStartY = e.touches[0].clientY;
+    swiping = false;
+  }, {passive:true});
+  outer.addEventListener('touchmove', function(e){
+    const dx = Math.abs(e.touches[0].clientX - tStartX);
+    const dy = Math.abs(e.touches[0].clientY - tStartY);
+    if (dx > dy && dx > 10) swiping = true;
+  }, {passive:true});
+  outer.addEventListener('touchend', function(e){
+    if (!swiping) return;
+    const d = tStartX - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 40) goTo(d > 0 ? cur + 1 : cur - 1);
   });
 })();
-
-
-// ── Pricing selection ──
-function highlightCard(card) {
-  document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  // hide payment panel if open (new card chosen)
-  document.getElementById('payPanel').style.display = 'none';
-}
-
-function selectPackage(card, pkgName) {
-  // highlight the card
-  document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  // open payment panel and scroll to it
-  const panel = document.getElementById('payPanel');
-  document.getElementById('payPanelPkg').textContent = pkgName;
-  panel.style.display = 'block';
-  setTimeout(() => {
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 60);
-}
-
 
 // ── Text Carousel ──
 (function(){
-  const track  = document.getElementById('txtTrack');
+  const track = document.getElementById('txtTrack');
   if (!track) return;
-  const total  = 9;
-  const dots   = Array.from(document.querySelectorAll('.txt-dot'));
+  const slides = track.querySelectorAll('.txt-slide');
+  const total = slides.length / 2;
+  const dots = Array.from(document.querySelectorAll('.txt-dot'));
   let cur = 0;
 
   function goTo(i) {
     cur = ((i % total) + total) % total;
-    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
-    dots.forEach((d,j) => d.classList.toggle('active', j === cur));
+    track.style.transform = 'translateX(' + (-cur * 100) + '%)';
+    dots.forEach(function(d, j){ d.classList.toggle('active', j === cur); });
   }
 
-  document.getElementById('txtNext').addEventListener('click', () => goTo(cur + 1));
-  document.getElementById('txtPrev').addEventListener('click', () => goTo(cur - 1));
-  dots.forEach((d,i) => d.addEventListener('click', () => goTo(i)));
+  const prev = document.getElementById('txtPrev');
+  const next = document.getElementById('txtNext');
+  if (prev) prev.onclick = function(){ goTo(cur - 1); };
+  if (next) next.onclick = function(){ goTo(cur + 1); };
+  dots.forEach(function(d, i){ d.onclick = function(){ goTo(i); }; });
 
   // Auto
-  let auto = setInterval(() => goTo(cur + 1), 5000);
-  track.parentElement.addEventListener('mouseenter', () => clearInterval(auto));
-  track.parentElement.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(cur + 1), 5000); });
+  let auto = setInterval(function(){ goTo(cur + 1); }, 5500);
+  const win = track.parentElement;
+  win.addEventListener('mouseenter', function(){ clearInterval(auto); });
+  win.addEventListener('mouseleave', function(){ auto = setInterval(function(){ goTo(cur + 1); }, 5500); });
 
   // Touch
-  let tX = 0;
-  track.addEventListener('touchstart', e => { tX = e.touches[0].clientX; }, {passive:true});
-  track.addEventListener('touchend',   e => {
-    const d = tX - e.changedTouches[0].clientX;
-    if (Math.abs(d) > 40) goTo(d > 0 ? cur - 1 : cur + 1);
+  let tStartX = 0, tStartY = 0, swiping = false;
+  win.addEventListener('touchstart', function(e){
+    tStartX = e.touches[0].clientX;
+    tStartY = e.touches[0].clientY;
+    swiping = false;
+  }, {passive:true});
+  win.addEventListener('touchmove', function(e){
+    const dx = Math.abs(e.touches[0].clientX - tStartX);
+    const dy = Math.abs(e.touches[0].clientY - tStartY);
+    if (dx > dy && dx > 10) swiping = true;
+  }, {passive:true});
+  win.addEventListener('touchend', function(e){
+    if (!swiping) return;
+    const d = tStartX - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 40) goTo(d > 0 ? cur + 1 : cur - 1);
   });
 })();
 
+
+});
 </script>
     <p class="pm-note">לאחר התשלום נחזור אליכם לאישור המקום<br>מקומות מוגבלים — ממהרים! 🙏</p>
   </div>
