@@ -32,7 +32,7 @@ a{text-decoration:none;color:inherit}
 ul{list-style:none}
 
 /* ── NAVBAR ── */
-#navbar{position:fixed;top:0;left:0;right:0;z-index:200;padding:14px 56px;display:flex;align-items:center;justify-content:space-between;transition:background var(--tr),box-shadow var(--tr),padding var(--tr);overflow:visible}
+#navbar{position:fixed;top:0;left:0;right:0;z-index:300;padding:14px 56px;display:flex;align-items:center;justify-content:space-between;transition:background var(--tr),box-shadow var(--tr),padding var(--tr);overflow:visible}
 #navbar.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);box-shadow:0 2px 24px rgba(0,0,0,.06);padding:13px 56px}
 .nav-logo{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:.2em;transition:color var(--tr)}
 #navbar.scrolled .nav-logo{color:var(--turq-dk)}
@@ -42,7 +42,7 @@ ul{list-style:none}
 .nav-links a:hover{color:var(--turq)}
 .nav-cta{background:var(--turq)!important;color:#fff!important;padding:9px 22px;border-radius:50px;font-size:.79rem!important}
 .nav-cta:hover{background:var(--turq-dk)!important;transform:translateY(-1px)}
-.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:10px;margin:-10px;z-index:300;position:relative;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .nav-ham span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:background var(--tr)}
 #navbar.scrolled .nav-ham span{background:var(--text)}
 
@@ -332,16 +332,16 @@ footer a{color:var(--turq)}
 .hg-item.lb-trigger{cursor:zoom-in}
 
 /* ══ MOBILE DRAWER ══ */
-#drawer{position:fixed;top:0;right:0;bottom:0;width:280px;background:#fff;z-index:500;transform:translateX(110%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.12);display:flex;flex-direction:column;padding:0}
+#drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#fff;z-index:9999;transform:translateX(-110%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:8px 0 40px rgba(0,0,0,.15);display:flex;flex-direction:column;padding:0}
 #drawer.open{transform:translateX(0)}
-#drawer-overlay{display:none;position:fixed;inset:0;z-index:499;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
+#drawer-overlay{display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
 #drawer-overlay.open{display:block}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(71,196,201,.15)}
 .drawer-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--turq-dk);letter-spacing:.15em}
 .drawer-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-lt);padding:4px 8px;border-radius:50%;transition:background .2s;line-height:1}
 .drawer-close:hover{background:rgba(0,0,0,.06)}
 .drawer-links{display:flex;flex-direction:column;padding:16px 0;flex:1;overflow-y:auto}
-.drawer-links a{font-size:1rem;color:var(--text);padding:14px 28px;font-weight:400;letter-spacing:.04em;border-bottom:1px solid rgba(71,196,201,.08);transition:background .2s,color .2s;display:flex;align-items:center;gap:12px}
+.drawer-links a{font-size:1rem;color:var(--text);padding:14px 28px;font-weight:400;letter-spacing:.04em;border-bottom:1px solid rgba(71,196,201,.08);transition:background .2s,color .2s;display:flex;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent}
 .drawer-links a:hover{background:rgba(71,196,201,.06);color:var(--turq-dk)}
 .drawer-links a .dl-icon{font-size:1.1rem;width:24px;text-align:center}
 .drawer-cta{margin:20px 24px}
@@ -656,7 +656,7 @@ footer a{color:var(--turq)}
     <div class="tline c reveal"></div>
   </div>
   <!-- Carousel -->
-  <div class="gc-outer reveal">
+  <div class="gc-outer reveal" dir="ltr">
     <div class="gc-track" id="gcTrack">
       <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617308/WhatsApp_Image_2026-06-16_at_12.56.43_5_agrwr7.jpg" alt="גלריה" loading="lazy"></div>
       <div class="gc-item"><img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781617307/WhatsApp_Image_2026-06-16_at_12.56.43_4_vemob0.jpg" alt="גלריה" loading="lazy"></div>
@@ -738,7 +738,7 @@ footer a{color:var(--turq)}
     <!-- Text carousel -->
     <div class="txt-carousel reveal">
       <button class="txt-arrow txt-arrow-r" id="txtPrev">&#8249;</button>
-      <div class="txt-window">
+      <div class="txt-window" dir="ltr">
         <div class="txt-track" id="txtTrack">
       <div class="txt-slide">
         <span class="txt-slide-q">"</span>
@@ -852,7 +852,7 @@ footer a{color:var(--turq)}
     <h2 class="s-title center reveal">הצטרפו אלינו</h2>
     <div class="tline c reveal"></div>
     <div class="pricing-wrap reveal">
-      <div class="pc" onclick="selectPackage(this,'Early Manifest · ₪4,500')">
+      <div class="pc" onclick="highlightCard(this)">
         <p class="pc-label">Early Manifest</p>
         <p class="pc-amt"><span class="pc-cur">₪</span>4,500</p>
         <p class="pc-note" dir="ltr">עד 10.07.2026</p>
@@ -864,9 +864,9 @@ footer a{color:var(--turq)}
           <div class="pc-row"><span class="pc-check">✔</span>כל הסדנאות והפעילויות</div>
           <div class="pc-row"><span class="pc-check">✔</span>ליווי אישי וקבוצתי לאורך הריטריט</div>
         </div>
-        <div style="margin-top:22px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'">אני בפנים</button></div>
+        <div style="margin-top:22px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'" onclick="event.stopPropagation();selectPackage(this.closest('.pc'),'Early Manifest · ₪4,500')">אני בפנים</button></div>
       </div>
-      <div class="pc feat" onclick="selectPackage(this,'Regular Manifest · ₪5,000')">
+      <div class="pc feat" onclick="highlightCard(this)">
         <div class="pc-badge">הכי פופולרי</div>
         <p class="pc-label">Regular Manifest</p>
         <p class="pc-amt"><span class="pc-cur">₪</span>5,000</p>
@@ -879,9 +879,9 @@ footer a{color:var(--turq)}
           <div class="pc-row"><span class="pc-check">✔</span>כל הסדנאות והפעילויות</div>
           <div class="pc-row"><span class="pc-check">✔</span>ליווי אישי וקבוצתי לאורך הריטריט</div>
         </div>
-        <div style="margin-top:22px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.15);color:#fff;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:var(--sans)" onmouseover="this.style.background='rgba(255,255,255,.3)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">אני בפנים</button></div>
+        <div style="margin-top:22px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.15);color:#fff;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:var(--sans)" onmouseover="this.style.background='rgba(255,255,255,.3)'" onmouseout="this.style.background='rgba(255,255,255,.15)'" onclick="event.stopPropagation();selectPackage(this.closest('.pc'),'Regular Manifest · ₪5,000')">אני בפנים</button></div>
       </div>
-      <div class="pc" onclick="selectPackage(this,'Final Manifest · ₪5,400')">
+      <div class="pc" onclick="highlightCard(this)">
         <p class="pc-label">Final Manifest</p>
         <p class="pc-amt"><span class="pc-cur">₪</span>5,400</p>
         <p class="pc-note" dir="ltr">01.09.2026 – 23.09.2026</p>
@@ -894,7 +894,7 @@ footer a{color:var(--turq)}
           <div class="pc-row"><span class="pc-check">✔</span>ליווי אישי וקבוצתי לאורך הריטריט</div>
         </div>
         <p style="font-size:.78rem;color:var(--warm);font-weight:500;margin-top:14px;letter-spacing:.06em">⚠ מספר המקומות מוגבל</p>
-        <div style="margin-top:12px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'">אני בפנים</button></div>
+        <div style="margin-top:12px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'" onclick="event.stopPropagation();selectPackage(this.closest('.pc'),'Final Manifest · ₪5,400')">אני בפנים</button></div>
       </div>
     </div>
     <!-- Inline payment panel (hidden until card selected) -->
@@ -1159,16 +1159,16 @@ document.querySelectorAll('.fq-q').forEach(q => {
   function goTo(i) {
     idx = ((i % total) + total) % total;
     track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
-    track.style.transform = 'translateX(' + (idx * itemW()) + 'px)';
+    track.style.transform = 'translateX(-' + (idx * itemW()) + 'px)';
   }
 
-  document.getElementById('gcNext').addEventListener('click', () => goTo(idx - 1));
-  document.getElementById('gcPrev').addEventListener('click', () => goTo(idx + 1));
+  document.getElementById('gcNext').addEventListener('click', () => goTo(idx + 1));
+  document.getElementById('gcPrev').addEventListener('click', () => goTo(idx - 1));
 
   // Auto advance
-  let auto = setInterval(() => goTo(idx - 1), 3000);
+  let auto = setInterval(() => goTo(idx + 1), 3000);
   track.addEventListener('mouseenter', () => clearInterval(auto));
-  track.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(idx - 1), 3000); });
+  track.addEventListener('mouseleave', () => { auto = setInterval(() => goTo(idx + 1), 3000); });
 
   // Drag
   let dragStart = null, dragScroll = 0, dragging = false;
@@ -1190,7 +1190,7 @@ document.querySelectorAll('.fq-q').forEach(q => {
   track.addEventListener('touchstart', e => { tStart = e.touches[0].clientX; }, {passive:true});
   track.addEventListener('touchend', e => {
     const diff = tStart - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goTo(diff > 0 ? idx - 1 : idx + 1);
+    if (Math.abs(diff) > 40) goTo(diff > 0 ? idx + 1 : idx - 1);
   });
 })();
 
@@ -1234,14 +1234,23 @@ document.querySelectorAll('.fq-q').forEach(q => {
 
 
 // ── Pricing selection ──
-function selectPackage(card, pkgName) {
+function highlightCard(card) {
   document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
+  // hide payment panel if open (new card chosen)
+  document.getElementById('payPanel').style.display = 'none';
+}
+
+function selectPackage(card, pkgName) {
+  // highlight the card
+  document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  // open payment panel and scroll to it
   const panel = document.getElementById('payPanel');
   document.getElementById('payPanelPkg').textContent = pkgName;
   panel.style.display = 'block';
   setTimeout(() => {
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 60);
 }
 
@@ -1256,12 +1265,12 @@ function selectPackage(card, pkgName) {
 
   function goTo(i) {
     cur = ((i % total) + total) % total;
-    track.style.transform = 'translateX(' + (cur * 100) + '%)';
+    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
     dots.forEach((d,j) => d.classList.toggle('active', j === cur));
   }
 
-  document.getElementById('txtNext').addEventListener('click', () => goTo(cur - 1));
-  document.getElementById('txtPrev').addEventListener('click', () => goTo(cur + 1));
+  document.getElementById('txtNext').addEventListener('click', () => goTo(cur + 1));
+  document.getElementById('txtPrev').addEventListener('click', () => goTo(cur - 1));
   dots.forEach((d,i) => d.addEventListener('click', () => goTo(i)));
 
   // Auto
@@ -1274,7 +1283,7 @@ function selectPackage(card, pkgName) {
   track.addEventListener('touchstart', e => { tX = e.touches[0].clientX; }, {passive:true});
   track.addEventListener('touchend',   e => {
     const d = tX - e.changedTouches[0].clientX;
-    if (Math.abs(d) > 40) goTo(d > 0 ? cur + 1 : cur - 1);
+    if (Math.abs(d) > 40) goTo(d > 0 ? cur - 1 : cur + 1);
   });
 })();
 
