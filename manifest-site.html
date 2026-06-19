@@ -153,9 +153,9 @@ section{padding:96px 0}
 .hotel-video-placeholder{text-align:center;color:rgba(255,255,255,.4)}
 .hotel-video-placeholder svg{width:64px;margin:0 auto 12px}
 .hotel-video-placeholder p{font-size:.82rem;letter-spacing:.12em}
-.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:44px;max-width:1100px;margin-left:auto;margin-right:auto}
-.hg-item{border-radius:20px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:zoom-in;box-shadow:0 10px 40px rgba(0,0,0,.18);transition:transform .3s var(--tr);min-height:280px}.hg-item:hover{transform:translateY(-6px)}
-.hg-img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--tr)}
+.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:44px;max-width:1100px;margin-left:auto;margin-right:auto;width:100%}
+.hg-item{border-radius:20px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:zoom-in;box-shadow:0 10px 40px rgba(0,0,0,.18);transition:transform .3s var(--tr);width:100%;min-width:0}.hg-item:hover{transform:translateY(-6px)}
+.hg-img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--tr);display:block;max-width:100%}
 .hg-item:hover .hg-img{transform:scale(1.06)}
 .hg1{background:linear-gradient(135deg,#1D8F96,#47C4C9)}
 .hg2{background:linear-gradient(135deg,#8aaac8,#c8d8e8)}
@@ -361,6 +361,31 @@ footer a{color:var(--turq)}
 .txt-dot{width:7px;height:7px;border-radius:50%;background:rgba(71,196,201,.25);cursor:pointer;transition:background var(--tr),transform var(--tr)}
 .txt-dot.active{background:var(--turq);transform:scale(1.35)}
 @media(max-width:600px){.txt-slide{padding:28px 20px}.txt-slide-body{font-size:.97rem}}
+
+/* ══ REGISTRATION FORM ══ */
+.fld-lbl{display:block;font-size:.82rem;color:var(--text-lt);margin-bottom:6px;font-weight:500;letter-spacing:.02em}
+.fld{width:100%;padding:11px 14px;border:1.5px solid rgba(196,180,154,.35);border-radius:10px;font-family:var(--sans);font-size:.92rem;color:var(--text);background:#fff;transition:border-color .2s,box-shadow .2s;box-sizing:border-box}
+.fld:focus{outline:none;border-color:var(--turq);box-shadow:0 0 0 3px rgba(71,196,201,.15)}
+.fld:invalid:not(:placeholder-shown){border-color:#e89}
+textarea.fld{resize:vertical;min-height:60px;font-family:var(--sans)}
+.trm{font-size:.86rem;color:var(--text-lt);line-height:1.7;margin-bottom:8px;font-weight:300}
+.trm-list{font-size:.86rem;color:var(--text-lt);line-height:1.8;font-weight:300;margin:6px 22px 10px}
+.trm-list li{margin-bottom:3px}
+.chk-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:.9rem;color:var(--text);line-height:1.6;padding:10px 14px;background:#fff;border:1px solid rgba(196,180,154,.25);border-radius:10px;transition:border-color .2s}
+.chk-row:hover{border-color:var(--turq)}
+.chk-row input{margin-top:3px;width:18px;height:18px;cursor:pointer;accent-color:var(--turq)}
+.rad-row{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.9rem;color:var(--text);padding:8px 16px;border:1px solid rgba(196,180,154,.3);border-radius:50px;transition:all .2s}
+.rad-row:hover{border-color:var(--turq)}
+.rad-row input{width:16px;height:16px;cursor:pointer;accent-color:var(--turq)}
+@media(max-width:600px){
+  #payPanel form{padding:28px 20px}
+  #payPanel form > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+}
+
+@media(max-width:600px){
+  .hotel-gallery{gap:10px;padding:0 4px}
+  .hg-item{border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+}
 </style>
 </head>
 <body>
@@ -900,32 +925,144 @@ footer a{color:var(--turq)}
         <div style="margin-top:12px"><button class="pc-join-btn" style="width:100%;padding:12px;border-radius:50px;border:1.5px solid var(--turq);background:transparent;color:var(--turq-dk);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;font-family:var(--sans)" onmouseover="this.style.background='var(--turq)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--turq-dk)'" onclick="event.stopPropagation();selectPackage(this.closest('.pc'),'Final Manifest · ₪5,400')">אני בפנים</button></div>
       </div>
     </div>
-    <!-- Inline payment panel (hidden until card selected) -->
+    <!-- Inline registration + payment panel (hidden until card selected) -->
     <div id="payPanel" style="display:none;margin-top:40px;animation:lbfade .3s ease">
-      <div style="background:linear-gradient(135deg,rgba(71,196,201,.06),rgba(29,143,150,.04));border:1.5px solid rgba(71,196,201,.25);border-radius:24px;padding:40px 36px;max-width:500px;margin:0 auto;text-align:center;">
-        <p style="font-family:var(--serif);font-size:1.4rem;font-weight:500;color:var(--turq-dk);margin-bottom:6px">מעולה! בחרתם את החבילה</p>
-        <p id="payPanelPkg" style="font-size:.88rem;color:var(--text-lt);margin-bottom:28px;letter-spacing:.05em"></p>
-        <p style="font-size:.9rem;color:var(--text-lt);margin-bottom:24px;line-height:1.6">בחרו את אמצעי התשלום הנוח לכם ותועברו לדף התשלום המאובטח</p>
-        <div style="display:flex;flex-direction:column;gap:14px;max-width:320px;margin:0 auto">
-          <a href="https://www.bitpay.co.il/app/share-info?i=200947113129_19ns4gUY" target="_blank"
-             style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px 24px;border-radius:50px;background:linear-gradient(135deg,#00b4d8,#0096c7);color:#fff;font-size:1rem;font-weight:600;letter-spacing:.04em;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(0,180,216,.3)"
-             onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-            <svg width="24" height="24" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="rgba(255,255,255,.25)"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="bold" fill="white">BIT</text></svg>
-            תשלום ב־Bit
-          </a>
-          <a href="https://links.payboxapp.com/Qt9IYczx23b" target="_blank"
-             style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px 24px;border-radius:50px;background:linear-gradient(135deg,#6c63ff,#4a42d6);color:#fff;font-size:1rem;font-weight:600;letter-spacing:.04em;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(108,99,255,.3)"
-             onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-            <svg width="24" height="24" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="rgba(255,255,255,.25)"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="bold" fill="white">PAY</text></svg>
-            תשלום ב־PayBox
-          </a>
+      <div style="background:linear-gradient(135deg,rgba(71,196,201,.06),rgba(29,143,150,.04));border:1.5px solid rgba(71,196,201,.25);border-radius:24px;padding:0;max-width:780px;margin:0 auto;overflow:hidden">
+
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg,#1D8F96,#47C4C9);padding:36px 36px 32px;text-align:center;color:#fff;">
+          <p style="font-family:var(--serif);font-size:1.6rem;font-weight:500;margin-bottom:8px">טופס הרשמה — MANIFEST</p>
+          <p id="payPanelPkg" style="font-size:.92rem;opacity:.85;margin-bottom:6px;letter-spacing:.05em"></p>
+          <p style="font-size:.82rem;opacity:.7;letter-spacing:.06em" dir="ltr">פאפוס · 24–27.09.2026</p>
         </div>
-        <p style="font-size:.76rem;color:var(--text-lt);margin-top:20px;line-height:1.6">לאחר התשלום נחזור אליכם לאישור המקום 🙏<br>מקומות מוגבלים — ממהרים!</p>
-        <button onclick="document.getElementById('payPanel').style.display='none';document.querySelectorAll('.pc').forEach(c=>c.classList.remove('selected'))"
-          style="margin-top:18px;background:none;border:none;color:var(--text-lt);font-size:.82rem;cursor:pointer;text-decoration:underline">ביטול הבחירה</button>
+
+        <!-- Form -->
+        <form id="regForm" style="padding:36px 36px 32px" novalidate>
+
+          <!-- Personal -->
+          <h3 style="font-family:var(--serif);font-size:1.25rem;color:var(--turq-dk);margin-bottom:20px;font-weight:500">פרטים אישיים</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px">
+            <div><label class="fld-lbl">שם פרטי *</label><input type="text" name="firstName" required class="fld"></div>
+            <div><label class="fld-lbl">שם משפחה *</label><input type="text" name="lastName" required class="fld"></div>
+            <div style="grid-column:1/-1"><label class="fld-lbl">שם מלא באנגלית (כפי שמופיע בדרכון) *</label><input type="text" name="passportName" required class="fld" dir="ltr"></div>
+            <div><label class="fld-lbl">טלפון נייד *</label><input type="tel" name="phone" required class="fld" dir="ltr"></div>
+            <div><label class="fld-lbl">כתובת מייל *</label><input type="email" name="email" required class="fld" dir="ltr"></div>
+            <div><label class="fld-lbl">איש קשר לחירום — שם *</label><input type="text" name="emName" required class="fld"></div>
+            <div><label class="fld-lbl">טלפון איש קשר לחירום *</label><input type="tel" name="emPhone" required class="fld" dir="ltr"></div>
+            <div style="grid-column:1/-1"><label class="fld-lbl">קרבה *</label><input type="text" name="emRelation" required class="fld" placeholder="הורה / בן/בת זוג / חבר/ה / וכו'"></div>
+          </div>
+
+          <!-- Extra info -->
+          <h3 style="font-family:var(--serif);font-size:1.25rem;color:var(--turq-dk);margin-bottom:20px;font-weight:500">מידע נוסף</h3>
+          <div style="margin-bottom:18px"><label class="fld-lbl">איך הגעת ל-MANIFEST?</label><input type="text" name="howFound" class="fld" placeholder="אינסטגרם / חברה / וכו'"></div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+            <div>
+              <label class="fld-lbl">האם את/ה מגיע/ה לבד?</label>
+              <select name="alone" class="fld"><option value="">בחר</option><option>כן</option><option>לא</option></select>
+            </div>
+            <div>
+              <label class="fld-lbl">מין *</label>
+              <select name="gender" required class="fld"><option value="">בחר</option><option>אישה</option><option>גבר</option></select>
+            </div>
+          </div>
+
+          <div style="margin-bottom:18px">
+            <label class="fld-lbl">העדפה תזונתית *</label>
+            <select name="diet" required class="fld"><option value="">בחר</option><option>רגיל</option><option>צמחוני</option><option>טבעוני</option></select>
+          </div>
+
+          <div style="margin-bottom:18px"><label class="fld-lbl">אלרגיות או רגישויות למזון</label><textarea name="allergies" class="fld" rows="2"></textarea></div>
+          <div style="margin-bottom:28px"><label class="fld-lbl">מגבלות רפואיות, פציעות, רגישויות או מידע רפואי שחשוב שנדע</label><textarea name="medical" class="fld" rows="3"></textarea></div>
+
+          <!-- Terms -->
+          <div style="background:#fff;border:1px solid rgba(196,180,154,.3);border-radius:14px;padding:24px 26px;margin-bottom:24px;max-height:340px;overflow-y:auto">
+            <h3 style="font-family:var(--serif);font-size:1.25rem;color:var(--turq-dk);margin-bottom:14px;font-weight:500;position:sticky;top:0;background:#fff;padding-bottom:8px">תקנון ותנאי הרשמה</h3>
+
+            <p style="font-weight:600;color:var(--text);margin:14px 0 6px;font-size:.95rem">✈ פרטי הריטריט</p>
+            <p class="trm">הריטריט יתקיים בפאפוס, קפריסין, בין התאריכים <span dir="ltr">24–27 בספטמבר 2026</span>.</p>
+            <p class="trm" style="font-weight:500;margin-top:8px">המחיר כולל:</p>
+            <ul class="trm-list">
+              <li>טיסות הלוך ושוב</li>
+              <li>3 לילות במלון Leonardo Cypria Maris</li>
+              <li>אירוח הכל כלול</li>
+              <li>לינה בחדרים של 3 משתתפים בחדר</li>
+              <li>כל תכני הריטריט והסדנאות</li>
+              <li>יוגה, פילאטיס, מדיטציות ותרגולים</li>
+              <li>הרצאות ותכנים מקצועיים</li>
+              <li>ליווי אישי וקבוצתי לאורך הריטריט</li>
+            </ul>
+            <p class="trm">קיימת אפשרות לשדרוג לחדר זוגי בתוספת תשלום ובכפוף לזמינות המלון.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">💳 תשלום</p>
+            <p class="trm">ניתן לשלם באמצעות Bit, PayBox או העברה בנקאית. לאחר מילוי טופס ההרשמה ניצור קשר לצורך השלמת התשלום ושמירת המקום בריטריט.</p>
+            <p class="trm">לפרטים נוספים: נטע־לי שורייץ · <span dir="ltr">054-595-3562</span></p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">✈ טיסות</p>
+            <p class="trm">מחיר הריטריט כולל טיסות הלוך ושוב. מועדי הטיסות, שעות הטיסה ופרטי חברת התעופה עשויים להשתנות בהתאם להחלטות חברת התעופה ו/או גורמים נוספים שאינם בשליטת המארגנים. לאחר רכישת כרטיסי הטיסה, לא ניתן לבטל את מרכיב הטיסה ולא יינתן החזר כספי בגינו. כל שינוי, ביטול או החזר הקשור לטיסות כפוף לתנאי חברת התעופה בלבד.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">❌ מדיניות ביטולים</p>
+            <p class="trm"><strong>ביטול עד <span dir="ltr">10.07.2026</span></strong> — יוחזר מלוא סכום ההרשמה בניכוי 500 ₪ דמי הרשמה וטיפול.</p>
+            <p class="trm"><strong>ביטול בין <span dir="ltr">11.07.2026</span> ועד <span dir="ltr">31.07.2026</span></strong> — יוחזרו 50% מעלות הריטריט.</p>
+            <p class="trm"><strong>החל מ-<span dir="ltr">01.08.2026</span> ועד מועד הריטריט</strong> — לא יינתן החזר כספי.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">👥 מספר משתתפים</p>
+            <p class="trm">קיום הריטריט מותנה במספר משתתפים מינימלי. במקרה של ביטול הריטריט על ידי המארגנים, יוחזר למשתתפים התשלום ששולם בפועל.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">🩺 מצב רפואי</p>
+            <p class="trm">המשתתף מצהיר כי מצבו הבריאותי מאפשר השתתפות בפעילויות הריטריט. באחריות המשתתף לעדכן מראש על מגבלות רפואיות, אלרגיות, רגישויות, פציעות או כל מידע רפואי רלוונטי.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">📸 צילום ותיעוד</p>
+            <p class="trm">במהלך הריטריט ייתכן ויצולמו תמונות וסרטונים לצורכי תיעוד, שיווק ופרסום.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">🛡 ביטוח</p>
+            <p class="trm">כל משתתף מחויב לרכוש ביטוח נסיעות לחו"ל באופן עצמאי. מומלץ לרכוש ביטוח הכולל כיסוי רפואי, ביטול נסיעה, אובדן כבודה ושינויים בטיסות.</p>
+
+            <p style="font-weight:600;color:var(--text);margin:18px 0 6px;font-size:.95rem">⚠ כוח עליון</p>
+            <p class="trm">במקרה של מצב ביטחוני, הנחיות ממשלתיות, סגירת שדות תעופה, מגבלות כניסה למדינה, כוח עליון או כל אירוע שאינו בשליטת המארגנים, תישמר הזכות לבצע התאמות, שינוי מועד או דחיית הריטריט בהתאם לנסיבות.</p>
+          </div>
+
+          <!-- Declarations -->
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
+            <label class="chk-row"><input type="checkbox" name="agree1" required><span>קראתי את התקנון ואני מסכים/ה לכל תנאיו. <span style="color:#d33">*</span></span></label>
+            <label class="chk-row"><input type="checkbox" name="agree2" required><span>ידוע לי כי לאחר ההרשמה אדרש להעביר צילום דרכון לצורך הזמנת הטיסות. <span style="color:#d33">*</span></span></label>
+            <label class="chk-row"><input type="checkbox" name="agree3" required><span>אני מצהיר/ה שמצבי הבריאותי מאפשר השתתפות בריטריט. <span style="color:#d33">*</span></span></label>
+          </div>
+
+          <div style="margin-bottom:28px">
+            <p class="fld-lbl" style="margin-bottom:8px">האם את/ה מאשר/ת שימוש בתמונות וסרטונים בהם את/ה מופיע/ה לצורכי תיעוד, שיווק ופרסום?</p>
+            <div style="display:flex;gap:18px">
+              <label class="rad-row"><input type="radio" name="media" value="כן" required>כן</label>
+              <label class="rad-row"><input type="radio" name="media" value="לא" required>לא</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn" style="width:100%;font-size:1rem;padding:18px;cursor:pointer">שליחת טופס הרשמה</button>
+        </form>
+
+        <!-- Payment area (hidden until form submitted) -->
+        <div id="payArea" style="display:none;padding:40px 36px;text-align:center;border-top:1px solid rgba(71,196,201,.18)">
+          <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#47C4C9,#1D8F96);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:#fff;font-size:1.6rem">✓</div>
+          <p style="font-family:var(--serif);font-size:1.4rem;color:var(--turq-dk);margin-bottom:10px;font-weight:500">תודה על הרשמתך!</p>
+          <p style="font-size:.92rem;color:var(--text-lt);margin-bottom:24px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto">קיבלנו את פרטיך. כדי להשלים את ההרשמה ולשמור את מקומך, בחר/י את אמצעי התשלום הנוח לך:</p>
+          <div style="display:flex;flex-direction:column;gap:12px;max-width:340px;margin:0 auto">
+            <a href="https://www.bitpay.co.il/app/share-info?i=200947113129_19ns4gUY" target="_blank"
+               style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;border-radius:50px;background:linear-gradient(135deg,#00b4d8,#0096c7);color:#fff;font-size:1rem;font-weight:600;letter-spacing:.04em;box-shadow:0 6px 20px rgba(0,180,216,.3);transition:transform .2s"
+               onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">תשלום ב־Bit</a>
+            <a href="https://links.payboxapp.com/Qt9IYczx23b" target="_blank"
+               style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;border-radius:50px;background:linear-gradient(135deg,#6c63ff,#4a42d6);color:#fff;font-size:1rem;font-weight:600;letter-spacing:.04em;box-shadow:0 6px 20px rgba(108,99,255,.3);transition:transform .2s"
+               onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">תשלום ב־PayBox</a>
+          </div>
+          <p style="font-size:.78rem;color:var(--text-lt);margin-top:24px;line-height:1.6">לתשלום בהעברה בנקאית, או לכל שאלה:<br>נטע־לי שורייץ · <span dir="ltr">054-595-3562</span></p>
+        </div>
+
+        <div style="padding:14px;text-align:center;border-top:1px solid rgba(71,196,201,.12)">
+          <button onclick="document.getElementById('payPanel').style.display='none';document.querySelectorAll('.pc').forEach(c=>c.classList.remove('selected'))"
+            style="background:none;border:none;color:var(--text-lt);font-size:.82rem;cursor:pointer;text-decoration:underline">ביטול הבחירה</button>
+        </div>
       </div>
     </div>
-    <div class="pricing-cta reveal" style="margin-top:32px">
+    <div class="pricing-cta reveal" style="margin-top:32px">    <div class="pricing-cta reveal" style="margin-top:32px">
       <p style="font-size:.82rem;color:var(--text-lt)">מקומות מוגבלים · <span dir="ltr" style="display:inline-block">24–27.09.2026</span> · פאפוס, קפריסין</p>
     </div>
   </div>
@@ -1309,6 +1446,33 @@ document.querySelectorAll('.fq-q').forEach(q => {
       if (e.key === 'Escape') close();
       if (e.key === 'ArrowRight') prev();
       if (e.key === 'ArrowLeft')  next();
+    });
+  })();
+
+
+  // ── Registration form submission ──
+  (function(){
+    const form = document.getElementById('regForm');
+    if (!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      // Native HTML5 validation
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      // Optional: send to Google Forms via fetch (will be wired later)
+      // const data = new FormData(form);
+      // fetch(GOOGLE_FORM_URL, { method:'POST', body:data, mode:'no-cors' });
+
+      // Show payment area, hide form
+      form.style.display = 'none';
+      const payArea = document.getElementById('payArea');
+      payArea.style.display = 'block';
+      setTimeout(function(){
+        const rect = payArea.getBoundingClientRect();
+        window.scrollTo({ top: window.scrollY + rect.top - 60, behavior:'smooth' });
+      }, 100);
     });
   })();
 
