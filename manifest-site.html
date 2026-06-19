@@ -153,8 +153,8 @@ section{padding:96px 0}
 .hotel-video-placeholder{text-align:center;color:rgba(255,255,255,.4)}
 .hotel-video-placeholder svg{width:64px;margin:0 auto 12px}
 .hotel-video-placeholder p{font-size:.82rem;letter-spacing:.12em}
-.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:44px}
-.hg-item{border-radius:16px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+.hotel-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:44px;max-width:1100px;margin-left:auto;margin-right:auto}
+.hg-item{border-radius:20px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:zoom-in;box-shadow:0 10px 40px rgba(0,0,0,.18);transition:transform .3s var(--tr);min-height:280px}.hg-item:hover{transform:translateY(-6px)}
 .hg-img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--tr)}
 .hg-item:hover .hg-img{transform:scale(1.06)}
 .hg1{background:linear-gradient(135deg,#1D8F96,#47C4C9)}
@@ -222,7 +222,7 @@ section{padding:96px 0}
 /* ══ 10. PRICING ══ */
 #pricing{background:var(--sand)}
 .pricing-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
-.pc{border-radius:20px;padding:38px 30px;text-align:center;border:1.5px solid rgba(196,180,154,.3);background:#fff;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);position:relative;cursor:pointer}.pc.selected{border-color:var(--turq);box-shadow:0 0 0 3px rgba(71,196,201,.2),var(--shadow-md);transform:translateY(-4px)}.pc.selected::after{content:"✓ נבחר";position:absolute;top:-13px;right:50%;transform:translateX(50%);background:var(--turq-dk);color:#fff;font-size:.68rem;letter-spacing:.12em;padding:4px 16px;border-radius:50px}
+.pc{border-radius:20px;padding:38px 30px;text-align:center;border:1.5px solid rgba(196,180,154,.3);background:#fff;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);position:relative;cursor:pointer}.pc.selected{border-color:var(--turq);box-shadow:0 0 0 3px rgba(71,196,201,.2),var(--shadow-md);transform:translateY(-4px)}.pc.selected{border-color:var(--turq)!important;box-shadow:0 0 0 4px rgba(71,196,201,.25),0 20px 60px rgba(71,196,201,.2)!important;transform:translateY(-4px)!important}.pc.selected::after{content:"✓ החבילה שנבחרה";position:absolute;top:-14px;right:50%;transform:translateX(50%);background:var(--turq-dk);color:#fff;font-size:.74rem;letter-spacing:.1em;padding:6px 18px;border-radius:50px;font-weight:500;white-space:nowrap;box-shadow:0 4px 14px rgba(29,143,150,.35)}
 .pc:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
 .pc.feat{background:linear-gradient(160deg,#1D8F96,#47C4C9);border-color:transparent;box-shadow:0 20px 60px rgba(71,196,201,.32)}
 .pc-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--warm);color:#fff;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:5px 16px;border-radius:50px}
@@ -628,7 +628,7 @@ footer a{color:var(--turq)}
     <div class="hosts-grid reveal">
       <div class="host-card">
         <div class="host-img-wrap" style="background:none">
-          <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781618145/WhatsApp_Image_2026-06-16_at_11.55.22_qct3ig.jpg" alt="נטע-לי שורייץ" style="width:100%;height:100%;object-fit:cover;border-radius:14px">
+          <img src="https://res.cloudinary.com/dpqheuznj/image/upload/v1781876484/WhatsApp_Image_2026-06-18_at_00.35.44_krlwhp.jpg" alt="נטע-לי שורייץ" style="width:100%;height:100%;object-fit:cover;border-radius:14px">
         </div>
         <p class="host-name">נטע־לי שורייץ</p>
         <p class="host-role">מאמנת מנטלית · מנחת ריטריטים · מאמנת כושר</p>
@@ -974,6 +974,32 @@ footer a{color:var(--turq)}
 </footer>
 
 <script>
+// ── Global functions (used by inline onclick handlers) ──
+function highlightCard(card) {
+  document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  // hide payment panel if open
+  const panel = document.getElementById('payPanel');
+  if (panel) panel.style.display = 'none';
+}
+
+function selectPackage(card, pkgName) {
+  // highlight the card
+  document.querySelectorAll('.pc').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  // open and scroll to payment panel
+  const panel = document.getElementById('payPanel');
+  if (!panel) return;
+  const pkgEl = document.getElementById('payPanelPkg');
+  if (pkgEl) pkgEl.textContent = pkgName;
+  panel.style.display = 'block';
+  setTimeout(function() {
+    const rect = panel.getBoundingClientRect();
+    const targetY = window.scrollY + rect.top - 60;
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+  }, 100);
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
 // ── Navbar ──
@@ -1249,6 +1275,43 @@ document.querySelectorAll('.fq-q').forEach(q => {
 })();
 
 
+
+  // ── Lightbox ──
+  (function(){
+    const triggers = Array.from(document.querySelectorAll('.lb-trigger'));
+    const lb   = document.getElementById('lightbox');
+    const img  = document.getElementById('lbImg');
+    if (!lb || !img || triggers.length === 0) return;
+    const srcs = triggers.map(t => t.getAttribute('data-src') || t.querySelector('img')?.src);
+    let cur = 0;
+    function open(i) {
+      cur = i;
+      img.src = srcs[cur];
+      lb.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      lb.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function prev() { cur = (cur - 1 + srcs.length) % srcs.length; img.src = srcs[cur]; }
+    function next() { cur = (cur + 1) % srcs.length; img.src = srcs[cur]; }
+    triggers.forEach((t, i) => t.addEventListener('click', () => open(i)));
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    const closeBtn = document.getElementById('lbClose');
+    const prevBtn  = document.getElementById('lbPrev');
+    const nextBtn  = document.getElementById('lbNext');
+    if (closeBtn) closeBtn.onclick = close;
+    if (prevBtn) prevBtn.onclick = function(e){ e.stopPropagation(); prev(); };
+    if (nextBtn) nextBtn.onclick = function(e){ e.stopPropagation(); next(); };
+    document.addEventListener('keydown', e => {
+      if (lb.style.display !== 'flex') return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') prev();
+      if (e.key === 'ArrowLeft')  next();
+    });
+  })();
+
 });
 </script>
     <p class="pm-note">לאחר התשלום נחזור אליכם לאישור המקום<br>מקומות מוגבלים — ממהרים! 🙏</p>
@@ -1263,14 +1326,14 @@ document.querySelectorAll('.fq-q').forEach(q => {
     <button class="drawer-close" id="drawerClose">✕</button>
   </div>
   <div class="drawer-links">
-    <a href="#hero"><span class="dl-icon">🏠</span>בית</a>
-    <a href="#welcome"><span class="dl-icon">✨</span>מה זה MANIFEST</a>
-    <a href="#awaits"><span class="dl-icon">🌿</span>מה מחכה לכם</a>
-    <a href="#hotel"><span class="dl-icon">🏨</span>הבית שלנו בפאפוס</a>
-    <a href="#gallery"><span class="dl-icon">📸</span>גלריה</a>
-    <a href="#testimonials"><span class="dl-icon">💬</span>עדויות מהמסע</a>
-    <a href="#pricing"><span class="dl-icon">💎</span>מחירים</a>
-    <a href="#register"><span class="dl-icon">📋</span>הרשמה</a>
+    <a href="#hero">בית</a>
+    <a href="#welcome">מה זה MANIFEST</a>
+    <a href="#awaits">מה מחכה לכם</a>
+    <a href="#hotel">הבית שלנו בפאפוס</a>
+    <a href="#gallery">גלריה</a>
+    <a href="#testimonials">עדויות מהמסע</a>
+    <a href="#pricing">מחירים</a>
+    <a href="#register">הרשמה</a>
   </div>
   <div class="drawer-cta">
     <a href="#pricing" id="drawerJoin">אני רוצה להצטרף</a>
