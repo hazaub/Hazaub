@@ -756,6 +756,8 @@ textarea.fld{resize:vertical;min-height:60px;font-family:var(--sans)}
   </div>
 </section>
 
+
+
 <!-- Contact / Interest -->
 <section id="contact" style="background:var(--white);padding:64px 0">
   <div class="container" style="max-width:520px;text-align:center">
@@ -766,7 +768,7 @@ textarea.fld{resize:vertical;min-height:60px;font-family:var(--sans)}
     <div id="contactForm">
       <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px">
         <input type="text" id="cName" placeholder="שם מלא" class="fld" required>
-        <input type="tel" id="cPhone" placeholder="טלפון" class="fld" dir="ltr" required>
+        <input type="tel" id="cPhone" placeholder="טלפון" class="fld" required style="text-align:right">
       </div>
       <button onclick="submitContact()" class="btn" style="width:100%;padding:16px;cursor:pointer;font-size:.95rem">שליחה</button>
     </div>
@@ -960,9 +962,7 @@ textarea.fld{resize:vertical;min-height:60px;font-family:var(--sans)}
 
         <!-- Form -->
         <form id="regForm" style="padding:36px 36px 32px" novalidate>
-          <input type="hidden" name="access_key" value="5e428369-fd1d-4565-bd2a-6a676ef89624">
-          <input type="hidden" name="subject" value="הרשמה חדשה ל-MANIFEST 🎉">
-          <input type="hidden" name="from_name" value="MANIFEST Retreat">
+          <!-- Web3Forms credentials sent via JSON -->
 
           <!-- Personal -->
           <h3 style="font-family:var(--serif);font-size:1.25rem;color:var(--turq-dk);margin-bottom:20px;font-weight:500">פרטים אישיים</h3>
@@ -1521,29 +1521,62 @@ document.querySelectorAll('.fq-q').forEach(q => {
         form.reportValidity();
         return;
       }
-      var data = new FormData(form);
-      var pkgEl = document.getElementById('payPanelPkg');
-      if (pkgEl) data.append('package', pkgEl.textContent);
-      data.append('agree_terms', form.agree1.checked ? 'כן' : 'לא');
-      data.append('agree_passport', form.agree2.checked ? 'כן' : 'לא');
-      data.append('agree_health', form.agree3.checked ? 'כן' : 'לא');
       var btn = form.querySelector('button[type=submit]');
       var origText = btn.textContent;
       btn.textContent = 'שולח...';
       btn.disabled = true;
+
+      // Build clean JSON with Hebrew labels
+      var pkgEl = document.getElementById('payPanelPkg');
+      var mediaVal = '';
+      var mediaInputs = form.querySelectorAll('input[name="media"]');
+      mediaInputs.forEach(function(r){ if(r.checked) mediaVal = r.value; });
+
+      var payload = {
+        access_key: '5e428369-fd1d-4565-bd2a-6a676ef89624',
+        subject: 'הרשמה חדשה ל-MANIFEST 🎉',
+        from_name: 'MANIFEST Retreat',
+        'חבילה שנבחרה': pkgEl ? pkgEl.textContent : '',
+        'שם פרטי': form.firstName.value,
+        'שם משפחה': form.lastName.value,
+        'שם באנגלית (דרכון)': form.passportName.value,
+        'טלפון נייד': form.phone.value,
+        'מייל': form.email.value,
+        'איש קשר לחירום': form.emName.value,
+        'טלפון חירום': form.emPhone.value,
+        'קרבה': form.emRelation.value,
+        'איך הגעת ל-MANIFEST': form.howFound.value || 'לא צוין',
+        'מגיע/ה לבד': form.alone.value || 'לא צוין',
+        'מין': form.gender.value,
+        'העדפה תזונתית': form.diet.value,
+        'אלרגיות': form.allergies.value || 'אין',
+        'מגבלות רפואיות': form.medical.value || 'אין',
+        'קראתי ומסכים לתקנון': form.agree1.checked ? '✅ כן' : '❌ לא',
+        'מסכים להעביר צילום דרכון': form.agree2.checked ? '✅ כן' : '❌ לא',
+        'מצהיר על מצב בריאותי תקין': form.agree3.checked ? '✅ כן' : '❌ לא',
+        'אישור צילום ותיעוד': mediaVal || 'לא צוין'
+      };
+
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: data
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       })
       .then(function(res){ return res.json(); })
       .then(function(result){
-        form.style.display = 'none';
-        var payArea = document.getElementById('payArea');
-        payArea.style.display = 'block';
-        setTimeout(function(){
-          var rect = payArea.getBoundingClientRect();
-          window.scrollTo({ top: window.scrollY + rect.top - 60, behavior:'smooth' });
-        }, 100);
+        if (result.success) {
+          form.style.display = 'none';
+          var payArea = document.getElementById('payArea');
+          payArea.style.display = 'block';
+          setTimeout(function(){
+            var rect = payArea.getBoundingClientRect();
+            window.scrollTo({ top: window.scrollY + rect.top - 60, behavior:'smooth' });
+          }, 100);
+        } else {
+          btn.textContent = origText;
+          btn.disabled = false;
+          alert('שגיאה בשליחה: ' + (result.message || 'נסו שוב'));
+        }
       })
       .catch(function(err){
         btn.textContent = origText;
