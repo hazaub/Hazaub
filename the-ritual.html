@@ -885,7 +885,7 @@
   /* stars */
   (function(){
     const c = document.getElementById('stars');
-    for(let i=0;i<170;i++){
+    for(let i=0;i<260;i++){
       const s = document.createElement('div');
       s.className = 'star';
       const size = Math.random()*2.2 + .6;
@@ -902,7 +902,7 @@
   /* rising golden sparks */
   (function(){
     const c = document.getElementById('sparks');
-    for(let i=0;i<28;i++){
+    for(let i=0;i<46;i++){
       const p = document.createElement('div');
       p.className = 'spark';
       p.style.left = Math.random()*100 + '%';
@@ -942,9 +942,9 @@
       }
       el.prepend(layer);
     }
-    document.querySelectorAll('section').forEach(el=>seed(el, 16));
-    document.querySelectorAll('.circle-card, footer').forEach(el=>seed(el, 12));
-    document.querySelectorAll('.modal-box').forEach(el=>seed(el, 14));
+    document.querySelectorAll('section').forEach(el=>seed(el, 34));
+    document.querySelectorAll('.circle-card, footer').forEach(el=>seed(el, 22));
+    document.querySelectorAll('.modal-box').forEach(el=>seed(el, 24));
   })();
 
   /* ---- קלף מסר ---- */
@@ -1071,6 +1071,8 @@
       });
       return;
     }
+    // שליחת הפרטים למייל מיד בהגעה לשלב המחירים
+    sendLead(d, 'הגיעה לשלב בחירת מסלול');
     openModal();
   });
 
@@ -1080,19 +1082,21 @@
   document.getElementById('stepBack').addEventListener('click', ()=>{ stepPay.hidden = true; stepPrice.hidden = false; });
 
   /* שליחת הפרטים למייל דרך Web3Forms */
-  function sendLead(d, label, price){
+  function sendLead(d, status, label, price){
+    const payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: 'הרשמה חדשה ל-THE RITUAL ✦ — ' + status,
+      from_name: 'THE RITUAL',
+      name:  d.name,
+      phone: d.phone,
+      email: d.email,
+      'סטטוס': status
+    };
+    if(label){ payload['מסלול'] = label + ' – ' + price + ' ₪'; }
     fetch('https://api.web3forms.com/submit', {
       method:'POST',
       headers:{'Accept':'application/json','Content-Type':'application/json'},
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject: 'הרשמה חדשה ל-THE RITUAL ✦',
-        from_name: 'THE RITUAL',
-        name:  d.name,
-        phone: d.phone,
-        email: d.email,
-        'מסלול': label + ' – ' + price + ' ₪'
-      })
+      body: JSON.stringify(payload)
     }).catch(()=>{});
   }
 
@@ -1121,7 +1125,7 @@
       const price = btn.getAttribute('data-price');
       const label = btn.getAttribute('data-label');
 
-      sendLead(d, label, price);
+      sendLead(d, 'בחרה מסלול', label, price);
       savePending({name:d.name, phone:d.phone, email:d.email, label:label, price:price});
       showReminder();
 
