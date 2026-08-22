@@ -553,6 +553,10 @@
     color:#0e2417;font-weight:700;font-size:.95rem;
     box-shadow:0 0 14px rgba(120,200,150,.5);
   }
+  .modal-success.sending{border-color:rgba(212,180,131,.4);background:linear-gradient(120deg,rgba(212,180,131,.12),rgba(125,106,158,.08));color:var(--ink)}
+  .modal-success.sending .ms-check{background:linear-gradient(135deg,#c9a35c,#eed9ae);color:#161019;animation:spinStar 1.2s linear infinite}
+  .modal-success.error{border-color:rgba(210,120,120,.5);background:linear-gradient(120deg,rgba(210,120,120,.14),rgba(212,180,131,.06));color:#f0cccc}
+  .modal-success.error .ms-check{background:linear-gradient(135deg,#c96a6a,#e79a9a);color:#2a1010}
   @keyframes successIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
   .price-opt{
     display:block;width:100%;
@@ -820,10 +824,10 @@
   <div class="modal-box">
     <button type="button" class="modal-close" id="modalClose" aria-label="סגירה">×</button>
 
-    <!-- הודעת הצלחה -->
+    <!-- הודעת סטטוס שליחה -->
     <div class="modal-success" id="modalSuccess" hidden>
       <span class="ms-check" aria-hidden="true">✓</span>
-      <span>הפרטים שלך נשלחו בהצלחה ✦</span>
+      <span id="modalSuccessText">הפרטים שלך נשלחו בהצלחה ✦</span>
     </div>
 
     <!-- שלב 1: בחירת מסלול -->
@@ -1098,10 +1102,24 @@
       });
       return;
     }
-    // שליחת הפרטים למייל מיד בהגעה לשלב המחירים
-    sendLead(d, 'הגיעה לשלב בחירת מסלול');
-    document.getElementById('modalSuccess').hidden = false;
+    // הצגת מצב "שולח" ופתיחת המודל
+    const box  = document.getElementById('modalSuccess');
+    const txt  = document.getElementById('modalSuccessText');
+    box.hidden = false;
+    box.classList.remove('error'); box.classList.add('sending');
+    txt.textContent = 'שולחת את הפרטים…';
     openModal();
+
+    // שליחת הפרטים למייל מיד בהגעה לשלב המחירים
+    sendLead(d, 'הגיעה לשלב בחירת מסלול').then(ok=>{
+      box.classList.remove('sending');
+      if(ok){
+        txt.textContent = 'הפרטים שלך נשלחו בהצלחה ✦';
+      }else{
+        box.classList.add('error');
+        txt.textContent = 'קרתה תקלה בשליחה — אפשר גם בוואטסאפ 054-595-3562';
+      }
+    });
   });
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
@@ -1109,8 +1127,8 @@
   document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
   document.getElementById('stepBack').addEventListener('click', ()=>{ stepPay.hidden = true; stepPrice.hidden = false; });
 
-  /* שליחת הפרטים למייל דרך Web3Forms */
-  function sendLead(d, status, label, price){
+  /* שליחת הפרטים למייל דרך Web3Forms — מחזיר true/false לפי התשובה מהשרת */
+  async function sendLead(d, status, label, price){
     const payload = {
       access_key: WEB3FORMS_KEY,
       subject: 'הרשמה חדשה ל-THE RITUAL ✦ — ' + status,
@@ -1121,11 +1139,15 @@
       'סטטוס': status
     };
     if(label){ payload['מסלול'] = label + ' – ' + price + ' ₪'; }
-    fetch('https://api.web3forms.com/submit', {
-      method:'POST',
-      headers:{'Accept':'application/json','Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    }).catch(()=>{});
+    try{
+      const res  = await fetch('https://api.web3forms.com/submit', {
+        method:'POST',
+        headers:{'Accept':'application/json','Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      return json && json.success === true;
+    }catch(e){ return false; }
   }
 
   /* ---- שמירת מצב ההרשמה (כדי שקישורי התשלום ימשיכו להופיע) ---- */
