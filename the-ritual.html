@@ -193,6 +193,21 @@
   .reveal{opacity:0;transform:translateY(44px);transition:opacity 1.2s ease, transform 1.2s ease}
   .reveal.visible{opacity:1;transform:translateY(0)}
 
+  /* twinkling stars layer for every block/tile */
+  .sec-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+  .sec-star{
+    position:absolute;border-radius:50%;
+    background:#eed9ae;
+    box-shadow:0 0 6px 1px rgba(238,205,140,.55);
+    opacity:0;
+    animation:twinkle var(--d,4s) ease-in-out infinite;
+    animation-delay:var(--dl,0s);
+  }
+  section > :not(.sec-stars){position:relative;z-index:1}
+  .circle-card > :not(.sec-stars){position:relative;z-index:1}
+  .modal-box > :not(.sec-stars){position:relative;z-index:1}
+  footer > :not(.sec-stars){position:relative;z-index:1}
+
   .divider{
     display:flex;align-items:center;justify-content:center;gap:18px;
     max-width:420px;margin:0 auto;color:var(--gold);
@@ -551,6 +566,47 @@
     padding:5px 14px;border-bottom-right-radius:12px;
   }
   .modal-note{margin-top:12px;font-size:.85rem;color:var(--ink-soft)}
+
+  /* payment step */
+  .modal-step[hidden]{display:none}
+  .step-back{
+    position:absolute;top:14px;right:20px;
+    background:none;border:none;color:var(--ink-soft);
+    font-family:'Assistant',sans-serif;font-size:.92rem;cursor:pointer;transition:color .3s;
+  }
+  .step-back:hover{color:var(--gold-bright)}
+  .pay-opt{
+    display:flex;align-items:center;gap:16px;justify-content:flex-start;
+    width:100%;margin-bottom:16px;padding:16px 20px;
+    text-decoration:none;cursor:pointer;
+    border:1px solid rgba(212,180,131,.28);
+    border-radius:16px;
+    background:linear-gradient(120deg, rgba(212,180,131,.05), rgba(125,106,158,.05));
+    color:var(--ink);
+    font-family:'Assistant',sans-serif;
+    transition:all .4s ease;
+  }
+  .pay-opt:hover{
+    border-color:var(--gold-bright);
+    box-shadow:0 0 30px rgba(238,205,140,.15), inset 0 0 24px rgba(238,205,140,.05);
+    transform:translateY(-3px);
+  }
+  .pay-opt.disabled{opacity:.5;pointer-events:none;filter:grayscale(.4)}
+  .pay-logo{
+    width:56px;height:40px;flex:0 0 56px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:10px;font-weight:700;
+  }
+  .bit-logo{
+    background:#0f1e2e;color:#00d1c7;
+    font-family:'Assistant',sans-serif;font-size:1.35rem;letter-spacing:-1px;
+    box-shadow:0 0 16px rgba(0,209,199,.4);
+  }
+  .credit-logo{background:rgba(238,205,140,.12)}
+  .credit-logo svg{width:30px;height:30px;fill:var(--gold-bright)}
+  .pay-text{font-size:1.15rem;color:var(--ink)}
+  .pay-opt.bit:hover .bit-logo{box-shadow:0 0 24px rgba(0,209,199,.6)}
+
   @media (max-width:600px){.modal-box{padding:44px 22px 34px}.price-opt .amt{font-size:1.7rem}}
 
   /* ---------- FOOTER ---------- */
@@ -701,29 +757,52 @@
       <span class="underline"></span>
     </div>
     <button type="submit" class="btn">אני רוצה להצטרף ✦</button>
-    <p class="form-note">לחיצה על הכפתור תפתח וואטסאפ עם הפרטים שלך — נשאר רק לשלוח 💫</p>
+    <p class="form-note">לאחר מילוי הפרטים תוכלי לבחור מסלול ולהשלים תשלום 💫</p>
   </form>
 </section>
 
-<!-- ============ מודל מחירים ============ -->
+<!-- ============ מודל מחירים / תשלום ============ -->
 <div class="modal" id="priceModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-box">
     <button type="button" class="modal-close" id="modalClose" aria-label="סגירה">×</button>
-    <h4 id="modalTitle">בחרי את המסלול שלך ✦</h4>
-    <p class="msub">רגע לפני ההצטרפות למעגל</p>
 
-    <button type="button" class="price-opt early" data-price="420" data-label="מחיר מוקדם (עד 03/09)">
-      <span class="badge">✦ מחיר מוקדם</span>
-      <span class="amt">420 <small>₪</small></span>
-      <span class="lbl">בהרשמה עד 03/09</span>
-    </button>
+    <!-- שלב 1: בחירת מסלול -->
+    <div class="modal-step" id="stepPrice">
+      <h4 id="modalTitle">בחרי את המסלול שלך ✦</h4>
+      <p class="msub">רגע לפני ההצטרפות למעגל</p>
 
-    <button type="button" class="price-opt" data-price="480" data-label="מחיר רגיל">
-      <span class="amt">480 <small>₪</small></span>
-      <span class="lbl">מחיר רגיל</span>
-    </button>
+      <button type="button" class="price-opt early" data-price="420" data-label="מחיר מוקדם (עד 03/09)">
+        <span class="badge">✦ מחיר מוקדם</span>
+        <span class="amt">420 <small>₪</small></span>
+        <span class="lbl">בהרשמה עד 03/09</span>
+      </button>
 
-    <p class="modal-note">בבחירת מסלול ייפתח וואטסאפ עם הפרטים שלך 💫</p>
+      <button type="button" class="price-opt" data-price="480" data-label="מחיר רגיל">
+        <span class="amt">480 <small>₪</small></span>
+        <span class="lbl">מחיר רגיל</span>
+      </button>
+    </div>
+
+    <!-- שלב 2: אמצעי תשלום -->
+    <div class="modal-step" id="stepPay" hidden>
+      <button type="button" class="step-back" id="stepBack">‹ חזרה למסלולים</button>
+      <h4>איך תרצי לשלם? ✦</h4>
+      <p class="msub" id="paySummary">המסלול שנבחר</p>
+
+      <a class="pay-opt bit" id="payBit" href="#" target="_blank" rel="noopener">
+        <span class="pay-logo bit-logo">bit</span>
+        <span class="pay-text">תשלום ב-bit</span>
+      </a>
+
+      <a class="pay-opt credit" id="payCredit" href="#" target="_blank" rel="noopener">
+        <span class="pay-logo credit-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5"/><rect x="2" y="8.5" width="20" height="3" fill="#0e0a15"/><rect x="5" y="15" width="6" height="1.6" rx=".8" fill="#0e0a15"/></svg>
+        </span>
+        <span class="pay-text">תשלום באשראי</span>
+      </a>
+
+      <p class="modal-note" id="payNote">הפרטים שלך נשלחו — נתראה במעגל 💫</p>
+    </div>
   </div>
 </div>
 
@@ -734,7 +813,7 @@
       <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.9.9 1.4.2.4.4 1.1.4 2.3.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.9.7-1.4.9-.4.2-1.1.4-2.3.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.9-.2-2.3-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.9-.9-1.4-.2-.4-.4-1.1-.4-2.3-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.9-.7 1.4-.9.4-.2 1.1-.4 2.3-.4 1.2-.1 1.6-.1 4.8-.1zm0 2c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.2.8-.4.4-.6.7-.8 1.2-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.2.4.4.7.6 1.2.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.2-.8.4-.4.6-.7.8-1.2.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.2-.4-.4-.7-.6-1.2-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1zm0 3.4a4.4 4.4 0 1 1 0 8.8 4.4 4.4 0 0 1 0-8.8zm0 2a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8zm5.6-2.9a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
     </a>
     <span class="bar" aria-hidden="true">|</span>
-    <a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">
+    <a href="https://www.facebook.com/natali.shurayts" target="_blank" rel="noopener" aria-label="Facebook">
       <svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg>
     </a>
   </div>
@@ -742,8 +821,17 @@
 </footer>
 
 <script>
-  /* ---- מספר וואטסאפ: החליפי במספר שלך בפורמט בינלאומי, בלי + (למשל 972501234567) ---- */
-  const WHATSAPP_NUMBER = '972545953562';
+  /* =========================================================
+     ✦ הגדרות — למלא כאן ✦
+     ========================================================= */
+  // Web3Forms — הפרטים נשלחים למייל natashur85@gmail.com
+  const WEB3FORMS_KEY = '768e8957-e88a-4800-bcb1-c61794eb54f8';
+  // קישור תשלום ב-bit (אם יש קישור/דף עסק). אם ריק — יוצג טקסט עם מספר טלפון
+  const BIT_LINK = '';
+  const BIT_PHONE = '054-595-3562';      // מספר לקבלת תשלום ב-bit
+  // קישור תשלום באשראי — יתווסף בהמשך
+  const CREDIT_LINK = '';
+  /* ========================================================= */
 
   /* hero video */
   (function(){
@@ -795,6 +883,32 @@
       entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
     },{threshold:.18});
     document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  })();
+
+  /* twinkling stars in every block / tile */
+  (function(){
+    function seed(el, count){
+      const layer = document.createElement('div');
+      layer.className = 'sec-stars';
+      layer.setAttribute('aria-hidden','true');
+      for(let i=0;i<count;i++){
+        const s = document.createElement('span');
+        s.className = 'sec-star';
+        const size = (Math.random()*1.8 + .8).toFixed(1);
+        s.style.width = s.style.height = size + 'px';
+        s.style.left = (Math.random()*96 + 2) + '%';
+        s.style.top  = (Math.random()*90 + 3) + '%';
+        s.style.setProperty('--d',  (3 + Math.random()*5).toFixed(1)+'s');
+        s.style.setProperty('--dl', (Math.random()*6).toFixed(1)+'s');
+        s.style.opacity = ''; // controlled by animation
+        s.style.setProperty('--o', (.3 + Math.random()*.5).toFixed(2));
+        layer.appendChild(s);
+      }
+      el.prepend(layer);
+    }
+    document.querySelectorAll('section').forEach(el=>seed(el, 16));
+    document.querySelectorAll('.circle-card, footer').forEach(el=>seed(el, 12));
+    document.querySelectorAll('.modal-box').forEach(el=>seed(el, 14));
   })();
 
   /* ---- קלף מסר ---- */
@@ -893,21 +1007,31 @@
     build();
   })();
 
-  /* form → פתיחת מודל מחירים */
-  const modal = document.getElementById('priceModal');
+  /* form → פתיחת מודל */
+  const modal    = document.getElementById('priceModal');
+  const stepPrice = document.getElementById('stepPrice');
+  const stepPay   = document.getElementById('stepPay');
 
   function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
-  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  function closeModal(){
+    modal.classList.remove('open'); document.body.style.overflow='';
+    // איפוס לשלב המחירים לפעם הבאה
+    setTimeout(()=>{ stepPay.hidden = true; stepPrice.hidden = false; }, 400);
+  }
+  function getDetails(){
+    return {
+      name:  document.getElementById('fullName').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      email: document.getElementById('email').value.trim()
+    };
+  }
 
   document.getElementById('joinForm').addEventListener('submit', function(e){
     e.preventDefault();
-    const name  = document.getElementById('fullName').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const email = document.getElementById('email').value.trim();
-    if(!name || !phone || !email){
-      [['fullName',name],['phone',phone],['email',email]].forEach(([id,v])=>{
-        const el = document.getElementById(id);
-        el.style.borderBottomColor = v ? '' : '#c96a6a';
+    const d = getDetails();
+    if(!d.name || !d.phone || !d.email){
+      [['fullName',d.name],['phone',d.phone],['email',d.email]].forEach(([id,v])=>{
+        document.getElementById(id).style.borderBottomColor = v ? '' : '#c96a6a';
       });
       return;
     }
@@ -917,24 +1041,60 @@
   document.getElementById('modalClose').addEventListener('click', closeModal);
   modal.addEventListener('click', e=>{ if(e.target === modal) closeModal(); });
   document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+  document.getElementById('stepBack').addEventListener('click', ()=>{ stepPay.hidden = true; stepPrice.hidden = false; });
 
-  /* בחירת מחיר → WhatsApp */
+  /* שליחת הפרטים למייל דרך Web3Forms */
+  function sendLead(d, label, price){
+    fetch('https://api.web3forms.com/submit', {
+      method:'POST',
+      headers:{'Accept':'application/json','Content-Type':'application/json'},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: 'הרשמה חדשה ל-THE RITUAL ✦',
+        from_name: 'THE RITUAL',
+        name:  d.name,
+        phone: d.phone,
+        email: d.email,
+        'מסלול': label + ' – ' + price + ' ₪'
+      })
+    }).catch(()=>{});
+  }
+
+  /* בחירת מחיר → שליחת מייל + מעבר לאמצעי תשלום */
   document.querySelectorAll('.price-opt').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      const name  = document.getElementById('fullName').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const email = document.getElementById('email').value.trim();
+      const d = getDetails();
       const price = btn.getAttribute('data-price');
       const label = btn.getAttribute('data-label');
-      const msg =
-        '✦ THE RITUAL ✦\n' +
-        'היי! אשמח להצטרף למעגל 🌙\n\n' +
-        'שם מלא: ' + name + '\n' +
-        'טלפון: ' + phone + '\n' +
-        'אימייל: ' + email + '\n' +
-        'מסלול: ' + label + ' – ' + price + ' ₪';
-      window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
-      closeModal();
+
+      sendLead(d, label, price);
+
+      // עדכון סיכום המסלול
+      document.getElementById('paySummary').textContent = label + ' · ' + price + ' ₪';
+
+      // קישורי תשלום
+      const bit = document.getElementById('payBit');
+      if(BIT_LINK){
+        bit.href = BIT_LINK; bit.classList.remove('disabled');
+        bit.querySelector('.pay-text').textContent = 'תשלום ב-bit';
+      } else {
+        bit.href = 'https://www.bitpay.co.il/app/me/';
+        bit.querySelector('.pay-text').textContent = 'תשלום ב-bit ל-' + BIT_PHONE;
+      }
+
+      const credit = document.getElementById('payCredit');
+      if(CREDIT_LINK){
+        credit.href = CREDIT_LINK; credit.classList.remove('disabled');
+        credit.querySelector('.pay-text').textContent = 'תשלום באשראי';
+      } else {
+        credit.classList.add('disabled');
+        credit.removeAttribute('href');
+        credit.querySelector('.pay-text').textContent = 'תשלום באשראי — בקרוב';
+      }
+
+      // מעבר לשלב התשלום
+      stepPrice.hidden = true;
+      stepPay.hidden = false;
     });
   });
 </script>
