@@ -47,19 +47,16 @@
       radial-gradient(ellipse 60% 45% at 50% 18%, rgba(220,190,140,.14), transparent 65%),
       linear-gradient(180deg,#0e0a15 0%, #0b0810 70%, #0b0810 100%);
   }
-  /* התמונה: שמרי את תמונת האווירה בשם hero.jpg לצד הקובץ והיא תיטען אוטומטית */
-  .hero-img{
+  /* וידאו רקע ראשי */
+  .hero-video{
     position:absolute;inset:0;
-    background-image:url('hero.jpg');
-    background-size:cover;
-    background-position:center 30%;
+    width:100%;height:100%;
+    object-fit:cover;
     opacity:0;
-    transform:scale(1.06);
-    transition:opacity 2.5s ease;
-    animation:slowZoom 30s ease-in-out infinite alternate;
+    transition:opacity 2s ease;
+    z-index:0;
   }
-  .hero-img.loaded{opacity:.55}
-  @keyframes slowZoom{from{transform:scale(1.06)}to{transform:scale(1.14)}}
+  .hero-video.loaded{opacity:.72}
   .hero-veil{
     position:absolute;inset:0;
     background:
@@ -480,6 +477,82 @@
   @keyframes shimmer{0%,55%{left:-80px}75%,100%{left:120%}}
   .form-note{margin-top:20px;font-size:.9rem;color:var(--ink-soft)}
 
+  /* ---------- PRICING MODAL ---------- */
+  .modal{
+    position:fixed;inset:0;z-index:100;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    background:rgba(8,6,12,.82);
+    backdrop-filter:blur(8px);
+    opacity:0;visibility:hidden;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  .modal.open{opacity:1;visibility:visible}
+  .modal-box{
+    position:relative;
+    width:100%;max-width:440px;
+    padding:48px 34px 40px;
+    text-align:center;
+    border:1px solid rgba(212,180,131,.3);
+    border-radius:22px;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 0%, rgba(125,106,158,.18), transparent 70%),
+      linear-gradient(160deg, #1a1423, #100b18);
+    box-shadow:0 0 70px rgba(238,205,140,.12), 0 30px 80px rgba(0,0,0,.7);
+    transform:translateY(30px) scale(.96);
+    transition:transform .6s cubic-bezier(.22,.9,.3,1.2);
+  }
+  .modal.open .modal-box{transform:translateY(0) scale(1)}
+  .modal-box::before,.modal-box::after{content:'✦';position:absolute;color:var(--gold-dim);font-size:.8rem}
+  .modal-box::before{top:16px;right:20px}
+  .modal-box::after{bottom:16px;left:20px}
+  .modal-close{
+    position:absolute;top:12px;left:16px;
+    background:none;border:none;color:var(--ink-soft);
+    font-size:1.6rem;cursor:pointer;line-height:1;transition:color .3s;
+  }
+  .modal-close:hover{color:var(--gold-bright)}
+  .modal-box h4{
+    font-family:'Frank Ruhl Libre',serif;font-weight:400;
+    font-size:1.7rem;color:var(--gold-bright);letter-spacing:.04em;
+    margin-bottom:10px;
+  }
+  .modal-box .msub{color:var(--ink-soft);font-size:1rem;margin-bottom:30px}
+  .price-opt{
+    display:block;width:100%;
+    margin-bottom:18px;padding:20px 22px;
+    text-align:right;cursor:pointer;
+    border:1px solid rgba(212,180,131,.28);
+    border-radius:16px;
+    background:linear-gradient(120deg, rgba(212,180,131,.05), rgba(125,106,158,.05));
+    color:var(--ink);
+    font-family:'Assistant',sans-serif;
+    transition:all .4s ease;
+    position:relative;overflow:hidden;
+  }
+  .price-opt:hover{
+    border-color:var(--gold-bright);
+    box-shadow:0 0 30px rgba(238,205,140,.15), inset 0 0 24px rgba(238,205,140,.05);
+    transform:translateY(-3px);
+  }
+  .price-opt .amt{
+    display:block;font-family:'Frank Ruhl Libre',serif;
+    font-size:2rem;color:var(--gold-bright);letter-spacing:.02em;
+    text-shadow:0 0 20px rgba(238,205,140,.25);
+  }
+  .price-opt .amt small{font-size:1.1rem;opacity:.8}
+  .price-opt .lbl{display:block;margin-top:4px;font-size:.98rem;color:var(--ink-soft)}
+  .price-opt.early{border-color:rgba(238,205,140,.5)}
+  .price-opt.early .amt{color:#f4e4bc}
+  .badge{
+    position:absolute;top:0;left:0;
+    background:linear-gradient(120deg,#c9a35c,#eed9ae);
+    color:#161019;font-size:.72rem;font-weight:600;letter-spacing:.04em;
+    padding:5px 14px;border-bottom-right-radius:12px;
+  }
+  .modal-note{margin-top:12px;font-size:.85rem;color:var(--ink-soft)}
+  @media (max-width:600px){.modal-box{padding:44px 22px 34px}.price-opt .amt{font-size:1.7rem}}
+
   /* ---------- FOOTER ---------- */
   footer{
     position:relative;
@@ -520,7 +593,8 @@
 
 <!-- ============ 1. HERO ============ -->
 <header class="hero" id="top">
-  <div class="hero-img" id="heroImg"></div>
+  <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
+         poster="" src="https://res.cloudinary.com/dpqheuznj/video/upload/v1787384559/WhatsApp_Video_2026-08-21_at_19.19.04_h1ei9g.mp4"></video>
   <div class="moon" aria-hidden="true"></div>
   <div class="stars" id="stars" aria-hidden="true"></div>
   <div class="smoke" aria-hidden="true">
@@ -631,10 +705,32 @@
   </form>
 </section>
 
+<!-- ============ מודל מחירים ============ -->
+<div class="modal" id="priceModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <button type="button" class="modal-close" id="modalClose" aria-label="סגירה">×</button>
+    <h4 id="modalTitle">בחרי את המסלול שלך ✦</h4>
+    <p class="msub">רגע לפני ההצטרפות למעגל</p>
+
+    <button type="button" class="price-opt early" data-price="420" data-label="מחיר מוקדם (עד 03/09)">
+      <span class="badge">✦ מחיר מוקדם</span>
+      <span class="amt">420 <small>₪</small></span>
+      <span class="lbl">בהרשמה עד 03/09</span>
+    </button>
+
+    <button type="button" class="price-opt" data-price="480" data-label="מחיר רגיל">
+      <span class="amt">480 <small>₪</small></span>
+      <span class="lbl">מחיר רגיל</span>
+    </button>
+
+    <p class="modal-note">בבחירת מסלול ייפתח וואטסאפ עם הפרטים שלך 💫</p>
+  </div>
+</div>
+
 <!-- ============ 7. תחתית ============ -->
 <footer>
   <div class="socials">
-    <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+    <a href="https://www.instagram.com/neta_lee_natasha" target="_blank" rel="noopener" aria-label="Instagram">
       <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.9.9 1.4.2.4.4 1.1.4 2.3.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.9.7-1.4.9-.4.2-1.1.4-2.3.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.9-.2-2.3-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.9-.9-1.4-.2-.4-.4-1.1-.4-2.3-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.9-.7 1.4-.9.4-.2 1.1-.4 2.3-.4 1.2-.1 1.6-.1 4.8-.1zm0 2c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.2.8-.4.4-.6.7-.8 1.2-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.2.4.4.7.6 1.2.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.2-.8.4-.4.6-.7.8-1.2.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.2-.4-.4-.7-.6-1.2-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1zm0 3.4a4.4 4.4 0 1 1 0 8.8 4.4 4.4 0 0 1 0-8.8zm0 2a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8zm5.6-2.9a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
     </a>
     <span class="bar" aria-hidden="true">|</span>
@@ -647,14 +743,19 @@
 
 <script>
   /* ---- מספר וואטסאפ: החליפי במספר שלך בפורמט בינלאומי, בלי + (למשל 972501234567) ---- */
-  const WHATSAPP_NUMBER = '972500000000';
+  const WHATSAPP_NUMBER = '972545953562';
 
-  /* hero image (מוצגת רק אם hero.jpg קיים ליד הקובץ) */
+  /* hero video */
   (function(){
-    const el = document.getElementById('heroImg');
-    const img = new Image();
-    img.onload = () => el.classList.add('loaded');
-    img.src = 'hero.jpg';
+    const v = document.getElementById('heroVideo');
+    const show = () => v.classList.add('loaded');
+    if(v.readyState >= 2) show();
+    v.addEventListener('loadeddata', show);
+    v.addEventListener('canplay', show);
+    // ensure autoplay kicks in on mobile
+    const tryPlay = () => v.play().catch(()=>{});
+    tryPlay();
+    document.addEventListener('touchstart', tryPlay, {once:true});
   })();
 
   /* stars */
@@ -792,7 +893,12 @@
     build();
   })();
 
-  /* form → WhatsApp */
+  /* form → פתיחת מודל מחירים */
+  const modal = document.getElementById('priceModal');
+
+  function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+
   document.getElementById('joinForm').addEventListener('submit', function(e){
     e.preventDefault();
     const name  = document.getElementById('fullName').value.trim();
@@ -805,13 +911,31 @@
       });
       return;
     }
-    const msg =
-      '✦ THE RITUAL ✦\n' +
-      'היי! אשמח להצטרף למעגל 🌙\n\n' +
-      'שם מלא: ' + name + '\n' +
-      'טלפון: ' + phone + '\n' +
-      'אימייל: ' + email;
-    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+    openModal();
+  });
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', e=>{ if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+
+  /* בחירת מחיר → WhatsApp */
+  document.querySelectorAll('.price-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const name  = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const price = btn.getAttribute('data-price');
+      const label = btn.getAttribute('data-label');
+      const msg =
+        '✦ THE RITUAL ✦\n' +
+        'היי! אשמח להצטרף למעגל 🌙\n\n' +
+        'שם מלא: ' + name + '\n' +
+        'טלפון: ' + phone + '\n' +
+        'אימייל: ' + email + '\n' +
+        'מסלול: ' + label + ' – ' + price + ' ₪';
+      window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+      closeModal();
+    });
   });
 </script>
 </body>
