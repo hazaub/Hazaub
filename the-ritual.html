@@ -197,8 +197,8 @@
   .sec-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
   .sec-star{
     position:absolute;border-radius:50%;
-    background:#eed9ae;
-    box-shadow:0 0 6px 1px rgba(238,205,140,.55);
+    background:#f4e6c6;
+    box-shadow:0 0 7px 1.5px rgba(238,205,140,.7);
     opacity:0;
     animation:twinkle var(--d,4s) ease-in-out infinite;
     animation-delay:var(--dl,0s);
@@ -533,6 +533,27 @@
     margin-bottom:10px;
   }
   .modal-box .msub{color:var(--ink-soft);font-size:1rem;margin-bottom:30px}
+
+  /* success banner */
+  .modal-success{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin:0 0 24px;padding:12px 18px;
+    border:1px solid rgba(120,200,150,.4);
+    border-radius:14px;
+    background:linear-gradient(120deg, rgba(120,200,150,.12), rgba(212,180,131,.08));
+    color:#cdeccf;
+    font-family:'Assistant',sans-serif;font-size:1rem;letter-spacing:.02em;
+    animation:successIn .6s ease both;
+  }
+  .modal-success[hidden]{display:none}
+  .modal-success .ms-check{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:50%;
+    background:linear-gradient(135deg,#5fbf87,#8fe0aa);
+    color:#0e2417;font-weight:700;font-size:.95rem;
+    box-shadow:0 0 14px rgba(120,200,150,.5);
+  }
+  @keyframes successIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
   .price-opt{
     display:block;width:100%;
     margin-bottom:18px;padding:20px 22px;
@@ -799,6 +820,12 @@
   <div class="modal-box">
     <button type="button" class="modal-close" id="modalClose" aria-label="סגירה">×</button>
 
+    <!-- הודעת הצלחה -->
+    <div class="modal-success" id="modalSuccess" hidden>
+      <span class="ms-check" aria-hidden="true">✓</span>
+      <span>הפרטים שלך נשלחו בהצלחה ✦</span>
+    </div>
+
     <!-- שלב 1: בחירת מסלול -->
     <div class="modal-step" id="stepPrice">
       <h4 id="modalTitle">בחרי את המסלול שלך ✦</h4>
@@ -885,7 +912,7 @@
   /* stars */
   (function(){
     const c = document.getElementById('stars');
-    for(let i=0;i<260;i++){
+    for(let i=0;i<520;i++){
       const s = document.createElement('div');
       s.className = 'star';
       const size = Math.random()*2.2 + .6;
@@ -902,7 +929,7 @@
   /* rising golden sparks */
   (function(){
     const c = document.getElementById('sparks');
-    for(let i=0;i<46;i++){
+    for(let i=0;i<90;i++){
       const p = document.createElement('div');
       p.className = 'spark';
       p.style.left = Math.random()*100 + '%';
@@ -930,21 +957,21 @@
       for(let i=0;i<count;i++){
         const s = document.createElement('span');
         s.className = 'sec-star';
-        const size = (Math.random()*1.8 + .8).toFixed(1);
+        const size = (Math.random()*2.4 + 1).toFixed(1);
         s.style.width = s.style.height = size + 'px';
         s.style.left = (Math.random()*96 + 2) + '%';
-        s.style.top  = (Math.random()*90 + 3) + '%';
-        s.style.setProperty('--d',  (3 + Math.random()*5).toFixed(1)+'s');
+        s.style.top  = (Math.random()*92 + 3) + '%';
+        s.style.setProperty('--d',  (2.6 + Math.random()*4.4).toFixed(1)+'s');
         s.style.setProperty('--dl', (Math.random()*6).toFixed(1)+'s');
         s.style.opacity = ''; // controlled by animation
-        s.style.setProperty('--o', (.3 + Math.random()*.5).toFixed(2));
+        s.style.setProperty('--o', (.5 + Math.random()*.45).toFixed(2));
         layer.appendChild(s);
       }
       el.prepend(layer);
     }
-    document.querySelectorAll('section').forEach(el=>seed(el, 34));
-    document.querySelectorAll('.circle-card, footer').forEach(el=>seed(el, 22));
-    document.querySelectorAll('.modal-box').forEach(el=>seed(el, 24));
+    document.querySelectorAll('section').forEach(el=>seed(el, 70));
+    document.querySelectorAll('.circle-card, footer').forEach(el=>seed(el, 46));
+    document.querySelectorAll('.modal-box').forEach(el=>seed(el, 48));
   })();
 
   /* ---- קלף מסר ---- */
@@ -1052,7 +1079,7 @@
   function closeModal(){
     modal.classList.remove('open'); document.body.style.overflow='';
     // איפוס לשלב המחירים לפעם הבאה
-    setTimeout(()=>{ stepPay.hidden = true; stepPrice.hidden = false; }, 400);
+    setTimeout(()=>{ stepPay.hidden = true; stepPrice.hidden = false; document.getElementById('modalSuccess').hidden = true; }, 400);
   }
   function getDetails(){
     return {
@@ -1073,6 +1100,7 @@
     }
     // שליחת הפרטים למייל מיד בהגעה לשלב המחירים
     sendLead(d, 'הגיעה לשלב בחירת מסלול');
+    document.getElementById('modalSuccess').hidden = false;
     openModal();
   });
 
