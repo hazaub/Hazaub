@@ -575,6 +575,7 @@
     font-family:'Assistant',sans-serif;font-size:.92rem;cursor:pointer;transition:color .3s;
   }
   .step-back:hover{color:var(--gold-bright)}
+  #stepPay{padding-top:26px}
   .pay-opt{
     display:flex;align-items:center;gap:16px;justify-content:flex-start;
     width:100%;margin-bottom:16px;padding:16px 20px;
@@ -593,19 +594,51 @@
   }
   .pay-opt.disabled{opacity:.5;pointer-events:none;filter:grayscale(.4)}
   .pay-logo{
-    width:56px;height:40px;flex:0 0 56px;
+    height:42px;flex:0 0 auto;min-width:60px;padding:0 14px;
     display:flex;align-items:center;justify-content:center;
-    border-radius:10px;font-weight:700;
+    border-radius:11px;font-weight:800;
+    font-family:'Assistant',sans-serif;
   }
   .bit-logo{
     background:#0f1e2e;color:#00d1c7;
-    font-family:'Assistant',sans-serif;font-size:1.35rem;letter-spacing:-1px;
+    font-size:1.4rem;letter-spacing:-1px;
     box-shadow:0 0 16px rgba(0,209,199,.4);
   }
-  .credit-logo{background:rgba(238,205,140,.12)}
-  .credit-logo svg{width:30px;height:30px;fill:var(--gold-bright)}
+  .paybox-logo{
+    background:linear-gradient(135deg,#6a4bff,#9b6bff);color:#fff;
+    font-size:1.05rem;letter-spacing:.2px;
+    box-shadow:0 0 16px rgba(123,92,255,.45);
+  }
   .pay-text{font-size:1.15rem;color:var(--ink)}
-  .pay-opt.bit:hover .bit-logo{box-shadow:0 0 24px rgba(0,209,199,.6)}
+  .pay-opt.bit:hover .bit-logo{box-shadow:0 0 26px rgba(0,209,199,.6)}
+  .pay-opt.paybox:hover .paybox-logo{box-shadow:0 0 26px rgba(123,92,255,.65)}
+
+  /* persistent payment reminder pill */
+  .pay-reminder{
+    position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);
+    z-index:90;
+    display:flex;align-items:center;gap:12px;
+    padding:13px 20px 13px 24px;
+    border:none;border-radius:50px;cursor:pointer;
+    font-family:'Assistant',sans-serif;font-size:1rem;font-weight:600;letter-spacing:.02em;
+    color:#161019;
+    background:linear-gradient(120deg,#b3945f,#eed9ae 45%,#c9a35c);
+    box-shadow:0 0 30px rgba(238,205,140,.4), 0 10px 30px rgba(0,0,0,.5);
+    opacity:0;visibility:hidden;
+    transition:transform .6s cubic-bezier(.22,.9,.3,1.2), opacity .6s ease, visibility .6s;
+    animation:remindPulse 3s ease-in-out infinite;
+  }
+  .pay-reminder.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  @keyframes remindPulse{0%,100%{box-shadow:0 0 30px rgba(238,205,140,.35),0 10px 30px rgba(0,0,0,.5)}50%{box-shadow:0 0 46px rgba(238,205,140,.6),0 10px 30px rgba(0,0,0,.5)}}
+  .pay-reminder .pr-star{font-size:1.05rem;animation:spinStar 12s linear infinite}
+  .pay-reminder .pr-close{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;margin-right:-6px;border-radius:50%;
+    background:rgba(22,16,25,.14);color:#161019;font-size:1.1rem;line-height:1;
+    transition:background .3s;
+  }
+  .pay-reminder .pr-close:hover{background:rgba(22,16,25,.28)}
+  @media (max-width:600px){.pay-reminder{font-size:.92rem;padding:12px 16px 12px 18px;bottom:16px}}
 
   @media (max-width:600px){.modal-box{padding:44px 22px 34px}.price-opt .amt{font-size:1.7rem}}
 
@@ -789,22 +822,27 @@
       <h4>איך תרצי לשלם? ✦</h4>
       <p class="msub" id="paySummary">המסלול שנבחר</p>
 
-      <a class="pay-opt bit" id="payBit" href="#" target="_blank" rel="noopener">
+      <a class="pay-opt bit" id="payBit" href="https://www.bitpay.co.il/app/share-info?i=200947113129_19o5LoYY" target="_blank" rel="noopener">
         <span class="pay-logo bit-logo">bit</span>
         <span class="pay-text">תשלום ב-bit</span>
       </a>
 
-      <a class="pay-opt credit" id="payCredit" href="#" target="_blank" rel="noopener">
-        <span class="pay-logo credit-logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5"/><rect x="2" y="8.5" width="20" height="3" fill="#0e0a15"/><rect x="5" y="15" width="6" height="1.6" rx=".8" fill="#0e0a15"/></svg>
-        </span>
-        <span class="pay-text">תשלום באשראי</span>
+      <a class="pay-opt paybox" id="payBox" href="https://links.payboxapp.com/ZtVIT5V3N5b" target="_blank" rel="noopener">
+        <span class="pay-logo paybox-logo">paybox</span>
+        <span class="pay-text">תשלום ב-PayBox</span>
       </a>
 
       <p class="modal-note" id="payNote">הפרטים שלך נשלחו — נתראה במעגל 💫</p>
     </div>
   </div>
 </div>
+
+<!-- ============ תזכורת תשלום מתמשכת ============ -->
+<button type="button" class="pay-reminder" id="payReminder" aria-label="השלמת תשלום">
+  <span class="pr-star" aria-hidden="true">✦</span>
+  <span>להשלמת ההרשמה שלך</span>
+  <span class="pr-close" id="payReminderClose" role="button" aria-label="הסתרה">×</span>
+</button>
 
 <!-- ============ 7. תחתית ============ -->
 <footer>
@@ -826,11 +864,9 @@
      ========================================================= */
   // Web3Forms — הפרטים נשלחים למייל natashur85@gmail.com
   const WEB3FORMS_KEY = '768e8957-e88a-4800-bcb1-c61794eb54f8';
-  // קישור תשלום ב-bit (אם יש קישור/דף עסק). אם ריק — יוצג טקסט עם מספר טלפון
-  const BIT_LINK = '';
-  const BIT_PHONE = '054-595-3562';      // מספר לקבלת תשלום ב-bit
-  // קישור תשלום באשראי — יתווסף בהמשך
-  const CREDIT_LINK = '';
+  // קישורי תשלום
+  const BIT_LINK    = 'https://www.bitpay.co.il/app/share-info?i=200947113129_19o5LoYY';
+  const PAYBOX_LINK = 'https://links.payboxapp.com/ZtVIT5V3N5b';
   /* ========================================================= */
 
   /* hero video */
@@ -849,7 +885,7 @@
   /* stars */
   (function(){
     const c = document.getElementById('stars');
-    for(let i=0;i<90;i++){
+    for(let i=0;i<170;i++){
       const s = document.createElement('div');
       s.className = 'star';
       const size = Math.random()*2.2 + .6;
@@ -866,7 +902,7 @@
   /* rising golden sparks */
   (function(){
     const c = document.getElementById('sparks');
-    for(let i=0;i<16;i++){
+    for(let i=0;i<28;i++){
       const p = document.createElement('div');
       p.className = 'spark';
       p.style.left = Math.random()*100 + '%';
@@ -1060,7 +1096,25 @@
     }).catch(()=>{});
   }
 
-  /* בחירת מחיר → שליחת מייל + מעבר לאמצעי תשלום */
+  /* ---- שמירת מצב ההרשמה (כדי שקישורי התשלום ימשיכו להופיע) ---- */
+  const STORE_KEY = 'ritual_pending';
+  const reminder  = document.getElementById('payReminder');
+
+  function savePending(p){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(p)); }catch(e){} }
+  function loadPending(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){ return null; } }
+  function clearPending(){ try{ localStorage.removeItem(STORE_KEY); }catch(e){} }
+  function showReminder(){ reminder.classList.add('show'); }
+  function hideReminder(){ reminder.classList.remove('show'); }
+
+  /* מעבר לשלב התשלום עם מסלול נתון */
+  function goToPayment(label, price){
+    document.getElementById('paySummary').textContent = label + ' · ' + price + ' ₪';
+    stepPrice.hidden = true;
+    stepPay.hidden = false;
+    openModal();
+  }
+
+  /* בחירת מחיר → שליחת מייל + שמירה + מעבר לתשלום */
   document.querySelectorAll('.price-opt').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const d = getDetails();
@@ -1068,35 +1122,32 @@
       const label = btn.getAttribute('data-label');
 
       sendLead(d, label, price);
+      savePending({name:d.name, phone:d.phone, email:d.email, label:label, price:price});
+      showReminder();
 
-      // עדכון סיכום המסלול
       document.getElementById('paySummary').textContent = label + ' · ' + price + ' ₪';
-
-      // קישורי תשלום
-      const bit = document.getElementById('payBit');
-      if(BIT_LINK){
-        bit.href = BIT_LINK; bit.classList.remove('disabled');
-        bit.querySelector('.pay-text').textContent = 'תשלום ב-bit';
-      } else {
-        bit.href = 'https://www.bitpay.co.il/app/me/';
-        bit.querySelector('.pay-text').textContent = 'תשלום ב-bit ל-' + BIT_PHONE;
-      }
-
-      const credit = document.getElementById('payCredit');
-      if(CREDIT_LINK){
-        credit.href = CREDIT_LINK; credit.classList.remove('disabled');
-        credit.querySelector('.pay-text').textContent = 'תשלום באשראי';
-      } else {
-        credit.classList.add('disabled');
-        credit.removeAttribute('href');
-        credit.querySelector('.pay-text').textContent = 'תשלום באשראי — בקרוב';
-      }
-
-      // מעבר לשלב התשלום
       stepPrice.hidden = true;
       stepPay.hidden = false;
     });
   });
+
+  /* תזכורת תשלום מתמשכת */
+  reminder.addEventListener('click', e=>{
+    if(e.target.id === 'payReminderClose'){ clearPending(); hideReminder(); return; }
+    const p = loadPending();
+    if(p) goToPayment(p.label, p.price);
+  });
+
+  /* בטעינת הדף — אם יש הרשמה שלא הושלמה, החזרת הפרטים והצגת התזכורת */
+  (function(){
+    const p = loadPending();
+    if(!p) return;
+    const fn = document.getElementById('fullName'), ph = document.getElementById('phone'), em = document.getElementById('email');
+    if(fn && p.name)  fn.value = p.name;
+    if(ph && p.phone) ph.value = p.phone;
+    if(em && p.email) em.value = p.email;
+    setTimeout(showReminder, 1400);
+  })();
 </script>
 </body>
 </html>
