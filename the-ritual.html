@@ -570,17 +570,16 @@
     overflow:hidden;pointer-events:none;z-index:4;
   }
   .witch-fly{
-    position:absolute;top:8%;left:105%;
-    width:132px;
-    animation:witchFly 13s cubic-bezier(.45,0,.55,1) infinite;
+    position:absolute;top:7%;left:105%;
+    width:140px;
+    animation:witchFly 10s cubic-bezier(.45,0,.55,1) infinite;
     will-change:left;
   }
   @keyframes witchFly{
-    0%{left:108%}
-    6%{opacity:1}
-    48%{left:-24%;opacity:1}
-    52%{left:-24%;opacity:0}
-    100%{left:-24%;opacity:0}
+    0%{left:108%;opacity:1}
+    55%{left:-26%;opacity:1}
+    60%{left:-26%;opacity:0}
+    100%{left:-26%;opacity:0}
   }
   .witch-bob{animation:witchBob 2.4s ease-in-out infinite}
   @keyframes witchBob{
@@ -907,6 +906,9 @@
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.2s !important}
+    /* גם ללא תנועה — המכשפה תוצג במקום קבוע וגלוי */
+    .witch-fly{left:58% !important;top:5% !important;opacity:1 !important}
+    .witch-bob{transform:rotate(-6deg) !important}
   }
 </style>
 </head>
