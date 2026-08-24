@@ -563,6 +563,96 @@
     .price-card{max-width:340px;width:100%}
   }
 
+  /* ---------- MANIFEST PORTAL ---------- */
+  .portal{
+    position:relative;
+    max-width:600px;margin:0 auto;
+    padding:52px 40px;
+    border:1px solid rgba(212,180,131,.3);
+    border-radius:26px;
+    background:
+      radial-gradient(ellipse 90% 80% at 50% 0%, rgba(125,106,158,.2), transparent 70%),
+      linear-gradient(160deg, rgba(212,180,131,.06), rgba(16,12,24,.72));
+    box-shadow:0 0 50px rgba(238,205,140,.07), inset 0 0 60px rgba(0,0,0,.35);
+    cursor:pointer;overflow:hidden;
+    transition:transform .5s ease, border-color .5s ease, box-shadow .5s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .portal:hover{
+    transform:translateY(-5px);
+    border-color:rgba(238,205,140,.55);
+    box-shadow:0 0 60px rgba(238,205,140,.18), inset 0 0 60px rgba(238,205,140,.05);
+  }
+  /* rotating gold halo behind */
+  .portal-ring{
+    position:absolute;top:50%;left:50%;
+    width:150%;padding-bottom:150%;
+    transform:translate(-50%,-50%);
+    background:conic-gradient(from 0deg, transparent 0 15%, rgba(238,205,140,.16) 25%, transparent 40% 60%, rgba(125,106,158,.16) 70%, transparent 85% 100%);
+    border-radius:50%;
+    filter:blur(24px);
+    opacity:.6;
+    animation:portalSpin 22s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes portalSpin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .portal-inner{position:relative;z-index:2;text-align:center}
+  .portal-eyebrow{
+    display:block;color:var(--gold);font-family:'Assistant',sans-serif;
+    font-size:.95rem;letter-spacing:.22em;margin-bottom:14px;
+    text-shadow:0 0 14px var(--glow);
+  }
+  .portal-title{
+    font-family:'Cormorant Garamond','Frank Ruhl Libre',serif;font-weight:400;
+    font-size:clamp(2.6rem,7vw,3.8rem);letter-spacing:.16em;
+    color:var(--gold-bright);
+    text-shadow:0 0 30px rgba(238,205,140,.3);
+    direction:ltr;margin-bottom:8px;
+  }
+  .portal-sub{color:var(--ink);font-family:'Frank Ruhl Libre',serif;font-size:clamp(1.05rem,2.6vw,1.3rem);letter-spacing:.03em}
+  .portal-hint{
+    display:inline-block;margin-top:22px;
+    color:var(--gold-dim);font-family:'Assistant',sans-serif;font-size:.95rem;letter-spacing:.04em;
+    transition:opacity .4s ease, transform .4s ease;
+    animation:pulseStar 3.5s ease-in-out infinite;
+  }
+  .portal-hint::before{content:'☾ '}
+  .portal[data-open="true"] .portal-hint{opacity:0;transform:translateY(-8px);pointer-events:none;height:0;margin:0;animation:none;overflow:hidden}
+
+  .portal-reveal{
+    max-height:0;opacity:0;overflow:hidden;
+    transition:max-height 1s cubic-bezier(.4,0,.2,1), opacity .9s ease .15s, margin-top .9s ease;
+    margin-top:0;
+  }
+  .portal[data-open="true"] .portal-reveal{max-height:420px;opacity:1;margin-top:28px}
+  .pr-line{
+    color:var(--ink);font-size:1.08rem;letter-spacing:.02em;margin:10px 0;
+    font-family:'Assistant',sans-serif;
+  }
+  .pr-line .pr-ic{color:var(--gold);margin-left:8px;text-shadow:0 0 10px var(--glow)}
+  .pr-desc{
+    color:var(--ink-soft);font-family:'Frank Ruhl Libre',serif;
+    font-size:1.05rem;line-height:1.9;margin:20px auto 0;max-width:460px;
+  }
+  .pr-cta{
+    display:inline-block;margin-top:26px;
+    padding:14px 40px;border-radius:50px;
+    font-family:'Assistant',sans-serif;font-size:1.05rem;letter-spacing:.04em;
+    color:#161019;text-decoration:none;
+    background:linear-gradient(120deg,#b3945f,#eed9ae 45%,#c9a35c);
+    box-shadow:0 0 26px rgba(238,205,140,.28), 0 6px 20px rgba(0,0,0,.5);
+    transition:transform .3s ease, box-shadow .4s ease;
+  }
+  .pr-cta:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(238,205,140,.45),0 6px 22px rgba(0,0,0,.55)}
+
+  /* burst sparkles on open */
+  .portal-burst{position:absolute;top:36%;left:50%;width:0;height:0;z-index:3;pointer-events:none}
+  .portal-burst i{
+    position:absolute;width:5px;height:5px;border-radius:50%;
+    background:var(--gold-bright);box-shadow:0 0 10px 2px rgba(238,205,140,.8);
+    animation:burstFly 1.2s ease-out forwards;
+  }
+
   /* ---------- PRICING MODAL ---------- */
   .modal{
     position:fixed;inset:0;z-index:100;
@@ -915,6 +1005,28 @@
   <a href="#join" class="pricing-cta">להשארת פרטים והרשמה ✦</a>
 </section>
 
+<div class="divider reveal"><span>✦</span></div>
+
+<!-- ============ פורטל MANIFEST ============ -->
+<section class="reveal" id="manifest">
+  <div class="portal" id="portal" data-open="false" role="button" tabindex="0" aria-label="MANIFEST — לחצי לגילוי פרטי הריטריט">
+    <div class="portal-ring" aria-hidden="true"></div>
+    <div class="portal-inner">
+      <span class="portal-eyebrow">✦ החוויה הבאה ✦</span>
+      <h3 class="portal-title">MANIFEST</h3>
+      <p class="portal-sub">ריטריט תודעה · פאפוס, קפריסין</p>
+      <span class="portal-hint" id="portalHint">לחצי לגילוי הקסם ✦</span>
+
+      <div class="portal-reveal" id="portalReveal">
+        <div class="pr-line"><span class="pr-ic">☾</span> 08–11 באוקטובר 2026</div>
+        <div class="pr-line"><span class="pr-ic">✦</span> Leonardo Cypria Maris Beach Hotel &amp; Spa · פאפוס</div>
+        <p class="pr-desc">ארבעה ימים של טרנספורמציה, מדיטציה ויצירת מציאות — בהשראת עבודתו של ד״ר ג׳ו דיספנזה, במלון חוף יוקרתי בשיטת הכל־כלול.</p>
+        <a class="pr-cta" href="https://natashafriends.com/manifest" target="_blank" rel="noopener">לפרטים המלאים ולהרשמה ✦</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ מודל מחירים / תשלום ============ -->
 <div class="modal" id="priceModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-box">
@@ -1168,6 +1280,42 @@
 
     document.getElementById('pullAgain').addEventListener('click', build);
     build();
+  })();
+
+  /* ---- פורטל MANIFEST ---- */
+  (function(){
+    const portal = document.getElementById('portal');
+    if(!portal) return;
+    const LINK = 'https://natashafriends.com/manifest';
+
+    function burst(){
+      const b = document.createElement('div');
+      b.className = 'portal-burst';
+      for(let i=0;i<22;i++){
+        const s = document.createElement('i');
+        const ang = (Math.PI*2/22)*i + Math.random()*.4;
+        const dist = 70 + Math.random()*90;
+        s.style.setProperty('--bx', (Math.cos(ang)*dist).toFixed(0)+'px');
+        s.style.setProperty('--by', (Math.sin(ang)*dist).toFixed(0)+'px');
+        s.style.animationDelay = (Math.random()*.18)+'s';
+        b.appendChild(s);
+      }
+      portal.appendChild(b);
+      setTimeout(()=>b.remove(), 1500);
+    }
+
+    function activate(e){
+      // לחיצה על הכפתור עצמו — הפנייה לאתר (התנהגות ברירת מחדל)
+      if(e && e.target.closest && e.target.closest('.pr-cta')) return;
+      if(portal.dataset.open !== 'true'){
+        portal.dataset.open = 'true';   // פתיחה קסומה
+        burst();
+      } else {
+        window.open(LINK, '_blank');    // כשכבר פתוח — הפניה לאתר
+      }
+    }
+    portal.addEventListener('click', activate);
+    portal.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); activate(e); } });
   })();
 
   /* form → פתיחת מודל */
