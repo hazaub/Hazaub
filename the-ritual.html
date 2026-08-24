@@ -611,12 +611,16 @@
   }
   .portal-sub{color:var(--ink);font-family:'Frank Ruhl Libre',serif;font-size:clamp(1.05rem,2.6vw,1.3rem);letter-spacing:.03em}
   .portal-hint{
-    display:inline-block;margin-top:22px;
-    color:var(--gold-dim);font-family:'Assistant',sans-serif;font-size:.95rem;letter-spacing:.04em;
+    display:inline-block;margin-top:24px;
+    color:#f6e7c2;font-family:'Assistant',sans-serif;font-size:1.2rem;font-weight:600;letter-spacing:.05em;
     transition:opacity .4s ease, transform .4s ease;
-    animation:pulseStar 3.5s ease-in-out infinite;
+    animation:hintGlow 2s ease-in-out infinite;
   }
   .portal-hint::before{content:'☾ '}
+  @keyframes hintGlow{
+    0%,100%{opacity:.75;text-shadow:0 0 10px rgba(238,205,140,.5), 0 0 22px rgba(238,205,140,.25);transform:scale(1)}
+    50%{opacity:1;text-shadow:0 0 18px rgba(238,205,140,.95), 0 0 40px rgba(238,205,140,.6), 0 0 64px rgba(238,205,140,.35);transform:scale(1.06)}
+  }
   .portal[data-open="true"] .portal-hint{opacity:0;transform:translateY(-8px);pointer-events:none;height:0;margin:0;animation:none;overflow:hidden}
 
   .portal-reveal{
