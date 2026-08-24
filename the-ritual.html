@@ -563,6 +563,48 @@
     .price-card{max-width:340px;width:100%}
   }
 
+  /* ---------- FLYING WITCH ---------- */
+  #pricing{overflow:hidden}
+  #pricing > .witch-layer{
+    position:absolute;inset:0;
+    overflow:hidden;pointer-events:none;z-index:4;
+  }
+  .witch-fly{
+    position:absolute;top:8%;left:105%;
+    width:132px;
+    animation:witchFly 13s cubic-bezier(.45,0,.55,1) infinite;
+    will-change:left;
+  }
+  @keyframes witchFly{
+    0%{left:108%}
+    6%{opacity:1}
+    48%{left:-24%;opacity:1}
+    52%{left:-24%;opacity:0}
+    100%{left:-24%;opacity:0}
+  }
+  .witch-bob{animation:witchBob 2.4s ease-in-out infinite}
+  @keyframes witchBob{
+    0%,100%{transform:translateY(0) rotate(-7deg)}
+    50%{transform:translateY(-14px) rotate(-3deg)}
+  }
+  .witch{
+    display:block;width:100%;height:auto;
+    color:#ecd39a;
+    filter:drop-shadow(0 0 7px rgba(238,205,140,.65)) drop-shadow(0 0 18px rgba(238,205,140,.3));
+  }
+  .witch-spark{
+    position:absolute;top:38%;
+    width:5px;height:5px;border-radius:50%;
+    background:#f4e6c6;box-shadow:0 0 8px 2px rgba(238,205,140,.85);
+    animation:witchTrail 1.1s ease-in-out infinite;
+  }
+  .witch-spark.s1{right:-6px;top:44%;animation-delay:0s}
+  .witch-spark.s2{right:-22px;top:34%;width:4px;height:4px;animation-delay:.22s}
+  .witch-spark.s3{right:-40px;top:50%;width:3px;height:3px;animation-delay:.44s}
+  .witch-spark.s4{right:-60px;top:40%;width:3px;height:3px;animation-delay:.66s}
+  @keyframes witchTrail{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:.95;transform:scale(1)}}
+  @media (max-width:560px){.witch-fly{width:96px}}
+
   /* ---------- MANIFEST PORTAL ---------- */
   .portal{
     position:relative;
@@ -988,6 +1030,38 @@
 
 <!-- ============ סקשן מחירים גלוי ============ -->
 <section class="reveal" id="pricing">
+  <div class="witch-layer" aria-hidden="true">
+    <div class="witch-fly">
+      <div class="witch-bob">
+        <svg class="witch" viewBox="0 0 150 96" fill="none">
+          <g fill="currentColor">
+            <!-- broomstick -->
+            <path d="M6 60 L138 30 L138 35 L6 65 Z"/>
+            <!-- bristles (back, right) -->
+            <path d="M128 24 L150 12 L146 22 L151 26 L144 30 L150 36 L142 39 L148 46 L130 40 Z"/>
+            <!-- cloak billowing behind -->
+            <path d="M60 40 C78 32 98 36 116 52 C102 56 90 58 78 55 C74 62 62 62 58 55 C52 52 50 45 60 40 Z"/>
+            <!-- body / seated -->
+            <path d="M52 44 C50 34 58 27 68 29 C76 31 78 40 74 47 C68 52 58 52 52 44 Z"/>
+            <!-- head -->
+            <circle cx="49" cy="30" r="7.5"/>
+            <!-- hat cone -->
+            <path d="M33 9 L57 27 L45 31 Z"/>
+            <!-- hat brim -->
+            <path d="M35 30 L61 23 L60 30 L38 35 Z"/>
+            <!-- streaming hair -->
+            <path d="M52 33 C64 32 78 36 90 45 C80 43 68 43 57 44 C54 41 52 37 52 33 Z"/>
+            <!-- front leg / foot -->
+            <path d="M40 52 L26 60 L30 62 L44 56 Z"/>
+          </g>
+        </svg>
+      </div>
+      <i class="witch-spark s1"></i>
+      <i class="witch-spark s2"></i>
+      <i class="witch-spark s3"></i>
+      <i class="witch-spark s4"></i>
+    </div>
+  </div>
   <h3>המסלולים לערב</h3>
   <p class="pricing-sub">בחרי את הקצב שלך אל תוך המעגל ✦</p>
 
