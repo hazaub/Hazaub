@@ -492,6 +492,77 @@
   @keyframes shimmer{0%,55%{left:-80px}75%,100%{left:120%}}
   .form-note{margin-top:20px;font-size:.9rem;color:var(--ink-soft)}
 
+  /* ---------- PRICING SECTION (visible) ---------- */
+  .pricing-sub{color:var(--ink-soft);margin-bottom:46px;font-size:1.05rem}
+  .pricing-grid{
+    display:flex;gap:26px;justify-content:center;flex-wrap:wrap;
+    max-width:640px;margin:0 auto;
+  }
+  .price-card{
+    position:relative;
+    flex:1 1 240px;max-width:290px;
+    padding:44px 28px 38px;
+    border:1px solid rgba(212,180,131,.28);
+    border-radius:20px;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 0%, rgba(125,106,158,.14), transparent 70%),
+      linear-gradient(160deg, rgba(212,180,131,.05), rgba(20,16,25,.6));
+    box-shadow:0 0 40px rgba(238,205,140,.05), inset 0 0 40px rgba(0,0,0,.3);
+    transition:transform .5s ease, border-color .5s ease, box-shadow .5s ease;
+    overflow:hidden;
+  }
+  .price-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(238,205,140,.55);
+    box-shadow:0 0 50px rgba(238,205,140,.16), inset 0 0 40px rgba(238,205,140,.04);
+  }
+  .price-card::before,.price-card::after{content:'✦';position:absolute;color:var(--gold-dim);font-size:.75rem;opacity:.7}
+  .price-card::before{top:14px;right:16px}
+  .price-card::after{bottom:14px;left:16px}
+  .price-card.early{border-color:rgba(238,205,140,.5)}
+  .pc-badge{
+    display:inline-block;margin-bottom:16px;
+    padding:5px 16px;border-radius:50px;
+    font-family:'Assistant',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.05em;
+    color:#161019;background:linear-gradient(120deg,#c9a35c,#eed9ae);
+    box-shadow:0 0 18px rgba(238,205,140,.3);
+  }
+  .pc-title{
+    display:block;
+    font-family:'Frank Ruhl Libre',serif;font-weight:400;
+    font-size:1.4rem;color:var(--gold-bright);letter-spacing:.03em;
+    margin-bottom:18px;
+  }
+  .pc-title::before{content:'✦ ';color:var(--gold);font-size:.9rem}
+  .pc-title::after{content:' ✦';color:var(--gold);font-size:.9rem}
+  .pc-amount{
+    display:block;
+    font-family:'Frank Ruhl Libre',serif;font-weight:500;
+    font-size:3rem;color:#f4e6c6;line-height:1;
+    text-shadow:0 0 30px rgba(238,205,140,.3);
+  }
+  .pc-amount small{font-size:1.4rem;opacity:.8}
+  .pc-note{display:block;margin-top:16px;color:var(--ink-soft);font-size:1rem;letter-spacing:.02em}
+  .early .pc-amount{color:#f7ecce}
+
+  .pricing-cta{
+    display:inline-block;margin-top:44px;
+    padding:15px 46px;border-radius:50px;
+    font-family:'Assistant',sans-serif;font-size:1.05rem;letter-spacing:.05em;
+    color:var(--gold-bright);text-decoration:none;
+    border:1px solid rgba(212,180,131,.45);
+    transition:all .45s ease;
+  }
+  .pricing-cta:hover{
+    border-color:var(--gold-bright);color:#fff;
+    box-shadow:0 0 26px rgba(238,205,140,.25);
+    transform:translateY(-2px);
+  }
+  @media (max-width:560px){
+    .pricing-grid{flex-direction:column;align-items:center}
+    .price-card{max-width:340px;width:100%}
+  }
+
   /* ---------- PRICING MODAL ---------- */
   .modal{
     position:fixed;inset:0;z-index:100;
@@ -817,6 +888,31 @@
     <button type="submit" class="btn">אני רוצה להצטרף ✦</button>
     <p class="form-note">לאחר מילוי הפרטים תוכלי לבחור מסלול ולהשלים תשלום 💫</p>
   </form>
+</section>
+
+<div class="divider reveal"><span>✦</span></div>
+
+<!-- ============ סקשן מחירים גלוי ============ -->
+<section class="reveal" id="pricing">
+  <h3>המסלולים לערב</h3>
+  <p class="pricing-sub">בחרי את הקצב שלך אל תוך המעגל ✦</p>
+
+  <div class="pricing-grid">
+    <div class="price-card early">
+      <span class="pc-badge">✦ מוקדם</span>
+      <span class="pc-title">מכשפות זריזות</span>
+      <span class="pc-amount">420 <small>₪</small></span>
+      <span class="pc-note">עד 04.09.26</span>
+    </div>
+
+    <div class="price-card">
+      <span class="pc-title">מכשפות ספונטניות</span>
+      <span class="pc-amount">480 <small>₪</small></span>
+      <span class="pc-note">החל מ־05.09.26</span>
+    </div>
+  </div>
+
+  <a href="#join" class="pricing-cta">להשארת פרטים והרשמה ✦</a>
 </section>
 
 <!-- ============ מודל מחירים / תשלום ============ -->
