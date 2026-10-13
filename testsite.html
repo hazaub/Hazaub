@@ -230,7 +230,9 @@ html.lenis, html.lenis body { height: auto; }
   position: relative; isolation: isolate; overflow: hidden;
   min-height: max(640px, 100svh);
   display: grid; align-items: end; align-content: end;
-  padding: calc(var(--nav-h) + 24px) var(--gutter) calc(clamp(28px, 6vh, 64px) + 64px + env(safe-area-inset-bottom, 0px));
+  --hero-pb: calc(clamp(28px, 6vh, 64px) + 64px + env(safe-area-inset-bottom, 0px));
+  --cue-bottom: calc(var(--hero-pb) - 5px);
+  padding: calc(var(--nav-h) + 24px) var(--gutter) var(--hero-pb);
   color: #FBF7FA;
   background: linear-gradient(180deg, #6B6FA0 0%, #D9A8B8 46%, #F3C7AE 54%, #2C5466 56%, #16323F 100%);
 }
@@ -240,7 +242,9 @@ html.lenis, html.lenis body { height: auto; }
 .hero::after {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(270deg, rgb(10 14 34 / .42) 0%, rgb(10 14 34 / .12) 46%, transparent 70%);
+  transition: opacity .7s var(--ease-out);
 }
+.hero__content { display: grid; transition: opacity .6s var(--ease-out); }
 .hero__inner { width: min(100%, 1320px); margin-inline: auto; display: grid; gap: 22px; justify-items: start; }
 .hero__tag { font: 400 .95rem/1 var(--font-display); letter-spacing: .32em; text-transform: uppercase; }
 .hero h1 { font: 400 var(--h1)/1.02 var(--font-display); max-width: 11ch; text-wrap: balance; text-shadow: 0 2px 30px rgb(20 16 48 / .25); }
@@ -260,14 +264,8 @@ html.lenis, html.lenis body { height: auto; }
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); text-decoration: none; color: inherit;
 }
 .next-chip i { width: 8px; height: 8px; border-radius: 50%; background: #F4A9C5; box-shadow: 0 0 0 4px rgb(244 169 197 / .25); flex: none; }
-.breath-cue { display: inline-flex; align-items: center; gap: 12px; }
-.breath-cue span { min-width: 4.5em; font-weight: 700; }
-.breath-cue i {
-  width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgb(255 255 255 / .7);
-  transform: scale(var(--b, .6)); transition: transform .3s linear;
-}
 @media (max-width: 560px) {
-  .hero { padding-bottom: calc(clamp(24px, 4vh, 40px) + env(safe-area-inset-bottom, 0px)); }
+  .hero { --hero-pb: calc(94px + env(safe-area-inset-bottom, 0px)); --cue-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
   .hero__tag { font-size: .68rem; letter-spacing: .16em; }
   .hero__foot { margin-top: 22px; }
   .chat-fab { width: 56px; padding: 0; justify-content: center; }
@@ -280,6 +278,47 @@ html.lenis, html.lenis body { height: auto; }
   .hero__ctas .btn { flex: 1 1 auto; }
 }
 .hero__tag, .hero__sub, .hero__foot { text-shadow: 0 1px 14px rgb(20 16 48 / .4); }
+
+/* ---------- Touch the water ---------- */
+/* A quiet hint under the moon: a hand touching the water. It opens a moment where the text steps aside. */
+.touch-cue {
+  position: absolute; z-index: 2; left: calc(var(--orb-x, .5) * 100%); bottom: var(--cue-bottom);
+  display: none; place-items: center; width: 58px; height: 58px; padding: 0; translate: -50% 0;
+  border-radius: 50%; border: 1px solid rgb(255 255 255 / .26); background: rgb(12 16 38 / .3); color: #FBF7FA;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: opacity .5s var(--ease-out), transform .16s var(--ease-out), background-color .2s var(--ease-out);
+}
+.gl-hero .touch-cue { display: grid; }
+.touch-cue:active { transform: scale(.94); }
+.touch-cue svg { width: 34px; height: 34px; overflow: visible; }
+.touch-cue__hand { animation: cue-tap 3.4s var(--ease-in-out) infinite; }
+.touch-cue__ring { transform-box: fill-box; transform-origin: center; opacity: 0; animation: cue-ring 3.4s var(--ease-out) infinite; }
+@keyframes cue-tap { 0%, 56%, 100% { transform: translateY(0); } 64% { transform: translateY(1.8px); } 72% { transform: translateY(0); } }
+@keyframes cue-ring { 0%, 62% { transform: scale(.35); opacity: 0; } 66% { opacity: .95; } 100% { transform: scale(1.9); opacity: 0; } }
+@media (hover: hover) and (pointer: fine) { .touch-cue:hover { background: rgb(12 16 38 / .46); } }
+.hero.is-water .touch-cue { opacity: 0; pointer-events: none; }
+
+.hero.is-water { touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.hero.is-water .hero__content { opacity: 0; pointer-events: none; }
+.hero.is-water::after { opacity: 0; }
+.water-ui { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .5s var(--ease-out); }
+.water-ui[hidden] { display: none; }
+.water-ui.is-on { opacity: 1; }
+.water-ui__hint {
+  position: absolute; left: calc(var(--orb-x, .5) * 100%); top: calc((1 - var(--hz, .42) * .52) * 100%); translate: -50% -50%;
+  font: 400 clamp(2rem, 3.4vw, 2.4rem)/1.1 var(--font-display); color: #FBF7FA; white-space: nowrap;
+  text-shadow: 0 2px 20px rgb(10 14 34 / .55); opacity: 0; transition: opacity .7s var(--ease-out);
+}
+.water-ui__hint.is-on { opacity: 1; }
+.water-ui__bar { position: absolute; left: calc(var(--orb-x, .5) * 100%); bottom: var(--cue-bottom); translate: -50% 0; display: flex; gap: 10px; pointer-events: auto; }
+.water-ui__bar .icon-btn {
+  width: 52px; height: 52px; color: #FBF7FA; border-color: rgb(255 255 255 / .3); background: rgb(12 16 38 / .34);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+@media (hover: hover) and (pointer: fine) { .water-ui__bar .icon-btn:hover { border-color: #FBF7FA; } }
+#water-sound .snd-off { display: none; }
+#water-sound[aria-pressed="false"] .snd-on { display: none; }
+#water-sound[aria-pressed="false"] .snd-off { display: inline; }
 
 /* ---------- Events ---------- */
 .events { background: var(--bg); }
@@ -796,18 +835,42 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
 <main id="main">
   <section class="hero" id="top" aria-labelledby="hero-title">
     <canvas class="hero__gl" aria-hidden="true"></canvas>
-    <div class="hero__inner">
-      <p class="hero__tag latin">Think Beyond · Feel Beyond · Live Beyond</p>
-      <h1 id="hero-title">לנשום עמוק. לחזור לעצמך.</h1>
-      <p class="hero__sub">ריטריטים מול הים, ערבי נשים מיסטיים וליווי אישי עם נטע-לי (נטשה) שורייץ. תודעה, מדיטציה ותנועה, במקום אחד.</p>
-      <div class="hero__ctas">
-        <a class="btn btn--primary" href="#events">לאירועים הקרובים</a>
-        <a class="btn btn--ghost" href="#breathe">לנשום איתי דקה</a>
+    <div class="hero__content">
+      <div class="hero__inner">
+        <p class="hero__tag latin">Think Beyond · Feel Beyond · Live Beyond</p>
+        <h1 id="hero-title">לנשום עמוק. לחזור לעצמך.</h1>
+        <p class="hero__sub">ריטריטים מול הים, ערבי נשים מיסטיים וליווי אישי עם נטע-לי (נטשה) שורייץ. תודעה, מדיטציה ותנועה, במקום אחד.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--primary" href="#events">לאירועים הקרובים</a>
+          <a class="btn btn--ghost" href="#breathe">לנשום איתי דקה</a>
+        </div>
+      </div>
+      <div class="hero__foot">
+        <a class="next-chip" href="#events" id="next-chip"><i></i><span>האירוע הבא: <b class="latin">MANIFEST 2027</b><span class="next-chip__place">, פאפוס, קפריסין</span></span></a>
       </div>
     </div>
-    <div class="hero__foot">
-      <a class="next-chip" href="#events" id="next-chip"><i></i><span>האירוע הבא: <b class="latin">MANIFEST 2027</b>, פאפוס, קפריסין</span></a>
-      <p class="breath-cue" aria-hidden="true"><i></i><span id="breath-word">שאפי</span></p>
+    <button class="touch-cue" id="touch-cue" type="button" aria-label="לגעת במים" title="לגעת במים" aria-controls="water-ui" aria-expanded="false">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <ellipse class="touch-cue__ring" cx="15.6" cy="27.2" rx="6.8" ry="1.9" stroke-opacity=".7"/>
+        <ellipse cx="15.6" cy="27.2" rx="3.6" ry="1" stroke-opacity=".9"/>
+        <g class="touch-cue__hand"><g transform="rotate(180 13.3 13.2)">
+          <path d="M9 13V4a1.5 1.5 0 0 1 3 0v7.5" fill="currentColor" fill-opacity=".12"/>
+          <path d="M12 11.2V9.6a1.5 1.5 0 0 1 3 0v1.8"/>
+          <path d="M15 11.4v-1a1.5 1.5 0 0 1 3 0v1.4"/>
+          <path d="M18 11.8v-.6a1.5 1.5 0 0 1 3 0v4.3a6.5 6.5 0 0 1-6.5 6.5h-1.3c-2.2 0-3.6-.7-4.9-2L5 16.7a1.35 1.35 0 0 1 1.9-1.9L9 16.8V13" fill="currentColor" fill-opacity=".12"/>
+        </g></g>
+      </svg>
+    </button>
+    <div class="water-ui" id="water-ui" hidden>
+      <p class="water-ui__hint" id="water-hint" aria-live="polite">געי במים</p>
+      <div class="water-ui__bar">
+        <button class="icon-btn" id="water-sound" type="button" aria-pressed="true" aria-label="צליל המים">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path class="snd-on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a7.6 7.6 0 0 1 0 11"/><path class="snd-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        </button>
+        <button class="icon-btn" id="water-close" type="button" aria-label="חזרה לטקסט">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -2401,31 +2464,13 @@ window.ART = (() => {
     });
   }
 
-  /* ---------- Hero breath cue: 4 seconds in, 6 seconds out. The sea shader reads the same clock. ---------- */
+  /* ---------- The moon in the hero breathes slowly: 4 seconds in, 6 seconds out ---------- */
   CB.breathAt = (sec) => { const t = ((sec % 10) + 10) % 10; return t < 4 ? smooth(0, 4, t) : 1 - smooth(4, 10, t); };
-  function initBreathCue() {
-    const word = $("#breath-word"), ring = $(".breath-cue i");
-    if (!word) return;
-    let last = "", raf = 0, inView = true;
-    const tick = () => {
-      raf = 0;
-      const sec = performance.now() / 1000, b = CB.still ? 0.6 : CB.breathAt(sec);
-      CB.breath = b;
-      if (ring) ring.style.setProperty("--b", (0.55 + 0.45 * b).toFixed(3));
-      const w = CB.still || sec % 10 < 4 ? "שאפי" : "נשפי";
-      if (w !== last) { last = w; word.textContent = w; }
-      if (inView && !CB.still) raf = requestAnimationFrame(tick);
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
-    watch($("#top"), (v) => { inView = v; if (v) kick(); });
-    CB.bus.addEventListener("a11y", kick);
-    tick();
-  }
 
   /* ---------- Scroll choreography (transforms only, the page is complete without it) ---------- */
   function initScroll() {
     if (!motion) return;
-    const heroBits = $$(".hero__tag, .hero h1, .hero__sub, .hero__ctas, .hero__foot");
+    const heroBits = $$(".hero__tag, .hero h1, .hero__sub, .hero__ctas, .hero__foot, .touch-cue");
     gsap.from(heroBits, { y: 28, opacity: 0, duration: 1.4, ease: "expo.out", stagger: 0.09, delay: 0.1, clearProps: "opacity,transform" });
     const par = gsap.to(".hero__inner", { yPercent: -12, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
     // Cards rise into place with the independent `translate` property, so hover transforms keep working.
@@ -2445,7 +2490,7 @@ window.ART = (() => {
     settle();
   }
 
-  for (const [name, init] of [["events", initEvents], ["moon", initMoon], ["cards", initCards], ["stars", initStars], ["lanterns", initLanterns], ["principles", initPrinciples], ["breathe", initBreathe], ["quiz", initQuiz], ["shop", initShop], ["learn", initLearn], ["contact", initContact], ["chat", initChat], ["cue", initBreathCue], ["scroll", initScroll]]) {
+  for (const [name, init] of [["events", initEvents], ["moon", initMoon], ["cards", initCards], ["stars", initStars], ["lanterns", initLanterns], ["principles", initPrinciples], ["breathe", initBreathe], ["quiz", initQuiz], ["shop", initShop], ["learn", initLearn], ["contact", initContact], ["chat", initChat], ["scroll", initScroll]]) {
     try { init(); } catch (err) { console.warn("[natasha]", name, err); CB.errors = (CB.errors || []).concat(name + ": " + err.message); }
   }
   $$("[data-art]").forEach((el) => el.insertAdjacentHTML("afterbegin", ART.portrait(el.dataset.art)));
@@ -2455,7 +2500,7 @@ window.ART = (() => {
 </script>
 <script>
 /* Hero: a calm sea under a pearl moon, drawn by one fragment shader with raw WebGL (no library).
-   The moon breathes with the cue (4 seconds in, 6 out), the pointer moves its sheen and leaves ripples on the water.
+   The moon breathes slowly (4 seconds in, 6 out), the pointer moves its sheen, and touches leave ripples on the water.
    Without WebGL the CSS gradient behind the canvas stays as the hero background. */
 (() => {
   "use strict";
@@ -2483,7 +2528,7 @@ uniform float uBreath;
 uniform float uNight;
 uniform vec3 uOrb;
 uniform float uHorizon;
-uniform vec4 uRip[4];
+uniform vec4 uRip[12];
 
 float hash12(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -2631,14 +2676,16 @@ void main(){
       float ph = dot(D[i], w) * F[i] + uTime * S[i] + float(i) * 1.7;
       grad += D[i] * F[i] * A[i] * cos(ph) * att;
     }
-    for (int k = 0; k < 4; k++) {
+    for (int k = 0; k < 12; k++) {
       vec4 rp = uRip[k];
       if (rp.w > 0.001) {
         vec2 dd = w - rp.xy;
-        float dist = length(dd);
-        float x = dist - rp.z * 0.14;
-        float env = exp(-x * x * 1500.0) * exp(-rp.z * 0.7) * rp.w;
-        grad += (dd / max(dist, 1e-4)) * cos(x * 200.0) * env * 0.35;
+        float len = length(dd);
+        // scaled by the ripple's distance, so a touch near the viewer makes a ring of the same visible size as a far one
+        float dist = len / (rp.y / 0.32);
+        float x = dist - rp.z * 0.12;
+        float env = exp(-x * x * 700.0) * exp(-rp.z * 0.7) * rp.w;
+        grad += (dd / max(len, 1e-4)) * cos(x * 200.0) * env * 0.38;
       }
     }
     grad *= 0.9;
@@ -2697,9 +2744,9 @@ void main(){
   let W = 0, H = 0, layout = { ox: 0.28, oy: 0.67, r: 0.12, hz: 0.42 };
   let night = isDark() ? 1 : 0, nightT = night;
   const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
-  const rips = [0, 0, 0, 0].map(() => ({ x: 0, z: 0, t0: -99, s: 0 }));
-  let ripIdx = 0, lastRip = 0, lastPX = -1, lastPY = -1;
-  const ripArr = new Float32Array(16);
+  const rips = Array.from({ length: 12 }, () => ({ x: 0, z: 0, t0: -99, s: 0 }));
+  let lastRip = 0, lastPX = -1, lastPY = -1;
+  const ripArr = new Float32Array(48);
   let visible = true, raf = 0, frozenAt = 12.0, lastFrame = 0, quality = 1, slow = 0;
   const t0 = performance.now();
   const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -2715,6 +2762,8 @@ void main(){
     if (w !== W || h !== H) { W = canvas.width = w; H = canvas.height = h; gl.viewport(0, 0, W, H); }
     const a = cw / ch, m = smooth(0.62, 1.3, a);
     layout = { ox: 0.5 + (0.27 - 0.5) * m, oy: 0.8 + (0.665 - 0.8) * m, r: 0.076 + (0.122 - 0.076) * m, hz: 0.6 + (0.42 - 0.6) * m };
+    hero.style.setProperty("--orb-x", layout.ox.toFixed(4));
+    hero.style.setProperty("--hz", layout.hz.toFixed(4));
   }
 
   function draw(sec) {
@@ -2726,7 +2775,7 @@ void main(){
     gl.uniform3f(U.uOrb, layout.ox, layout.oy, layout.r);
     gl.uniform1f(U.uHorizon, layout.hz);
     const arr = ripArr;
-    rips.forEach((r, i) => { const age = sec - r.t0; arr.set([r.x, r.z, age, age < 9 ? r.s : 0], i * 4); });
+    rips.forEach((r, i) => { const age = sec - r.t0; arr.set([r.x, r.z, age, age < 7 ? r.s : 0], i * 4); });
     gl.uniform4fv(U.uRip, arr);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
@@ -2753,26 +2802,34 @@ void main(){
 
   // Pointer: moves the moon's sheen, and drags ripples across the water.
   const toUV = (e) => { const r = hero.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height, r]; };
-  const addRipple = (u, v, strength) => {
+  // A new ripple takes the slot whose ripple has faded the most, so a fast trail never cuts a fresh ring short.
+  const addRipple = (u, v, strength, age = 0) => {
     const dv = layout.hz - v;
-    if (dv <= 0.01) return;
+    if (dv <= 0.01) return false;
     const rect = hero.getBoundingClientRect(), a = rect.width / rect.height;
     const z = 0.08 / dv;
-    const r = rips[ripIdx++ % rips.length];
-    r.x = (u - 0.5) * a * z; r.z = z; r.t0 = still() ? frozenAt - 0.6 : (performance.now() - t0) / 1000; r.s = strength;
+    const now = (still() ? frozenAt - (age || 0.6) : (performance.now() - t0) / 1000 - age);
+    let r = rips[0], weakest = Infinity;
+    for (const c of rips) { const left = c.s * Math.exp(-(now - c.t0) * 0.7); if (left < weakest) { weakest = left; r = c; } }
+    r.x = (u - 0.5) * a * z; r.z = z; r.t0 = now; r.s = strength;
     kick();
+    return true;
+  };
+  // Other scripts (the touch-the-water moment) drop ripples by screen position.
+  CB.seaRipple = (clientX, clientY, strength = 1, age = 0) => {
+    const r = hero.getBoundingClientRect();
+    return addRipple((clientX - r.left) / r.width, 1 - (clientY - r.top) / r.height, strength, age);
   };
   hero.addEventListener("pointermove", (e) => {
     const [u, v] = toUV(e);
     mouse.tx = Math.min(1, Math.max(0, u)); mouse.ty = Math.min(1, Math.max(0, v));
     const now = performance.now();
-    if (e.pointerType === "mouse" && now - lastRip > 180 && (Math.abs(e.clientX - lastPX) + Math.abs(e.clientY - lastPY) > 40)) {
+    if (e.pointerType === "mouse" && !e.buttons && now - lastRip > 180 && (Math.abs(e.clientX - lastPX) + Math.abs(e.clientY - lastPY) > 40)) {
       lastRip = now; lastPX = e.clientX; lastPY = e.clientY;
       addRipple(u, v, 0.55);
     }
     kick();
   }, { passive: true });
-  hero.addEventListener("pointerdown", (e) => { if (e.target.closest("a, button")) return; const [u, v] = toUV(e); addRipple(u, v, 1); }, { passive: true });
   hero.addEventListener("pointerleave", () => { mouse.tx = 0.5; mouse.ty = 0.5; kick(); });
 
   const onTheme = () => { nightT = isDark() ? 1 : 0; kick(); };
@@ -2792,6 +2849,279 @@ void main(){
   doc.documentElement.classList.add("gl-hero");
   kick();
   CB.sea = { state: () => ({ W, H, night, layout, frames: CB.seaFrames || 0 }) };
+})();
+
+</script>
+<script>
+/* Touch the water.
+   A small hand under the moon invites a touch. Tapping it lets the hero text step aside, so the whole sea is free:
+   taps leave ripples with a soft drop sound, a finger drawn across the water leaves a trail, and the sea hums quietly.
+   Every sound is made in the browser (no audio files) and only starts from a tap, which is what browsers allow. */
+(() => {
+  "use strict";
+  const CB = window.CB;
+  const doc = document;
+  const hero = doc.getElementById("top");
+  if (!CB || !hero) return;
+  const content = hero.querySelector(".hero__content"), cue = doc.getElementById("touch-cue"), ui = doc.getElementById("water-ui");
+  const hint = doc.getElementById("water-hint"), soundBtn = doc.getElementById("water-sound"), closeBtn = doc.getElementById("water-close");
+  if (!content || !cue || !ui || !hint || !soundBtn || !closeBtn) return;
+
+  let soundOn = true;
+  try { soundOn = localStorage.getItem("natasha-sound") !== "off"; } catch (_) { soundOn = true; }
+  let active = false;
+
+  /* ---------- Sound ---------- */
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let ctx = null, master = null, verb = null, noiseBuf = null, seaBus = null;
+
+  const room = (seconds, decay) => {
+    const rate = ctx.sampleRate, len = Math.floor(rate * seconds), buf = ctx.createBuffer(2, len, rate);
+    for (let c = 0; c < 2; c++) {
+      const d = buf.getChannelData(c);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+    }
+    return buf;
+  };
+  const whiteNoise = () => {
+    if (noiseBuf) return noiseBuf;
+    const len = ctx.sampleRate * 2;
+    noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    return noiseBuf;
+  };
+  // Brown noise with crossfaded ends, so the looping sea has no seam.
+  const brownLoop = (seconds) => {
+    const rate = ctx.sampleRate, n = Math.floor(rate * seconds), f = Math.floor(rate * 0.5), raw = new Float32Array(n + f);
+    let last = 0;
+    for (let i = 0; i < n + f; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; raw[i] = last * 3.5; }
+    const buf = ctx.createBuffer(1, n, rate), d = buf.getChannelData(0);
+    d.set(raw.subarray(0, n));
+    for (let i = 0; i < f; i++) { const x = i / f; d[i] = raw[i] * Math.sqrt(x) + raw[n + i] * Math.sqrt(1 - x); }
+    return buf;
+  };
+
+  // Called inside a tap or click: creates or wakes the audio context.
+  const unlock = () => {
+    if (!AC) return null;
+    if (!ctx) {
+      try { ctx = new AC(); } catch (_) { return null; }
+      master = ctx.createGain();
+      master.gain.value = 0.9;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -16;
+      comp.ratio.value = 4;
+      master.connect(comp).connect(ctx.destination);
+      verb = ctx.createConvolver();
+      verb.buffer = room(1.8, 3);
+      const wet = ctx.createGain();
+      wet.gain.value = 0.3;
+      verb.connect(wet).connect(master);
+    }
+    if (ctx.state === "suspended") ctx.resume().catch(() => {});
+    return ctx;
+  };
+
+  // The "bloop" of a drop: a sine whose pitch rises fast, like the small air bubble a drop leaves under the surface.
+  const bloop = (t, out, f0, peak, len) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.exponentialRampToValueAtTime(f0 * 2.4, t + len * 0.45);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.connect(g).connect(out);
+    o.start(t);
+    o.stop(t + len + 0.03);
+  };
+  function drop(strength, pan) {
+    if (!soundOn || !unlock()) return;
+    const t = ctx.currentTime + 0.01;
+    const out = ctx.createGain();
+    let tail = out;
+    if (ctx.createStereoPanner) {
+      const p = ctx.createStereoPanner();
+      p.pan.value = Math.max(-0.8, Math.min(0.8, pan));
+      out.connect(p);
+      tail = p;
+    }
+    tail.connect(master);
+    tail.connect(verb);
+    const f0 = 380 + Math.random() * 300;
+    bloop(t, out, f0, 0.22 * strength, 0.2);
+    if (Math.random() < 0.6) bloop(t + 0.08 + Math.random() * 0.1, out, f0 * (1.3 + Math.random() * 0.5), 0.07 * strength, 0.14);
+    // and a soft splash of filtered noise
+    const n = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), ng = ctx.createGain();
+    n.buffer = whiteNoise();
+    bp.type = "bandpass";
+    bp.Q.value = 0.8;
+    bp.frequency.setValueAtTime(2200, t);
+    bp.frequency.exponentialRampToValueAtTime(600, t + 0.3);
+    ng.gain.setValueAtTime(0.0001, t);
+    ng.gain.exponentialRampToValueAtTime(0.05 * strength, t + 0.012);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+    n.connect(bp).connect(ng).connect(out);
+    n.start(t, Math.random() * 1.5);
+    n.stop(t + 0.36);
+  }
+
+  // A quiet sea while the moment lasts: low swells that rise and fall, and the hiss of small waves.
+  function seaOn() {
+    if (!soundOn || seaBus || !unlock()) return;
+    const t = ctx.currentTime;
+    const fade = ctx.createGain();
+    fade.gain.setValueAtTime(0.0001, t);
+    fade.gain.exponentialRampToValueAtTime(1, t + 2.4);
+    fade.connect(master);
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = 0.085;
+    const body = ctx.createBufferSource();
+    body.buffer = brownLoop(6);
+    body.loop = true;
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 700;
+    const lfoF = ctx.createGain();
+    lfoF.gain.value = 340;
+    lfo.connect(lfoF).connect(lp.frequency);
+    const swell = ctx.createGain();
+    swell.gain.value = 0.14;
+    const lfoA = ctx.createGain();
+    lfoA.gain.value = 0.06;
+    lfo.connect(lfoA).connect(swell.gain);
+    body.connect(lp).connect(swell).connect(fade);
+    const hiss = ctx.createBufferSource();
+    hiss.buffer = whiteNoise();
+    hiss.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = 3200;
+    bp.Q.value = 0.5;
+    const hg = ctx.createGain();
+    hg.gain.value = 0.008;
+    const lfoH = ctx.createGain();
+    lfoH.gain.value = 0.007;
+    lfo.connect(lfoH).connect(hg.gain);
+    hiss.connect(bp).connect(hg).connect(fade);
+    body.start(t);
+    hiss.start(t);
+    lfo.start(t);
+    seaBus = { fade, nodes: [body, hiss, lfo] };
+  }
+  function seaOff() {
+    if (!seaBus || !ctx) return;
+    const { fade, nodes } = seaBus;
+    seaBus = null;
+    const t = ctx.currentTime;
+    fade.gain.cancelScheduledValues(t);
+    fade.gain.setValueAtTime(Math.max(0.0001, fade.gain.value), t);
+    fade.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+    nodes.forEach((nd) => { try { nd.stop(t + 1); } catch (_) { /* already stopped */ } });
+  }
+
+  /* ---------- The moment on the water ---------- */
+  let hintTimer = 0;
+  const setInert = (on) => { if ("inert" in content) content.inert = on; else content.toggleAttribute("inert", on); };
+  const HINT = hint.textContent.trim();
+  const showHint = () => {
+    clearTimeout(hintTimer);
+    // re-set the words so screen readers announce them
+    hint.textContent = "";
+    requestAnimationFrame(() => { hint.textContent = HINT; });
+    hint.classList.add("is-on");
+    hintTimer = setTimeout(() => hint.classList.remove("is-on"), 2600);
+  };
+  const paintSound = () => soundBtn.setAttribute("aria-pressed", String(soundOn));
+  paintSound();
+
+  function enter() {
+    if (active) return;
+    active = true;
+    hero.classList.add("is-water");
+    setInert(true);
+    cue.setAttribute("aria-expanded", "true");
+    ui.hidden = false;
+    requestAnimationFrame(() => ui.classList.add("is-on"));
+    showHint();
+    seaOn();
+    closeBtn.focus({ preventScroll: true });
+  }
+  function exit(restoreFocus = true) {
+    if (!active) return;
+    active = false;
+    hero.classList.remove("is-water");
+    setInert(false);
+    cue.setAttribute("aria-expanded", "false");
+    ui.classList.remove("is-on");
+    clearTimeout(hintTimer);
+    hint.classList.remove("is-on");
+    setTimeout(() => { if (!active) ui.hidden = true; }, 500);
+    seaOff();
+    if (restoreFocus) cue.focus({ preventScroll: true });
+  }
+  const panOf = (x) => (x / window.innerWidth - 0.5) * 1.2;
+
+  cue.addEventListener("click", () => {
+    const r = cue.getBoundingClientRect();
+    const x = r.left + r.width / 2, y = r.top + r.height * 0.82;
+    if (CB.seaRipple) CB.seaRipple(x, y, 1);
+    unlock();
+    drop(0.9, panOf(x));
+    enter();
+  });
+  closeBtn.addEventListener("click", () => exit());
+  soundBtn.addEventListener("click", () => {
+    soundOn = !soundOn;
+    try { localStorage.setItem("natasha-sound", soundOn ? "on" : "off"); } catch (_) { /* storage blocked */ }
+    paintSound();
+    if (soundOn) { unlock(); if (active) seaOn(); drop(0.6, 0); } else seaOff();
+  });
+
+  // Taps and trails. With a finger, sound waits for the lift: that is when a touch counts as a tap for audio.
+  const onWater = (e) => !e.target.closest("a, button, input, select, textarea, .water-ui__bar");
+  let down = null, lastTrail = 0, lastX = 0, lastY = 0, pendingPan = null;
+  hero.addEventListener("pointerdown", (e) => {
+    if (!onWater(e) || !CB.seaRipple) return;
+    down = { x: e.clientX, y: e.clientY, t: performance.now(), type: e.pointerType };
+    lastX = e.clientX; lastY = e.clientY; lastTrail = down.t;
+    if (!active && e.pointerType !== "mouse") return; // on touch screens, outside the moment, wait to see if this is a tap or a scroll
+    const hit = CB.seaRipple(e.clientX, e.clientY, 1);
+    if (!active || !hit) return;
+    clearTimeout(hintTimer);
+    hint.classList.remove("is-on");
+    if (e.pointerType === "mouse" || (ctx && ctx.state === "running")) drop(1, panOf(e.clientX));
+    else pendingPan = panOf(e.clientX);
+  }, { passive: true });
+  hero.addEventListener("pointermove", (e) => {
+    if (!active || !down || !CB.seaRipple) return;
+    const now = performance.now();
+    if (now - lastTrail < 120 || Math.hypot(e.clientX - lastX, e.clientY - lastY) < 22) return;
+    lastTrail = now; lastX = e.clientX; lastY = e.clientY;
+    CB.seaRipple(e.clientX, e.clientY, 0.5);
+  }, { passive: true });
+  hero.addEventListener("pointerup", (e) => {
+    if (pendingPan !== null) { unlock(); drop(1, pendingPan); pendingPan = null; }
+    if (!active && down && down.type !== "mouse" && onWater(e) && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 10 && performance.now() - down.t < 600 && CB.seaRipple) {
+      CB.seaRipple(e.clientX, e.clientY, 1);
+    }
+    down = null;
+  });
+  hero.addEventListener("pointercancel", () => { down = null; pendingPan = null; });
+
+  doc.addEventListener("keydown", (e) => { if (active && e.key === "Escape") exit(); });
+  // Scrolling away ends the moment, so the text is back when the visitor returns.
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => { if (active && es[0].intersectionRatio < 0.55) exit(false); }, { threshold: [0, 0.55, 1] }).observe(hero);
+  }
+  doc.addEventListener("visibilitychange", () => {
+    if (!ctx) return;
+    if (doc.hidden) ctx.suspend().catch(() => {});
+    else if (active && soundOn) ctx.resume().catch(() => {});
+  });
+
+  CB.water = { enter, exit, state: () => ({ active, soundOn, audio: ctx ? ctx.state : "none", sea: !!seaBus }) };
 })();
 
 </script>
