@@ -268,6 +268,7 @@ html.lenis, html.lenis body { height: auto; }
   padding: calc(var(--nav-h) + 24px) var(--gutter) var(--hero-pb);
   color: #FBF7FA;
   background: linear-gradient(180deg, #6B6FA0 0%, #D9A8B8 46%, #F3C7AE 54%, #2C5466 56%, #16323F 100%);
+  touch-action: manipulation; /* quick taps on the water stay taps: no double-tap zoom */
 }
 :root[data-theme="dark"] .hero { background: linear-gradient(180deg, #0B0E26 0%, #2A2650 50%, #3B2B4E 54%, #0C1A2A 56%, #050B14 100%); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hero { background: linear-gradient(180deg, #0B0E26 0%, #2A2650 50%, #3B2B4E 54%, #0C1A2A 56%, #050B14 100%); } }
@@ -703,7 +704,7 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
   border-radius: 36px; overflow: hidden; background: #0B0E25;
   box-shadow: 0 0 0 1px rgb(255 255 255 / .1) inset, 0 50px 100px -50px rgb(0 0 0 / .9);
   --orb: clamp(50px, 10.6%, 68px);
-  -webkit-user-select: none; user-select: none;
+  -webkit-user-select: none; user-select: none; touch-action: manipulation;
 }
 .bath__stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .bath__orbs { position: absolute; inset: 0; }
@@ -765,8 +766,6 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
 .bath-sec.is-playing .bath-play .i-pause { display: block; }
 .bath__now { display: grid; gap: 2px; min-width: 0; }
 .bath__status { font: 600 1.05rem/1.45 var(--font-body); color: var(--moon); text-wrap: pretty; }
-.bath__clock { font-size: .9rem; color: var(--moon-2); font-variant-numeric: tabular-nums; }
-.bath__clock:empty { display: none; }
 .bath__label { font: 700 .82rem/1.2 var(--font-body); color: var(--moon-accent); }
 .bath__label .latin { font-family: var(--font-body); letter-spacing: .04em; color: var(--moon-2); font-weight: 600; }
 .bath__group { display: grid; gap: 10px; }
@@ -780,9 +779,10 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
 .chips button:active { transform: scale(.97); }
 .chips button[aria-pressed="true"] { background: rgb(244 169 197 / .16); box-shadow: 0 0 0 1px var(--moon-accent) inset; }
 .bath__settings {
-  display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 14px 20px; align-items: center;
+  display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 14px 20px; align-items: start;
   padding-block: 18px; border-block: 1px solid rgb(255 255 255 / .1);
 }
+.bath__settings > .bath__label { padding-top: 15px; } /* level with the first row of its control */
 .seg {
   justify-self: start; display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 4px; border-radius: 999px;
   background: rgb(255 255 255 / .05); box-shadow: 0 0 0 1px rgb(255 255 255 / .12) inset;
@@ -796,11 +796,22 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
 }
 .seg input:checked + span { background: var(--moon); color: #1A1440; }
 .seg input:focus-visible + span { outline: 2px solid var(--moon); outline-offset: 2px; }
-.bath__breath { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
-.bath__breath .toggle { min-height: 0; }
 .night .toggle input { background: rgb(255 255 255 / .2); }
 .night .toggle input:checked { background: var(--moon-accent); }
-.bath__word { font: 400 1.2rem/1 var(--font-display); color: var(--moon); }
+/* The countdown: shown once a length is chosen; pink while it counts, dim while the sound is paused */
+.bath__timer { display: grid; gap: 12px; justify-items: start; min-width: 0; }
+.bath-count {
+  display: inline-flex; align-items: center; gap: 14px; padding: 5px; padding-inline-start: 20px; border-radius: 999px;
+  background: rgb(255 255 255 / .05); box-shadow: 0 0 0 1px rgb(255 255 255 / .12) inset;
+}
+.bath-count[hidden] { display: none; }
+.bath-count__time {
+  min-width: 4.6ch; font: 700 1.55rem/1 var(--font-body); color: var(--moon); font-variant-numeric: tabular-nums; letter-spacing: .02em;
+  transition: opacity .3s var(--ease-out), color .3s var(--ease-out);
+}
+.bath-count[data-state="running"] .bath-count__time { color: var(--moon-accent); }
+.bath-count[data-state="paused"] .bath-count__time { opacity: .55; }
+.bath-count__btn { min-height: 40px; padding: 0 20px; }
 .bath__save { display: grid; gap: 10px; }
 .bath__name {
   width: 100%; min-height: 48px; padding: 0 16px; border-radius: 14px;
@@ -819,6 +830,7 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
   .bath__stage { border-radius: 26px; --orb: 52px; }
   .bath-orb b { font-size: .74rem; }
   .bath__settings { grid-template-columns: 1fr; gap: 8px; }
+  .bath__settings > .bath__label { padding-top: 0; }
   .bath__settings .seg { margin-bottom: 8px; }
 }
 
@@ -1420,7 +1432,6 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
             </button>
             <div class="bath__now">
               <p class="bath__status" id="bath-status" aria-live="polite"></p>
-              <p class="bath__clock" id="bath-clock"></p>
             </div>
           </div>
           <div class="bath__group">
@@ -1435,20 +1446,20 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
               <label><input type="radio" name="bath-tune" value="528"><span>528</span></label>
             </div>
             <span class="bath__label" id="bath-timer-label">טיימר</span>
-            <div class="seg" role="radiogroup" aria-labelledby="bath-timer-label">
-              <label><input type="radio" name="bath-timer" value="0" checked><span>ללא</span></label>
-              <label><input type="radio" name="bath-timer" value="5" aria-label="5 דקות"><span>5 דק׳</span></label>
-              <label><input type="radio" name="bath-timer" value="10" aria-label="10 דקות"><span>10 דק׳</span></label>
-              <label><input type="radio" name="bath-timer" value="20" aria-label="20 דקות"><span>20 דק׳</span></label>
-            </div>
-            <label class="bath__label" for="bath-breath">לנשום יחד</label>
-            <div class="bath__breath">
-              <span class="toggle"><input type="checkbox" id="bath-breath" aria-describedby="bath-breath-hint"></span>
-              <span class="fine" id="bath-breath-hint">4 שניות שאיפה, 6 נשיפה</span>
-              <b class="bath__word" id="bath-breath-word" aria-hidden="true"></b>
+            <div class="bath__timer">
+              <div class="seg" role="radiogroup" aria-labelledby="bath-timer-label">
+                <label><input type="radio" name="bath-timer" value="0" checked><span>ללא</span></label>
+                <label><input type="radio" name="bath-timer" value="5" aria-label="5 דקות"><span>5 דק׳</span></label>
+                <label><input type="radio" name="bath-timer" value="10" aria-label="10 דקות"><span>10 דק׳</span></label>
+                <label><input type="radio" name="bath-timer" value="20" aria-label="20 דקות"><span>20 דק׳</span></label>
+              </div>
+              <div class="bath-count" id="bath-count" hidden>
+                <span class="bath-count__time" id="bath-count-time" role="timer" aria-label="הזמן שנשאר" dir="ltr">00:00</span>
+                <button class="btn btn--primary btn--sm bath-count__btn" type="button" id="bath-count-btn">להתחיל</button>
+              </div>
             </div>
           </div>
-          <p class="fine">הקערה, הפעמונים והתדר מכוונים יחד, כך שכל שילוב נשאר הרמוני. עם טיימר, הצלילים מתרככים, מאטים ונעלמים לאט.</p>
+          <p class="fine">הקערה, הפעמונים והתדר מכוונים יחד, כך שכל שילוב נשאר הרמוני. בחרי זמן ולחצי ״להתחיל״: כשהזמן נגמר, הצלילים נעצרים.</p>
           <div class="bath__save">
             <label class="bath__label" for="bath-name">שם ליצירה</label>
             <input class="bath__name" id="bath-name" type="text" maxlength="40" value="השקט שלי" autocomplete="off" enterkeyhint="done">
@@ -2594,22 +2605,75 @@ window.ART = (() => {
     }
   };
 
-  /* ---------- One audio context for every sound on the page, created on the first tap ---------- */
+  /* ---------- One audio context for every sound on the page ---------- */
+  // iPhones are strict about sound in three ways, so every sound on the page goes through here.
+  // 1. Sound may start only inside a real tap, and a finger that dragged (drawing a sound into the pool) is not a tap.
+  //    The first tap anywhere starts the shared context with a moment of silence, which unlocks it for the rest of
+  //    the visit; after that, any tap wakes it if a sound is waiting.
+  // 2. The ring/silent switch mutes web sound unless the page plays media. Sounds the visitor turned on (the sound bath,
+  //    the sea, the breathing pad) declare themselves as media: audioSession "playback", or, on iPhones too old to
+  //    have it, a silent looping <audio> that keeps the media channel open.
+  // 3. A call or Siri leaves the context "interrupted"; it is woken like a suspended one.
   const ACtor = window.AudioContext || window.webkitAudioContext;
-  let audioCtx = null;
+  let audioCtx = null, primed = false;
   CB.audioUsers = new Set();
-  CB.audioCtx = () => {
-    if (!ACtor) return null;
-    if (!audioCtx) { try { audioCtx = new ACtor(); } catch (_) { return null; } }
-    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+  const makeCtx = () => {
+    if (!audioCtx && ACtor) { try { audioCtx = new ACtor(); } catch (_) { audioCtx = null; } }
     return audioCtx;
   };
+  const wake = () => { if (audioCtx && audioCtx.state !== "running" && audioCtx.state !== "closed") audioCtx.resume().catch(() => {}); };
+  CB.audioCtx = () => { if (!makeCtx()) return null; wake(); return audioCtx; };
   CB.audioState = () => (audioCtx ? audioCtx.state : "none");
+
+  const media = new Set();
+  const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  let keep = null;
+  // Half a second of silence as a WAV (16-bit mono, 8 kHz), for the looping <audio>.
+  const silence = () => {
+    const n = 8000, d = new DataView(new ArrayBuffer(44 + n));
+    const tag = (o, s) => { for (let i = 0; i < s.length; i++) d.setUint8(o + i, s.charCodeAt(i)); };
+    tag(0, "RIFF"); d.setUint32(4, 36 + n, true); tag(8, "WAVEfmt "); d.setUint32(16, 16, true); d.setUint16(20, 1, true); d.setUint16(22, 1, true);
+    d.setUint32(24, 8000, true); d.setUint32(28, 16000, true); d.setUint16(32, 2, true); d.setUint16(34, 16, true); tag(36, "data"); d.setUint32(40, n, true);
+    return URL.createObjectURL(new Blob([d.buffer], { type: "audio/wav" }));
+  };
+  const keepAlive = (on) => {
+    if (!IOS || "audioSession" in navigator) return;
+    try {
+      if (on) {
+        if (!keep) { keep = new Audio(silence()); keep.loop = true; keep.setAttribute("x-webkit-airplay", "deny"); }
+        if (keep.paused) keep.play().catch(() => {});
+      } else if (keep && !keep.paused) keep.pause();
+    } catch (_) { /* no media element here */ }
+  };
+  CB.audioMedia = (who, on) => {
+    if (on) media.add(who); else media.delete(who);
+    try { if (navigator.audioSession) navigator.audioSession.type = media.size ? "playback" : "auto"; } catch (_) { /* not supported */ }
+    keepAlive(media.size > 0);
+  };
+  // A real tap: the moment a strict browser lets sound begin.
+  const onTap = (e) => {
+    if (!e.isTrusted || !ACtor) return;
+    if (!primed) {
+      if (navigator.userActivation && !navigator.userActivation.isActive) return; // the end of a scroll, not a tap
+      if (!makeCtx()) return;
+      primed = true;
+      try { const s = audioCtx.createBufferSource(); s.buffer = audioCtx.createBuffer(1, 1, audioCtx.sampleRate); s.connect(audioCtx.destination); s.start(0); } catch (_) { /* nothing to play */ }
+      // Unlocked; with nothing to play yet, it rests until a sound needs it.
+      const rest = () => setTimeout(() => { if (!CB.audioUsers.size && audioCtx.state === "running") audioCtx.suspend().catch(() => {}); }, 400);
+      if (audioCtx.state === "running") rest(); else audioCtx.resume().then(rest, () => { primed = false; });
+    } else if (CB.audioUsers.size) wake();
+    if (media.size) keepAlive(true);
+  };
+  ["touchend", "click"].forEach((ev) => doc.addEventListener(ev, onTap, { capture: true, passive: true }));
   // A playing sound bath keeps going in the background, like any music. Everything else rests while the page is hidden.
   doc.addEventListener("visibilitychange", () => {
-    if (!audioCtx) return;
-    if (doc.hidden) { if (!CB.audioUsers.has("bath")) audioCtx.suspend().catch(() => {}); }
-    else if (CB.audioUsers.size) audioCtx.resume().catch(() => {});
+    if (doc.hidden) {
+      if (audioCtx && !CB.audioUsers.has("bath")) audioCtx.suspend().catch(() => {});
+      if (!media.has("bath")) keepAlive(false);
+    } else {
+      if (CB.audioUsers.size) wake();
+      if (media.size) keepAlive(true);
+    }
   });
 
   /* ---------- Smooth scroll and anchors ---------- */
@@ -3353,8 +3417,9 @@ window.ART = (() => {
     };
     // Audio: a soft pad that swells with the breath, and a bowl tone at each change.
     const startAudio = () => {
+      CB.audioMedia("breathe", true); // media, so an iPhone on silent still plays it
       const ctx = CB.audioCtx();
-      if (!ctx) return null;
+      if (!ctx) { CB.audioMedia("breathe", false); return null; }
       const t = ctx.currentTime;
       const master = ctx.createGain();
       master.gain.setValueAtTime(0.0001, t);
@@ -3376,6 +3441,7 @@ window.ART = (() => {
           master.gain.exponentialRampToValueAtTime(0.0001, n + 0.8);
           oscs.forEach((o) => o.stop(n + 0.9));
           CB.audioUsers.delete("breathe");
+          CB.audioMedia("breathe", false);
         },
       };
     };
@@ -4320,9 +4386,13 @@ void main(){
   const paintSound = () => soundBtn.setAttribute("aria-pressed", String(soundOn));
   paintSound();
 
+  // While the moment lasts with sound on, its sound is media: an iPhone on silent still plays it (see core.js).
+  const asMedia = () => { if (CB.audioMedia) CB.audioMedia("water", active && soundOn); };
+
   function enter() {
     if (active) return;
     active = true;
+    asMedia();
     hero.classList.add("is-water");
     setInert(true);
     cue.setAttribute("aria-expanded", "true");
@@ -4343,6 +4413,7 @@ void main(){
     hint.classList.remove("is-on");
     setTimeout(() => { if (!active) ui.hidden = true; }, 500);
     seaOff();
+    asMedia();
     if (restoreFocus) cue.focus({ preventScroll: true });
   }
   const panOf = (x) => (x / window.innerWidth - 0.5) * 1.2;
@@ -4351,6 +4422,7 @@ void main(){
     const r = cue.getBoundingClientRect();
     const x = r.left + r.width / 2, y = r.top + r.height * 0.82;
     if (CB.seaRipple) CB.seaRipple(x, y, 1);
+    if (soundOn && CB.audioMedia) CB.audioMedia("water", true); // before the first drop sounds
     unlock();
     drop(0.9, panOf(x));
     enter();
@@ -4360,6 +4432,7 @@ void main(){
     soundOn = !soundOn;
     try { localStorage.setItem("natasha-sound", soundOn ? "on" : "off"); } catch (_) { /* storage blocked */ }
     paintSound();
+    asMedia();
     if (soundOn) { unlock(); if (active) seaOn(); drop(0.6, 0); } else seaOff();
   });
 
@@ -4409,9 +4482,9 @@ void main(){
    While it plays, each sound paints its own marks on the canvas, so every mix leaves a picture behind.
    Everything is made in the browser, with no recordings: noise shaped into waves, rain and fire, crickets,
    a singing bowl, wind chimes and one held tone.
-   Quiet helpers keep it gentle: the tuned sounds share one tuning and a pentatonic scale, so any mix stays in harmony;
-   the overall level balances itself as sounds are added; "breathe together" lets the mix swell 4 seconds in and 6 out;
-   and the timer softens, slows and fades the sound before it ends. The painting can be saved as an image with the mix on it. */
+   Quiet helpers keep it gentle: the tuned sounds share one tuning and a pentatonic scale, so any mix stays in harmony,
+   and the overall level balances itself as sounds are added. A timer, once started, counts down while the sound plays
+   and stops it at zero, as if pause were pressed. The painting can be saved as an image with the mix on it. */
 (() => {
   "use strict";
   const CB = window.CB;
@@ -4421,8 +4494,9 @@ void main(){
   const { clamp, smooth, hex, css, watch, rng } = CB.util;
   const $ = (s) => section.querySelector(s);
   const stage = $("#bath-stage"), cv = $("#bath-canvas"), orbsBox = $("#bath-orbs");
-  const playBtn = $("#bath-play"), playLabel = $("#bath-play-label"), statusEl = $("#bath-status"), clockEl = $("#bath-clock");
-  const presetsBox = $("#bath-presets"), breathInp = $("#bath-breath"), breathWord = $("#bath-breath-word");
+  const playBtn = $("#bath-play"), playLabel = $("#bath-play-label"), statusEl = $("#bath-status");
+  const countEl = $("#bath-count"), countTime = $("#bath-count-time"), countBtn = $("#bath-count-btn");
+  const presetsBox = $("#bath-presets");
   const nameInp = $("#bath-name"), saveBtn = $("#bath-save"), shareBtn = $("#bath-share"), clearBtn = $("#bath-clear");
   if (!stage || !cv || !cv.getContext || !orbsBox || !playBtn) return;
 
@@ -4449,13 +4523,13 @@ void main(){
   const TUNES = [396, 432, 528];
   const SCALE = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3, 2]; // major pentatonic and the octave: any two notes agree
   const PRESETS = [
-    { id: "calm", name: "להירגע", tune: 432, breath: true, mix: { waves: 0.8, bowl: 0.6, tone: 0.45, chimes: 0.38 } },
-    { id: "sleep", name: "לפני שינה", tune: 396, breath: true, timer: 20, mix: { rain: 0.72, tone: 0.48, waves: 0.35, crickets: 0.35 } },
-    { id: "focus", name: "ריכוז", tune: 528, breath: false, mix: { rain: 0.65, tone: 0.42, chimes: 0.3 } },
-    { id: "fire", name: "ערב ליד המדורה", tune: 432, breath: false, mix: { fire: 0.85, crickets: 0.55, waves: 0.35, chimes: 0.32 } },
+    { id: "calm", name: "להירגע", tune: 432, mix: { waves: 0.8, bowl: 0.6, tone: 0.45, chimes: 0.38 } },
+    { id: "sleep", name: "לפני שינה", tune: 396, timer: 20, mix: { rain: 0.72, tone: 0.48, waves: 0.35, crickets: 0.35 } },
+    { id: "focus", name: "ריכוז", tune: 528, mix: { rain: 0.65, tone: 0.42, chimes: 0.3 } },
+    { id: "fire", name: "ערב ליד המדורה", tune: 432, mix: { fire: 0.85, crickets: 0.55, waves: 0.35, chimes: 0.32 } },
   ];
 
-  let base = 432, playing = false, breathOn = false, breath0 = 0, presetId = "";
+  let base = 432, playing = false, presetId = "";
   const pos = {}, st = {};
   VOICES.forEach((V) => { pos[V.id] = park(V); st[V.id] = { v: 0 }; });
   function park(V, ang = V.home) { return { x: 0.5 + Math.cos(ang) * PARK, y: 0.5 + Math.sin(ang) * PARK }; }
@@ -4524,17 +4598,9 @@ void main(){
           src.connect(lp).connect(sw).connect(p); hs.connect(bp).connect(hg).connect(p); p.connect(out);
           lfo.start(t);
           nodes.push(src, hs, lfo);
-          return { lp, sw, hg, depth, rate, t0: t };
+          return { rate, t0: t };
         });
         return { stop: (at) => nodes.forEach((n) => n.stop(at)) };
-      },
-      breath(s, on, b, t, tau) {
-        for (const m of s.mods || []) {
-          m.sw.gain.setTargetAtTime(on ? 0.12 + 0.8 * b : 0.55, t, on ? tau : 0.6);
-          m.lp.frequency.setTargetAtTime(on ? 170 + 780 * b : 520, t, on ? tau : 0.6);
-          m.hg.gain.setTargetAtTime(on ? 0.003 + 0.036 * b * b : 0.02, t, on ? tau : 0.6);
-          m.depth.forEach((d, i) => d.gain.setTargetAtTime(on ? 0 : [380, 0.4, 0.018][i], t, 0.4));
-        }
       },
       swell(s, t) { const m = s.mods && s.mods[0]; return m ? 0.5 + 0.5 * Math.sin(TAU * m.rate * (t - m.t0)) : 0.5; },
     },
@@ -4722,36 +4788,41 @@ void main(){
           return { o, m };
         });
         lfo.start(t);
-        s.tone = { lp, trem, depth, oscs, t0: t };
+        s.tone = { oscs, t0: t };
         return { stop: (at) => { oscs.forEach(({ o }) => o.stop(at)); lfo.stop(at); } };
       },
       retune(s, f0, t) { if (s.tone) s.tone.oscs.forEach(({ o, m }) => o.frequency.setTargetAtTime(f0 * m, t, 0.35)); },
-      breath(s, on, b, t, tau) {
-        const T = s.tone;
-        if (!T) return;
-        T.depth.gain.setTargetAtTime(on ? 0 : 0.2, t, 0.4);
-        T.trem.gain.setTargetAtTime(on ? 0.45 + 0.5 * b : 0.8, t, on ? tau : 0.6);
-        T.lp.frequency.setTargetAtTime(on ? 650 + 750 * b : 1100, t, on ? tau : 0.6);
-      },
       swell(s, t) { return s.tone ? 0.5 + 0.5 * Math.sin(TAU * 0.09 * (t - s.tone.t0)) : 0.5; },
     },
   };
 
   let ac = null, M = null;
+  // Creates the shared context, or wakes it: called on every start, since a context can be asleep (see core.js).
   const ensureAudio = () => {
+    const shared = CB.audioCtx ? CB.audioCtx() : null;
+    if (!shared) return null;
     if (M) return ac;
-    ac = CB.audioCtx ? CB.audioCtx() : null;
-    if (!ac) return null;
+    ac = shared;
+    ac.addEventListener("statechange", watchWake);
     const bus = gainN(ac, 1), dim = filt(ac, "lowpass", 18000, 0.5), comp = ac.createDynamicsCompressor();
     comp.threshold.value = -20; comp.knee.value = 10; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.35;
-    const lungs = gainN(ac, 1), out = gainN(ac, 0), verb = ac.createConvolver(), wet = gainN(ac, 0.32);
+    const out = gainN(ac, 0), verb = ac.createConvolver(), wet = gainN(ac, 0.32);
     verb.buffer = bufs(ac).room;
     bus.connect(dim);
     verb.connect(wet).connect(dim);
-    dim.connect(comp).connect(lungs).connect(out).connect(ac.destination);
-    M = { bus, dim, comp, lungs, out, verb };
+    dim.connect(comp).connect(out).connect(ac.destination);
+    M = { bus, dim, comp, out, verb };
     return ac;
   };
+  // On an iPhone, a sound drawn in with a drag cannot start by itself: the browser waits for a real tap.
+  // While the mix is meant to play but the audio sleeps, the status asks for one tap (core.js wakes the sound on it).
+  let asleep = false, wakeT = 0;
+  function watchWake() {
+    clearTimeout(wakeT);
+    const now = playing && !!ac && ac.state !== "running";
+    if (!now) { if (asleep) { asleep = false; paintStatus(); kick(); } return; }
+    wakeT = setTimeout(() => { const still = playing && !!ac && ac.state !== "running"; if (still !== asleep) { asleep = still; paintStatus(); } }, 700);
+  }
   let vclock = null;
   const clock = () => (vclock !== null ? vclock : ac ? ac.currentTime : performance.now() / 1000);
   const level = (v) => Math.pow(v, 1.5);
@@ -4765,7 +4836,6 @@ void main(){
     s.gain.connect(s.send).connect(M.verb);
     s.cr = s.due = null;
     s.handle = S.bed ? S.bed(ac, s.gain, s) : null;
-    if (breathOn && S.breath) S.breath(s, true, breathNow(), ac.currentTime, 0.12);
     s.next = ac.currentTime + rand(0.05, 0.35);
     s.at = s.next;
   }
@@ -4795,18 +4865,29 @@ void main(){
     M.bus.gain.setTargetAtTime(power > 1 ? Math.pow(power, -0.35) : 1, t, 0.3);
   }
 
-  /* ---------- Timer: the mix softens, slows and fades ---------- */
-  let timer = null; // { dur, done, start }
-  const timerP = () => (timer ? clamp((timer.done + (playing ? clock() - timer.start : 0)) / timer.dur, 0, 1) : 0);
-  const timerRate = () => 1 - 0.45 * smooth(0, 0.9, timerP());
-  const timerGain = () => { const p = timerP(); return (1 - 0.3 * smooth(0, 0.85, p)) * (1 - smooth(0.9, 1, p)); };
-  const breathNow = () => (CB.breathAt ? CB.breathAt(clock() - breath0) : 0.5);
+  /* ---------- Timer: a chosen length, then a countdown that runs while the sound plays and pauses it at zero ---------- */
+  let timerMin = 0; // the chosen length in minutes (0: no timer)
+  let timer = null; // the countdown, once started: { dur, done, start } in audio seconds
+  const timerLeft = () => (timer ? Math.max(0, timer.dur - timer.done - (playing ? clock() - timer.start : 0)) : timerMin * 60);
+  const timerP = () => (timer ? 1 - timerLeft() / timer.dur : 0);
+  // The stop is also written into the sound itself, so it lands on time even while the page's timers sleep (a locked phone).
+  function scheduleEnd() {
+    if (timer && playing && M) M.out.gain.setTargetAtTime(0.0001, ac.currentTime + timerLeft(), 0.25);
+  }
+  // The countdown changed while the sound plays: the old stop comes out of the sound, and the new one goes in.
+  function reschedule() {
+    if (!playing || !M) return;
+    const t = ac.currentTime;
+    M.out.gain.cancelScheduledValues(t);
+    M.out.gain.setTargetAtTime(1, t, 0.3);
+    scheduleEnd();
+  }
 
   /* ---------- Scheduler: events are placed ahead in audio time, and the painting follows them ---------- */
   let queue = [], tickTimer = 0;
   function tick() {
     if (!playing || !ac) return;
-    const now = ac.currentTime, look = doc.hidden ? 2.5 : 0.6, rateMul = timerRate();
+    const now = ac.currentTime, look = doc.hidden ? 2.5 : 0.6;
     for (const V of VOICES) {
       const S = SYNTH[V.id], s = st[V.id];
       if (!S.ev || !s.gain || s.v <= 0.001) continue;
@@ -4816,22 +4897,11 @@ void main(){
         const t = s.next;
         s.at = t;
         queue.push({ t, id: V.id, v: s.v, p: S.ev(ac, s.gain, t, s, s.v) });
-        s.next = t + S.gap(s, s.v) / rateMul;
+        s.next = t + S.gap(s, s.v);
       }
     }
     if (queue.length > 400) queue = queue.slice(-200);
-    const tau = doc.hidden ? 0.45 : 0.12;
-    if (breathOn) {
-      const b = breathNow();
-      for (const V of VOICES) { const S = SYNTH[V.id], s = st[V.id]; if (S.breath && s.gain) S.breath(s, true, b, now, tau); }
-      M.lungs.gain.setTargetAtTime(0.82 + 0.18 * b, now, tau);
-    }
-    if (timer) {
-      const p = timerP();
-      M.dim.frequency.setTargetAtTime(18000 * Math.pow(0.24, smooth(0, 0.9, p)), now, 0.5);
-      M.out.gain.setTargetAtTime(Math.max(0.0001, timerGain()), now, 0.4);
-      if (p >= 1) { finishTimer(); return; }
-    }
+    if (timer && timerLeft() <= 0) { finishTimer(); return; }
     paintClock();
   }
 
@@ -4919,7 +4989,7 @@ void main(){
     const sw = st.waves;
     if (sw.v > 0.001) {
       sw.acc = (sw.acc || 0) + dt * (3 + 5 * sw.v);
-      const swell = breathOn ? breathNow() : SYNTH.waves.swell(sw, t);
+      const swell = SYNTH.waves.swell(sw, t);
       while (sw.acc >= 1) {
         sw.acc -= 1;
         const o = pos.waves, cx = o.x + rand(-0.07, 0.07), cy = o.y + rand(-0.07, 0.07);
@@ -4942,7 +5012,7 @@ void main(){
       tn.acc = (tn.acc || 0) + dt * 1.6;
       while (tn.acc >= 1) {
         tn.acc -= 1;
-        const b = breathOn ? breathNow() : SYNTH.tone.swell(tn, t), o = pos.tone;
+        const b = SYNTH.tone.swell(tn, t), o = pos.tone;
         ring(o.x, o.y, A(0.035 + 0.075 * b), byId.tone.rgb, 0.07 * edgeK(o.x, o.y) * (0.5 + 0.5 * tn.v), 1);
         if (Math.random() < 0.12) dab(o.x, o.y, A(0.06 + 0.08 * b), byId.tone.rgb, 0.03 * edgeK(o.x, o.y));
       }
@@ -5020,7 +5090,7 @@ void main(){
       g.fillRect(o.x * S - r, o.y * S - r, r * 2, r * 2);
     }
     if (playing && st.tone.v > 0.001 && st.tone.gain) {
-      const o = pos.tone, b = breathOn ? breathNow() : SYNTH.tone.swell(st.tone, now), r = S * (0.07 + 0.05 * (still ? 0.5 : b));
+      const o = pos.tone, b = SYNTH.tone.swell(st.tone, now), r = S * (0.07 + 0.05 * (still ? 0.5 : b));
       const gr = g.createRadialGradient(o.x * S, o.y * S, r * 0.3, o.x * S, o.y * S, r);
       gr.addColorStop(0, css(byId.tone.rgb, 0));
       gr.addColorStop(0.7, css(byId.tone.rgb, 0.16 * st.tone.v));
@@ -5065,15 +5135,6 @@ void main(){
     }
     g.globalCompositeOperation = "source-over";
     const c = S / 2;
-    if (breathOn && playing) {
-      const b = still ? 0.5 : breathNow(), r = POOL * S * (1 + 0.015 * b);
-      g.strokeStyle = `rgb(222 216 255 / ${(0.12 + 0.4 * b).toFixed(3)})`;
-      g.lineWidth = (1.2 + 1.6 * b) * dpr;
-      g.beginPath(); g.arc(c, c, r, 0, TAU); g.stroke();
-      g.strokeStyle = `rgb(222 216 255 / ${(0.05 + 0.1 * b).toFixed(3)})`;
-      g.lineWidth = (5 + 6 * b) * dpr;
-      g.stroke();
-    }
     if (timer) {
       const p = timerP(), r = POOL * S - 9 * dpr, end = -Math.PI / 2 + p * TAU;
       g.lineCap = "round";
@@ -5099,10 +5160,6 @@ void main(){
       advance(now, dt);
     }
     render(now);
-    if (breathWord) {
-      const word = breathOn && playing ? ((((now - breath0) % 10) + 10) % 10 < 4 ? "שאיפה" : "נשיפה") : "";
-      if (breathWord.textContent !== word) breathWord.textContent = word;
-    }
     if (inView && (playing || fx.length || embers.length || drag)) raf = requestAnimationFrame(frame);
   }
   const kick = () => { if (!raf) { lastT = clock(); raf = requestAnimationFrame(frame); } };
@@ -5237,7 +5294,7 @@ void main(){
     if (st[id].v > 0 && !playing) play();
   });
 
-  /* ---------- Play, presets, tuning, breath, timer ---------- */
+  /* ---------- Play, presets, tuning, timer ---------- */
   const names = (list) => (list.length < 2 ? list.join("") : list.slice(0, -1).join(", ") + " ו" + list[list.length - 1]);
   const mixList = () => VOICES.filter((V) => st[V.id].v > 0).sort((a, b) => st[b.id].v - st[a.id].v);
   let restMsg = "";
@@ -5247,39 +5304,52 @@ void main(){
     section.classList.toggle("is-playing", playing);
     playLabel.textContent = playing ? "להשהות" : "להשמיע";
     let msg;
-    if (playing && list.length) msg = `מתנגנים עכשיו: ${names(list)}.`;
+    if (playing && asleep) msg = "נגעי פעם אחת במעגל כדי להפעיל את הצליל.";
+    else if (playing && list.length) msg = `מתנגנים עכשיו: ${names(list)}.`;
     else if (playing) msg = "השקט מחכה. גררי צליל אל המעגל.";
     else if (restMsg) msg = restMsg;
-    else if (list.length) msg = "המיקס מוכן. לחצי ״להשמיע״.";
+    else if (list.length) msg = timer ? "הצלילים בהשהיה. לחצי ״להשמיע״, והטיימר ימשיך." : "המיקס מוכן. לחצי ״להשמיע״.";
     else msg = "גררי צליל אל המעגל, או בחרי מצב מוכן.";
     if (statusEl.textContent !== msg) statusEl.textContent = msg;
     paintClock();
   }
-  const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  const mmss = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  // The countdown shows once a length is chosen: "להתחיל" starts it, "לבטל" stops it, and it dims while the sound is paused.
+  let countKey = "";
   function paintClock() {
-    if (!clockEl) return;
-    const txt = timer ? `השקיעה בעוד ${mmss(Math.max(0, timer.dur * (1 - timerP())))}` : "";
-    if (clockEl.textContent !== txt) clockEl.textContent = txt;
+    if (!countEl) return;
+    countEl.hidden = !timerMin;
+    if (!timerMin) return;
+    const txt = mmss(Math.ceil(timerLeft() - 0.001));
+    if (countTime.textContent !== txt) countTime.textContent = txt;
+    const mode = !timer ? "ready" : playing ? "running" : "paused", key = mode + timerMin;
+    if (key === countKey) return;
+    countKey = key;
+    countEl.dataset.state = mode;
+    countBtn.textContent = timer ? "לבטל" : "להתחיל";
+    countBtn.setAttribute("aria-label", timer ? "לבטל את הטיימר" : `להתחיל טיימר של ${timerMin} דקות`);
+    countBtn.classList.toggle("btn--primary", !timer);
+    countBtn.classList.toggle("btn--ghost", !!timer);
   }
 
   function play() {
     restMsg = "";
-    if (!ensureAudio()) { statusEl.textContent = "הדפדפן הזה לא מאפשר צלילים."; return; }
+    // Declared as media before it starts, so an iPhone on silent still plays it.
+    if (CB.audioMedia) CB.audioMedia("bath", true);
+    if (!ensureAudio()) { if (CB.audioMedia) CB.audioMedia("bath", false); statusEl.textContent = "הדפדפן הזה לא מאפשר צלילים."; return; }
     playing = true;
     CB.audioUsers.add("bath");
-    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (_) { /* not supported */ }
     const t = ac.currentTime;
-    if (breathOn) breath0 = clock();
     if (timer) timer.start = clock();
-    if (!timer) M.dim.frequency.setTargetAtTime(18000, t, 0.3);
     M.out.gain.cancelScheduledValues(t);
     M.out.gain.setValueAtTime(Math.max(0.0001, M.out.gain.value), t);
-    M.out.gain.setTargetAtTime(Math.max(0.0001, timer ? timerGain() : 1), t, 0.6);
-    if (!breathOn) M.lungs.gain.setTargetAtTime(1, t, 0.3);
+    M.out.gain.setTargetAtTime(1, t, 0.6);
+    scheduleEnd();
     applyLevels(0.5);
     clearInterval(tickTimer);
     tickTimer = setInterval(tick, 90);
     tick();
+    watchWake();
     paintStatus();
     kick();
   }
@@ -5288,7 +5358,8 @@ void main(){
     if (timer) { timer.done += clock() - timer.start; }
     playing = false;
     CB.audioUsers.delete("bath");
-    try { if (navigator.audioSession) navigator.audioSession.type = "auto"; } catch (_) { /* not supported */ }
+    if (CB.audioMedia) CB.audioMedia("bath", false);
+    watchWake();
     clearInterval(tickTimer);
     queue = [];
     if (M) {
@@ -5300,11 +5371,11 @@ void main(){
     paintStatus();
     kick();
   }
+  // Zero: the sound stops as if pause were pressed, and the countdown is ready to start again.
   function finishTimer() {
     timer = null;
     pause();
-    setTimerUI(0);
-    restMsg = "הצלילים נחו. אפשר לשמור את היצירה.";
+    restMsg = "הזמן נגמר, והצלילים נחו. אפשר לשמור את היצירה.";
     paintStatus();
   }
   playBtn.addEventListener("click", () => {
@@ -5323,13 +5394,13 @@ void main(){
     const ground = ["waves", "rain", "fire"].sort(() => Math.random() - 0.5);
     const mix = { [ground[0]]: rand(0.62, 0.88), [Math.random() < 0.5 ? "bowl" : "tone"]: rand(0.4, 0.65), [Math.random() < 0.5 ? "chimes" : "crickets"]: rand(0.32, 0.5) };
     if (Math.random() < 0.5) mix[ground[1]] = rand(0.25, 0.4);
-    return { id: "surprise", tune: TUNES[Math.floor(Math.random() * 3)], breath: Math.random() < 0.5, mix };
+    return { id: "surprise", tune: TUNES[Math.floor(Math.random() * 3)], mix };
   }
+  // A preset with a length ("before sleep") starts its countdown with the sound.
   function applyPreset(p) {
     restMsg = "";
     setTune(p.tune, true);
-    setBreath(!!p.breath);
-    if (p.timer) setTimer(p.timer);
+    if (p.timer) { setTimerMin(p.timer); newCount(); }
     for (const V of VOICES) {
       const v = p.mix[V.id] || 0;
       pos[V.id] = v > 0 ? placeAt(V, v, V.home) : park(V);
@@ -5338,7 +5409,8 @@ void main(){
     for (const V of VOICES) if (st[V.id].v > 0) setPos(V.id, settle(V.id), { quiet: true });
     setPreset(p.id);
     changed();
-    if (!playing) play(); else applyLevels(0.5);
+    if (!playing) play();
+    else { applyLevels(0.5); if (p.timer) reschedule(); }
     paintStatus();
     kick();
   }
@@ -5358,34 +5430,39 @@ void main(){
   }
   tuneInputs.forEach((i) => i.addEventListener("change", () => { if (i.checked) setTune(i.value); }));
 
-  function setBreath(on) {
-    breathOn = !!on;
-    if (breathInp) breathInp.checked = breathOn;
-    breath0 = clock();
-    if (ac && M) {
-      const t = ac.currentTime;
-      for (const V of VOICES) { const S = SYNTH[V.id], s = st[V.id]; if (S.breath && s.gain) S.breath(s, breathOn, breathNow(), t, 0.3); }
-      if (!breathOn) M.lungs.gain.setTargetAtTime(1, t, 0.4);
-    }
+  const timerInputs = Array.from(section.querySelectorAll('input[name="bath-timer"]'));
+  function setTimerMin(min) {
+    timerMin = Math.max(0, Math.round(+min || 0));
+    timerInputs.forEach((i) => { i.checked = +i.value === timerMin; });
+  }
+  const newCount = () => { timer = { dur: timerMin * 60, done: 0, start: clock() }; };
+  // "להתחיל": the countdown starts, and the sound with it if it was resting.
+  function startTimer() {
+    if (!timerMin) return;
+    newCount();
+    restMsg = "";
+    if (playing) reschedule();
+    else if (!mixList().length) applyPreset(PRESETS[0]);
+    else play();
+    paintStatus();
     kick();
   }
-  if (breathInp) breathInp.addEventListener("change", () => { setBreath(breathInp.checked); setPreset(""); changed(); });
-
-  const timerInputs = Array.from(section.querySelectorAll('input[name="bath-timer"]'));
-  function setTimerUI(min) { timerInputs.forEach((i) => { i.checked = +i.value === min; }); }
-  function setTimer(min) {
-    min = +min || 0;
-    setTimerUI(min);
-    timer = min ? { dur: min * 60, done: 0, start: clock() } : null;
-    if (!timer && ac && M) {
-      const t = ac.currentTime;
-      M.dim.frequency.setTargetAtTime(18000, t, 0.5);
-      if (playing) M.out.gain.setTargetAtTime(1, t, 0.5);
-    }
+  function cancelTimer() {
+    timer = null;
+    reschedule(); // takes the stop out of the sound
     paintClock();
     kick();
   }
-  timerInputs.forEach((i) => i.addEventListener("change", () => { if (i.checked) { setTimer(i.value); setPreset(""); } }));
+  // Another length while counting starts the count over from it; "ללא" stops it.
+  function chooseTimer(min) {
+    setTimerMin(min);
+    if (!timerMin) { if (timer) cancelTimer(); }
+    else if (timer) { newCount(); reschedule(); }
+    paintClock();
+    kick();
+  }
+  timerInputs.forEach((i) => i.addEventListener("change", () => { if (i.checked) chooseTimer(i.value); }));
+  if (countBtn) countBtn.addEventListener("click", () => (timer ? cancelTimer() : startTimer()));
 
   /* ---------- Saving: the last mix stays in this browser, the picture can be downloaded ---------- */
   const KEY = "natasha-bath";
@@ -5393,7 +5470,7 @@ void main(){
     let t = 0;
     return () => {
       clearTimeout(t);
-      t = setTimeout(() => store.set(KEY, { mix: Object.fromEntries(VOICES.filter((V) => st[V.id].v > 0).map((V) => [V.id, [+pos[V.id].x.toFixed(4), +pos[V.id].y.toFixed(4)]])), tune: base, breath: breathOn, name: nameInp ? nameInp.value.slice(0, 40) : "" }), 300);
+      t = setTimeout(() => store.set(KEY, { mix: Object.fromEntries(VOICES.filter((V) => st[V.id].v > 0).map((V) => [V.id, [+pos[V.id].x.toFixed(4), +pos[V.id].y.toFixed(4)]])), tune: base, name: nameInp ? nameInp.value.slice(0, 40) : "" }), 300);
     };
   })();
 
@@ -5491,12 +5568,10 @@ void main(){
   if (saved && typeof saved === "object") {
     if (saved.mix) for (const [id, xy] of Object.entries(saved.mix)) if (byId[id] && Array.isArray(xy)) pos[id] = { x: +xy[0] || 0.5, y: +xy[1] || 0.5 };
     base = TUNES.includes(saved.tune) ? saved.tune : 432;
-    breathOn = !!saved.breath;
     if (nameInp && typeof saved.name === "string" && saved.name.trim()) nameInp.value = saved.name.slice(0, 40);
   }
   setTune(base, true);
-  if (breathInp) breathInp.checked = breathOn;
-  setTimerUI(0);
+  setTimerMin(0);
   VOICES.forEach((V) => setPos(V.id, pos[V.id], { quiet: true }));
   // The pool is painted when it comes near, not while the page loads.
   let sized = false;
@@ -5508,8 +5583,11 @@ void main(){
 
   /* ---------- For tests: measure one voice offline, or paint a few virtual minutes ---------- */
   CB.bath = {
-    state: () => ({ playing, base, breathOn, timer: timer ? { dur: timer.dur, p: timerP() } : null, preset: presetId, audio: CB.audioState ? CB.audioState() : "none", mix: Object.fromEntries(VOICES.map((V) => [V.id, +st[V.id].v.toFixed(3)])), queue: queue.length, voices: VOICES.filter((V) => st[V.id].gain).map((V) => V.id) }),
-    play, pause, applyPreset: (id) => applyPreset(id === "surprise" ? surprise() : PRESETS.find((p) => p.id === id)),
+    state: () => ({ playing, base, timerMin, timer: timer ? { dur: timer.dur, p: +timerP().toFixed(4), left: +timerLeft().toFixed(2) } : null, preset: presetId, audio: CB.audioState ? CB.audioState() : "none", asleep, clock: +clock().toFixed(2), mix: Object.fromEntries(VOICES.map((V) => [V.id, +st[V.id].v.toFixed(3)])), queue: queue.length, voices: VOICES.filter((V) => st[V.id].gain).map((V) => V.id) }),
+    play, pause, startTimer, cancelTimer,
+    // moves a running countdown forward, so a test can reach zero without waiting
+    skip(sec) { if (timer) { timer.done += sec; reschedule(); paintClock(); } },
+    applyPreset: (id) => applyPreset(id === "surprise" ? surprise() : PRESETS.find((p) => p.id === id)),
     setLevel, compose,
     inked: (x, y) => pg.getImageData(Math.round(x * ARTPX), Math.round(y * ARTPX), 1, 1).data[3],
     // Renders sounds offline and reports loudness. With weighted, an approximate A-weighting (the ear's curve) is applied first.
@@ -5529,7 +5607,6 @@ void main(){
       const run = (vid, v, out) => {
         const S = SYNTH[vid], s = { v };
         if (S.bed) S.bed(off, out, s);
-        if (S.breath && preset && preset.breath) S.breath(s, true, 0.5, 0, 0.1);
         if (S.ev) { let t = 0.05, guard = 0; while (t < seconds && guard++ < 20000) { s.at = t; S.ev(off, out, t, s, s.v); t += S.gap(s, s.v); } }
       };
       if (preset) {
