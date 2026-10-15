@@ -1194,6 +1194,64 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
 .veil.is-plain[data-world="sound"] { background: radial-gradient(110% 90% at 50% 50%, #F4EEE3 0%, #E7DAC5 55%, #CDBB9C 100%); }
 .veil.is-plain[data-world="magic"] { background: radial-gradient(110% 90% at 50% 26%, #3B3270 0%, #15123A 48%, #05071A 100%); }
 
+/* ---------- Sand mandala (src/mandala.js) ---------- */
+.mandala-sec { background: linear-gradient(180deg, #F3EADB 0%, #EADDC8 100%); }
+:root[data-theme="dark"] .mandala-sec { background: linear-gradient(180deg, #1B1621 0%, #121017 100%); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mandala-sec { background: linear-gradient(180deg, #1B1621 0%, #121017 100%); } }
+.mandala { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 4vw, 64px); align-items: center; margin-top: clamp(28px, 4vw, 48px); }
+.mandala__stage {
+  position: relative; width: 100%; max-width: 600px; aspect-ratio: 1; justify-self: center;
+  border-radius: 50%; overflow: hidden; isolation: isolate; background: #EADFCA;
+  box-shadow: 0 0 0 10px rgb(150 118 76 / .16), 0 44px 90px -44px rgb(60 40 20 / .6);
+  touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: crosshair;
+}
+.mandala__stage::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; box-shadow: inset 0 0 36px rgb(110 80 45 / .28), inset 0 2px 0 rgb(255 255 255 / .35); }
+.mandala__stage canvas, .mandala__guides { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mandala__guides { pointer-events: none; transition: opacity .35s var(--ease-out); }
+.mandala__guides.is-off { opacity: 0; }
+.mandala__fx { pointer-events: none; opacity: 0; }
+.mandala__fx.is-on { opacity: 1; }
+.mandala__hint { position: absolute; inset: 0; display: grid; place-content: center; gap: 6px; text-align: center; pointer-events: none; color: #5E4A30; transition: opacity .5s var(--ease-out); }
+.mandala__hint b { font: 400 clamp(1.6rem, 3vw, 2.1rem)/1.1 var(--font-display); }
+.mandala__hint span { font: 600 .95rem/1.3 var(--font-body); }
+.mandala__stage.has-sand .mandala__hint { opacity: 0; }
+.mandala__panel { display: grid; gap: 22px; align-content: start; padding: clamp(22px, 3vw, 36px); border-radius: 28px; background: color-mix(in oklab, var(--surface) 72%, transparent); box-shadow: 0 0 0 1px var(--line) inset; }
+.mandala__group { display: grid; gap: 12px; }
+.mandala__label { font: 700 .82rem/1.2 var(--font-body); color: var(--accent); }
+.sands { display: flex; flex-wrap: wrap; gap: 10px; }
+.sands button {
+  width: 44px; height: 44px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background-color: var(--c);
+  background-image: radial-gradient(circle at 32% 28%, rgb(255 255 255 / .34), transparent 52%), radial-gradient(circle at 70% 78%, rgb(0 0 0 / .16), transparent 55%);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / .14); touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: transform .16s var(--ease-out), box-shadow .2s var(--ease-out);
+}
+.sands button:active { transform: scale(.94); }
+.sands button[aria-pressed="true"] { box-shadow: inset 0 0 0 1px rgb(0 0 0 / .14), 0 0 0 3px var(--surface), 0 0 0 5px var(--ink); }
+.sands button:focus-visible { outline: 2px solid var(--focus); outline-offset: 6px; }
+/* on a dark panel the darkest sands need a faint rim to be seen */
+:root[data-theme="dark"] .sands button { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .24); }
+:root[data-theme="dark"] .sands button[aria-pressed="true"] { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .24), 0 0 0 3px var(--surface), 0 0 0 5px var(--ink); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sands button { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .24); }
+  :root:not([data-theme="light"]) .sands button[aria-pressed="true"] { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .24), 0 0 0 3px var(--surface), 0 0 0 5px var(--ink); }
+}
+.mandala__settings { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 14px 20px; align-items: center; }
+.mandala .seg { background: color-mix(in oklab, var(--ink) 5%, transparent); box-shadow: 0 0 0 1px var(--line) inset; }
+.mandala .seg span { color: var(--ink-2); }
+.mandala .seg input:checked + span { background: var(--ink); color: var(--bg); }
+.mandala .seg input:focus-visible + span { outline-color: var(--focus); }
+.mandala__tools, .mandala__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.mandala__tools .btn:disabled { opacity: .45; cursor: default; }
+.mandala .icon-btn[aria-pressed="false"] { color: var(--ink-2); }
+.mandala .icon-btn[aria-pressed="false"] svg { opacity: .6; }
+#mandala-sound .off, #mandala-sound[aria-pressed="false"] .on { display: none; }
+#mandala-sound[aria-pressed="false"] .off { display: inline; }
+.mandala__actions [hidden] { display: none; }
+.mandala__status { min-height: 1.45em; font-size: .95rem; color: var(--ink-2); text-wrap: pretty; }
+@media (hover: hover) and (pointer: fine) { .mandala .seg input:not(:checked):hover + span { color: var(--ink); } }
+@media (max-width: 960px) { .mandala { grid-template-columns: 1fr; } .mandala__stage { max-width: min(560px, calc(100% - 44px)); } }
+@media (max-width: 560px) { .mandala__settings { grid-template-columns: 1fr; gap: 8px; } .sands { display: grid; grid-template-columns: repeat(4, 44px); gap: 12px 16px; } }
+
 </style>
 </head>
 <body>
@@ -1237,7 +1295,7 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
         <p class="hero__sub">ריטריטים מול הים, ערבי נשים מיסטיים וליווי אישי עם נטע-לי (נטשה) שורייץ. תודעה, מדיטציה ותנועה, במקום אחד.</p>
         <nav class="gates gates--hero" aria-label="העולמות באתר">
           <a class="gate gate--retreats" href="#retreats" data-world="retreats"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.6" r="3.4"/><path d="M12 3v1.3M6.3 5.3l.9.9M17.7 5.3l-.9.9M4 9.8h1.4M18.6 9.8H20"/><path d="M3 14.6c1.5 0 1.5-.9 3-.9s1.5.9 3 .9 1.5-.9 3-.9 1.5.9 3 .9 1.5-.9 3-.9 1.5.9 3 .9"/><path d="M5 18.6c1.4 0 1.4-.8 2.8-.8s1.4.8 2.8.8 1.4-.8 2.8-.8 1.4.8 2.8.8"/></svg></span><span class="gate__txt"><b>עולם הריטריטים</b><small>הריטריט הבא, יום בריטריט וריטריטים קודמים</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a>
-          <a class="gate gate--sound" href="#sound" data-world="sound"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span><span class="gate__txt"><b>עולם השקט והצלילים</b><small>נשימה, מדיטציה ויצירה בצליל</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a>
+          <a class="gate gate--sound" href="#sound" data-world="sound"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span><span class="gate__txt"><b>עולם השקט והצלילים</b><small>נשימה, צלילים, מנדלת חול ומדיטציה</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a>
           <a class="gate gate--magic" href="#magic" data-world="magic"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.6 15A7.4 7.4 0 1 1 9 5.4a6 6 0 0 0 9.6 9.6z"/><path d="M17.2 3.6l.55 1.35 1.35.55-1.35.55-.55 1.35-.55-1.35-1.35-.55 1.35-.55z"/></svg></span><span class="gate__txt"><b>עולם הירח והקסם</b><small>הירח הלילה, קלף היום, כוונות וערבי נשים</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a>
         </nav>
         <p class="hero__more"><span>ועוד באתר:</span> <a href="#events">כל האירועים</a> <a href="#community">המעגל</a> <a href="#learn">ללמוד</a> <a href="#shop">חנות</a> <a href="#about">נעים להכיר</a></p>
@@ -1380,7 +1438,7 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
   <nav class="world-next" aria-label="להמשיך לעולם אחר">
     <div class="wrap">
       <p class="eyebrow">להמשיך במסע</p>
-      <div class="gates gates--pair"><a class="gate gate--sound" href="#sound" data-world="sound"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span><span class="gate__txt"><b>עולם השקט והצלילים</b><small>נשימה, מדיטציה ויצירה בצליל</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a><a class="gate gate--magic" href="#magic" data-world="magic"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.6 15A7.4 7.4 0 1 1 9 5.4a6 6 0 0 0 9.6 9.6z"/><path d="M17.2 3.6l.55 1.35 1.35.55-1.35.55-.55 1.35-.55-1.35-1.35-.55 1.35-.55z"/></svg></span><span class="gate__txt"><b>עולם הירח והקסם</b><small>הירח הלילה, קלף היום, כוונות וערבי נשים</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a></div>
+      <div class="gates gates--pair"><a class="gate gate--sound" href="#sound" data-world="sound"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span><span class="gate__txt"><b>עולם השקט והצלילים</b><small>נשימה, צלילים, מנדלת חול ומדיטציה</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a><a class="gate gate--magic" href="#magic" data-world="magic"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.6 15A7.4 7.4 0 1 1 9 5.4a6 6 0 0 0 9.6 9.6z"/><path d="M17.2 3.6l.55 1.35 1.35.55-1.35.55-.55 1.35-.55-1.35-1.35-.55 1.35-.55z"/></svg></span><span class="gate__txt"><b>עולם הירח והקסם</b><small>הירח הלילה, קלף היום, כוונות וערבי נשים</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a></div>
       <p class="world-next__home"><a href="#top">לדף הבית</a> · <a href="#events">כל האירועים</a></p>
     </div>
   </nav>
@@ -1393,11 +1451,11 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
       <span class="world-head__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span>
       <p class="eyebrow">עולם</p>
       <h1 class="world-head__title" id="sound-title" tabindex="-1">עולם השקט והצלילים</h1>
-      <p class="lead">רגע של שקט באמצע היום. לנשום יחד, ליצור אמבט צלילים משלך, ולהצטרף למדיטציות ולסדנאות.</p>
+      <p class="lead">רגע של שקט באמצע היום. לנשום יחד, ליצור אמבט צלילים ומנדלת חול משלך, ולהצטרף למדיטציות ולסדנאות.</p>
     </div>
   </header>
   <nav class="world-nav world-nav--sound" aria-label="אזורים בעולם השקט והצלילים">
-    <div class="wrap world-nav__in"><a href="#breathe">דקה של נשימה</a><a href="#soundbath">אמבט צלילים</a><a href="#sound-events">מדיטציות וסדנאות</a></div>
+    <div class="wrap world-nav__in"><a href="#breathe">דקה של נשימה</a><a href="#soundbath">אמבט צלילים</a><a href="#mandala">מנדלת חול</a><a href="#sound-events">מדיטציות וסדנאות</a></div>
   </nav>
   <section class="section breathe" id="breathe" aria-labelledby="breathe-title">
     <div class="wrap breathe__grid">
@@ -1487,6 +1545,59 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
             </div>
           </div>
           <p class="fine bath__note">כל הצלילים נוצרים בדפדפן, בלי הקלטות. התדרים הם בחירה מוזיקלית, לא טיפול.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section mandala-sec" id="mandala" aria-labelledby="mandala-title">
+    <div class="wrap">
+      <header class="head head--split">
+        <div class="stack">
+          <p class="eyebrow">יצירה בחול · <span class="latin" lang="en">SAND MANDALA</span></p>
+          <h2 class="h2" id="mandala-title">מנדלת חול</h2>
+        </div>
+        <p class="lead">ציירי באצבע, והחול נשפך סביב המרכז ויוצר מנדלה. במקום שבו עוצרים, החול נערם. בסוף אפשר לשמור את המנדלה כתמונה, או לשחרר אותה, כמו שנזירים בטיבט אוספים את מנדלות החול שלהם אל המרכז.</p>
+      </header>
+      <div class="mandala">
+        <div class="mandala__stage" id="mandala-stage">
+          <canvas class="mandala__base" aria-hidden="true"></canvas>
+          <canvas class="mandala__sand" id="mandala-canvas" role="img" aria-label="משטח חול ריק"></canvas>
+          <canvas class="mandala__fx" aria-hidden="true"></canvas>
+          <svg class="mandala__guides" viewBox="0 0 1024 1024" aria-hidden="true"></svg>
+          <p class="mandala__hint" aria-hidden="true"><b>ציירי כאן</b><span>כל קו חוזר סביב המרכז</span></p>
+        </div>
+        <div class="mandala__panel">
+          <div class="mandala__group">
+            <p class="mandala__label" id="mandala-colors-label">צבע החול</p>
+            <div class="sands" id="mandala-colors" role="group" aria-labelledby="mandala-colors-label"></div>
+          </div>
+          <div class="mandala__settings">
+            <span class="mandala__label" id="mandala-sym-label">כיוונים</span>
+            <div class="seg" role="radiogroup" aria-labelledby="mandala-sym-label">
+              <label><input type="radio" name="mandala-sym" value="6"><span>6</span></label>
+              <label><input type="radio" name="mandala-sym" value="8" checked><span>8</span></label>
+              <label><input type="radio" name="mandala-sym" value="12"><span>12</span></label>
+            </div>
+            <span class="mandala__label" id="mandala-size-label">עובי</span>
+            <div class="seg" role="radiogroup" aria-labelledby="mandala-size-label">
+              <label><input type="radio" name="mandala-size" value="0"><span>דק</span></label>
+              <label><input type="radio" name="mandala-size" value="1" checked><span>בינוני</span></label>
+              <label><input type="radio" name="mandala-size" value="2"><span>רחב</span></label>
+            </div>
+          </div>
+          <div class="mandala__tools">
+            <button class="btn btn--ghost btn--sm" type="button" id="mandala-surprise">הפתעה</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="mandala-undo" disabled>צעד אחורה</button>
+            <button class="icon-btn" type="button" id="mandala-guides" aria-pressed="true" aria-label="קווי עזר"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18" opacity=".55"/></svg></button>
+            <button class="icon-btn" type="button" id="mandala-sound" aria-pressed="true" aria-label="צליל"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+          </div>
+          <div class="mandala__actions">
+            <button class="btn btn--primary btn--sm" type="button" id="mandala-save">לשמור את המנדלה</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="mandala-share" hidden>לשתף</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="mandala-release">לשחרר את החול</button>
+          </div>
+          <p class="mandala__status" id="mandala-status" aria-live="polite">ציירי באצבע או בעכבר. כל קו חוזר סביב המרכז. אפשר גם ללחוץ ״הפתעה״.</p>
         </div>
       </div>
     </div>
@@ -1644,7 +1755,7 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
   <nav class="world-next" aria-label="להמשיך לעולם אחר">
     <div class="wrap">
       <p class="eyebrow">להמשיך במסע</p>
-      <div class="gates gates--pair"><a class="gate gate--retreats" href="#retreats" data-world="retreats"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.6" r="3.4"/><path d="M12 3v1.3M6.3 5.3l.9.9M17.7 5.3l-.9.9M4 9.8h1.4M18.6 9.8H20"/><path d="M3 14.6c1.5 0 1.5-.9 3-.9s1.5.9 3 .9 1.5-.9 3-.9 1.5.9 3 .9 1.5-.9 3-.9 1.5.9 3 .9"/><path d="M5 18.6c1.4 0 1.4-.8 2.8-.8s1.4.8 2.8.8 1.4-.8 2.8-.8 1.4.8 2.8.8"/></svg></span><span class="gate__txt"><b>עולם הריטריטים</b><small>הריטריט הבא, יום בריטריט וריטריטים קודמים</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a><a class="gate gate--sound" href="#sound" data-world="sound"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span><span class="gate__txt"><b>עולם השקט והצלילים</b><small>נשימה, מדיטציה ויצירה בצליל</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a></div>
+      <div class="gates gates--pair"><a class="gate gate--retreats" href="#retreats" data-world="retreats"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.6" r="3.4"/><path d="M12 3v1.3M6.3 5.3l.9.9M17.7 5.3l-.9.9M4 9.8h1.4M18.6 9.8H20"/><path d="M3 14.6c1.5 0 1.5-.9 3-.9s1.5.9 3 .9 1.5-.9 3-.9 1.5.9 3 .9 1.5-.9 3-.9 1.5.9 3 .9"/><path d="M5 18.6c1.4 0 1.4-.8 2.8-.8s1.4.8 2.8.8 1.4-.8 2.8-.8 1.4.8 2.8.8"/></svg></span><span class="gate__txt"><b>עולם הריטריטים</b><small>הריטריט הבא, יום בריטריט וריטריטים קודמים</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a><a class="gate gate--sound" href="#sound" data-world="sound"><span class="gate__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 13.2h15a7.5 7.5 0 0 1-15 0z"/><path d="M9.6 19.6h4.8"/><path d="M8.4 9.6c.7-.9.7-1.9 0-2.8M12 9.1c.9-1.1.9-2.4 0-3.6M15.6 9.6c.7-.9.7-1.9 0-2.8"/></svg></span><span class="gate__txt"><b>עולם השקט והצלילים</b><small>נשימה, צלילים, מנדלת חול ומדיטציה</small></span><svg class="gate__go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></a></div>
       <p class="world-next__home"><a href="#top">לדף הבית</a> · <a href="#events">כל האירועים</a></p>
     </div>
   </nav>
@@ -2120,7 +2231,7 @@ window.SITE = {
   // The site is divided into worlds (each with its areas) and pages. The menu is built from this list.
   worlds: [
     { id: "retreats", name: "עולם הריטריטים", line: "הריטריט הבא, יום בריטריט וריטריטים קודמים", areas: [["next-retreat", "הריטריט הבא"], ["journey", "יום אחד בריטריט"], ["past-retreats", "ריטריטים קודמים"], ["retreat-faq", "שאלות ותשובות"]] },
-    { id: "sound", name: "עולם השקט והצלילים", line: "נשימה, מדיטציה ויצירה בצליל", areas: [["breathe", "דקה של נשימה"], ["soundbath", "אמבט צלילים"], ["sound-events", "מדיטציות וסדנאות"]] },
+    { id: "sound", name: "עולם השקט והצלילים", line: "נשימה, צלילים, מנדלת חול ומדיטציה", areas: [["breathe", "דקה של נשימה"], ["soundbath", "אמבט צלילים"], ["mandala", "מנדלת חול"], ["sound-events", "מדיטציות וסדנאות"]] },
     { id: "magic", name: "עולם הירח והקסם", line: "הירח הלילה, קלף היום, כוונות וערבי נשים", areas: [["moon", "הירח הלילה"], ["card-of-day", "קלף היום"], ["intentions", "קיר הכוונות"], ["ritual-evening", "ערב הנשים"], ["quiz", "השאלון"]] },
   ],
   pages: [["events", "כל האירועים"], ["community", "המעגל"], ["learn", "ללמוד"], ["shop", "חנות"], ["about", "נעים להכיר"], ["contact", "צרי קשר"]],
@@ -2145,6 +2256,7 @@ window.SITE = {
       { k: ["חנות", "יומן", "קלפים", "נר", "שובר", "מתנה", "לקנות", "הזמנה"], a: "בחנות יש יומן כוונות, קלפי כוונה, ערכת טקס ירח, הקלטות מודרכות, שוברי מתנה ופגישות אישיות. מוסיפים לסל ושולחים את ההזמנה בוואטסאפ.", act: ["#shop", "לחנות"] },
       { k: ["פגישה", "אימון", "אישי", "אישית", "קליניקה", "פילאטיס", "אירינה"], a: "אפשר לקבוע פגישת אימון מנטלי עם נטע-לי (60 דקות, פנים מול פנים או בזום), או שיעור פילאטיס אישי עם אירינה.", act: ["#shop", "לפגישות"] },
       { k: ["צליל", "צלילים", "אמבט", "מוזיקה", "תדר", "תדרים", "סאונד", "להירדם", "שינה"], a: "באמבט הצלילים אפשר לשלב גלים, גשם, מדורה, צרצרים, קערה, פעמונים ותדר, לראות איך כל צליל מצייר על הבד, ולשמור את היצירה כתמונה. יש גם מצב ״לפני שינה״ עם טיימר.", act: ["#soundbath", "לאמבט הצלילים"] },
+      { k: ["מנדל", "mandala", "לצייר", "ציור", "משחק", "חול צבעוני"], a: "במנדלת החול מציירים באצבע או בעכבר, והחול נשפך סביב המרכז ויוצר מנדלה. אפשר לבחור צבע וכיוונים, ללחוץ ״הפתעה״ למנדלה שנשפכת מעצמה, לשמור אותה כתמונה, או לשחרר את החול אל המרכז.", act: ["#mandala", "למנדלת החול"] },
       { k: ["נשימה", "מדיטציה", "להירגע", "לחץ", "רוגע"], a: "רוצה לנסות עכשיו? בתרגול ״דקה של נשימה״ יש שלושה קצבים וצליל עדין.", act: ["#breathe", "לתרגול הנשימה"] },
       { k: ["זום", "אונליין", "בוקר"], a: "מדיטציית הבוקר בזום מתקיימת פעם בשבוע, עשרים דקות, בלי עלות.", act: ["event:zoom", "להצטרפות"] },
       { k: ["קהילה", "קבוצה", "אינסטגרם", "מעגל"], a: "אפשר להצטרף לקבוצת הוואטסאפ של הקהילה, ולעקוב באינסטגרם.", act: ["#community", "לקהילה"] },
@@ -6119,6 +6231,696 @@ void main(){
       embers = [];
       render(clock());
     },
+  };
+})();
+
+</script>
+<script>
+/* Sand mandala.
+   Pour coloured sand with a finger or the mouse: every stroke is repeated around the centre and mirrored
+   (6, 8 or 12 ways), so a few lines already make a mandala, and where the finger rests the sand piles up.
+   A soft pour of sand sounds while drawing, and tuned bells ring as the stroke crosses the rings.
+   "Surprise" pours a mandala by itself. When it is done it can be kept as an image, or released:
+   the sand is swept in a spiral into the centre and is gone, as Tibetan monks do with theirs.
+   Strokes are kept as data (points and a seed), so "step back" redraws the rest exactly; it also brings back
+   a plate that a surprise replaced, or that was released by mistake. */
+(() => {
+  "use strict";
+  const CB = window.CB;
+  const doc = document;
+  const section = doc.getElementById("mandala");
+  if (!CB || !CB.util || !section) return;
+  const { clamp, rng, hex, watch } = CB.util;
+  const $ = (s) => section.querySelector(s);
+  const stage = $("#mandala-stage"), baseCv = $(".mandala__base"), cv = $("#mandala-canvas"), fxCv = $(".mandala__fx"), guides = $(".mandala__guides");
+  const colorsBox = $("#mandala-colors"), statusEl = $("#mandala-status");
+  const undoBtn = $("#mandala-undo"), surpriseBtn = $("#mandala-surprise"), saveBtn = $("#mandala-save"), shareBtn = $("#mandala-share"), releaseBtn = $("#mandala-release");
+  const guidesBtn = $("#mandala-guides"), soundBtn = $("#mandala-sound");
+  if (!stage || !cv || !cv.getContext || !baseCv || !fxCv) return;
+
+  const TAU = Math.PI * 2;
+  const S = 1024, C = S / 2, R = S / 2 - 3; // the layer, its centre, the plate
+  const FX = 512; // the release is drawn at half size: grains in motion need no more
+  const SANDS = [
+    { name: "אינדיגו", hex: "#34407F" },
+    { name: "טורקיז", hex: "#3E9A98" },
+    { name: "לבנדר", hex: "#9A8BD0" },
+    { name: "ורוד", hex: "#D88AA0" },
+    { name: "טרקוטה", hex: "#C46A4A" },
+    { name: "זהב", hex: "#D6A447" },
+    { name: "פנינה", hex: "#F4EFE6" },
+    { name: "לילה", hex: "#1E2140" },
+  ];
+  const SIZES = [4.5, 8.5, 14]; // brush radius in layer pixels
+  const SCALE = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3, 2];
+  let color = 0, size = 1, sym = 8, strokes = [], cur = null, group = 0, busy = false, ready = false, g = null, raf = 0;
+  // what "step back" undoes, last first: { g } a gesture (all its strokes), or { prev } a plate that was replaced
+  let history = [];
+  let pourQ = null, rel = null; // a surprise being poured, a release being swept
+
+  /* ---------- The plate and the guides ---------- */
+  // The bare sand of the plate, a slice of rows per frame so a phone never stalls while it scrolls.
+  function drawBase() {
+    const b = baseCv.getContext("2d"), base = [234, 223, 202], ROWS = 128;
+    let y0 = 0;
+    const slice = () => {
+      const img = b.createImageData(S, ROWS), d = img.data;
+      for (let j = 0; j < ROWS; j++) {
+        const dy = (y0 + j - C) / C;
+        for (let x = 0; x < S; x++) {
+          const i = (j * S + x) * 4, dx = (x - C) / C;
+          const shade = 1 - 0.07 * (dx * dx + dy * dy);
+          let n = (Math.random() - 0.5) * 14;
+          const k = Math.random();
+          if (k < 0.018) n -= 28; else if (k > 0.986) n += 18;
+          d[i] = clamp(base[0] * shade + n, 0, 255);
+          d[i + 1] = clamp(base[1] * shade + n, 0, 255);
+          d[i + 2] = clamp(base[2] * shade + n * 0.9, 0, 255);
+          d[i + 3] = 255;
+        }
+      }
+      b.putImageData(img, 0, y0);
+      y0 += ROWS;
+      if (y0 < S) requestAnimationFrame(slice);
+    };
+    slice();
+  }
+  function drawGuides() {
+    let h = "";
+    for (const f of [0.22, 0.44, 0.66, 0.88]) h += `<circle cx="${C}" cy="${C}" r="${(R * f).toFixed(1)}"/>`;
+    for (let k = 0; k < sym; k++) {
+      const a = (k * Math.PI) / sym, x = Math.cos(a) * R * 0.97, y = Math.sin(a) * R * 0.97;
+      h += `<line x1="${(C - x).toFixed(1)}" y1="${(C - y).toFixed(1)}" x2="${(C + x).toFixed(1)}" y2="${(C + y).toFixed(1)}"/>`;
+    }
+    guides.innerHTML = `<g fill="none" stroke="#684E2E" stroke-opacity=".2" stroke-width="1.6">${h}</g>`;
+  }
+  function init() {
+    if (ready) return;
+    ready = true;
+    baseCv.width = baseCv.height = S;
+    drawBase();
+    cv.width = cv.height = S;
+    g = cv.getContext("2d");
+    // the sand stays on the plate: this clip is kept for the life of the canvas
+    g.save();
+    g.beginPath();
+    g.arc(C, C, R, 0, TAU);
+    g.clip();
+    fxCv.width = fxCv.height = FX;
+  }
+
+  /* ---------- Sand: grain stamps, poured around the centre ---------- */
+  const stampCache = new Map();
+  function stamps(ci, si) {
+    const key = ci + ":" + si;
+    let list = stampCache.get(key);
+    if (list) return list;
+    const r = SIZES[si], D = Math.ceil(r * 2 + 6), base = hex(SANDS[ci].hex), rand = rng(1009 + ci * 37 + si * 7);
+    list = [];
+    for (let v = 0; v < 5; v++) {
+      const c = doc.createElement("canvas");
+      c.width = c.height = D;
+      const x = c.getContext("2d"), n = Math.round(r * r * 2.4);
+      for (let i = 0; i < n; i++) {
+        const a = rand() * TAU, d = r * Math.pow(rand(), 0.62);
+        const k = rand(), l = k < 0.12 ? -40 : k > 0.92 ? 44 : (rand() - 0.5) * 30; // a few dark grains, a few bright ones
+        x.fillStyle = `rgb(${clamp(base[0] + l, 0, 255) | 0} ${clamp(base[1] + l, 0, 255) | 0} ${clamp(base[2] + l, 0, 255) | 0} / ${(0.55 + 0.45 * rand()).toFixed(2)})`;
+        const s = rand() < 0.25 ? 2.1 : 1.35;
+        x.fillRect(D / 2 + Math.cos(a) * d - s / 2, D / 2 + Math.sin(a) * d - s / 2, s, s);
+      }
+      list.push(c);
+    }
+    stampCache.set(key, list);
+    return list;
+  }
+  // One pour at (x, y): turned n times around the centre, and each turn mirrored.
+  function pour(x, y, ci, si, n, rand) {
+    const list = stamps(ci, si), st = list[(rand() * list.length) | 0], h = st.width / 2;
+    const dx = x - C, dy = y - C, rot = rand() * TAU, stepA = TAU / n;
+    for (let k = 0; k < n; k++) {
+      const a = k * stepA, ca = Math.cos(a), sa = Math.sin(a);
+      const c1 = Math.cos(rot + a), s1 = Math.sin(rot + a);
+      g.setTransform(c1, s1, -s1, c1, C + dx * ca - dy * sa, C + dx * sa + dy * ca);
+      g.drawImage(st, -h, -h);
+      const c2 = Math.cos(a - rot), s2 = Math.sin(a - rot);
+      g.setTransform(c2, s2, s2, -c2, C + dx * ca + dy * sa, C + dx * sa - dy * ca);
+      g.drawImage(st, -h, -h);
+    }
+    g.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  // The stamping rule, shared by live drawing and replay: a pour every so often along the path, and one per resting tick.
+  function startStroke(s) {
+    s.rand = rng(s.seed);
+    s.acc = 0;
+    s.hold = 0;
+    s.lx = s.pts[0];
+    s.ly = s.pts[1];
+    pour(s.lx, s.ly, s.c, s.s, s.n, s.rand);
+  }
+  function step(s, x, y, kind) {
+    if (kind === 1) {
+      // resting: the sand keeps falling, and the little pile spreads the longer the hand stays
+      s.hold++;
+      const spread = SIZES[s.s] * Math.min(1.7, 0.3 + s.hold * 0.045), a = s.rand() * TAU, d = spread * Math.sqrt(s.rand());
+      pour(x + Math.cos(a) * d, y + Math.sin(a) * d, s.c, s.s, s.n, s.rand);
+      return;
+    }
+    const sp = Math.max(2.5, SIZES[s.s] * 0.55), dx = x - s.lx, dy = y - s.ly, d = Math.hypot(dx, dy);
+    if (d < 0.001) return;
+    if (d > 1.5) s.hold = 0;
+    let t = sp - s.acc;
+    while (t <= d) { const u = t / d; pour(s.lx + dx * u, s.ly + dy * u, s.c, s.s, s.n, s.rand); t += sp; }
+    s.acc = d - (t - sp);
+    s.lx = x;
+    s.ly = y;
+  }
+  function replay(s) {
+    startStroke(s);
+    for (let i = 3; i < s.pts.length; i += 3) step(s, s.pts[i], s.pts[i + 1], s.pts[i + 2]);
+  }
+  function redraw() {
+    g.clearRect(0, 0, S, S);
+    strokes.forEach(replay);
+  }
+
+  /* ---------- Sound: the pour, bells on the rings, the sweep ---------- */
+  const sound = (() => {
+    let on = true, ac = null, out = null, flowG = null, srcs = null, noiseBuf = null, idleT = 0, lastBell = 0;
+    try { on = localStorage.getItem("natasha-sound") !== "off"; } catch (_) { on = true; }
+    const tuning = () => (CB.bath && CB.bath.state && CB.bath.state().base) || 432;
+    function wake() {
+      if (!on) return null;
+      // Not declared as media (unlike the sound bath): like a game's sounds, it keeps to the phone's silent
+      // switch and never stops music that is already playing there.
+      const ctx = CB.audioCtx ? CB.audioCtx() : null;
+      if (!ctx) return null;
+      if (ac !== ctx) {
+        ac = ctx;
+        out = ac.createGain();
+        out.connect(ac.destination);
+        // Sand, not wind: a soft hiss made of thousands of tiny grain clicks.
+        const sr = ac.sampleRate, n = Math.floor(sr * 2);
+        noiseBuf = ac.createBuffer(1, n, sr);
+        const d = noiseBuf.getChannelData(0), decay = Math.exp(-1 / (sr * 0.00035));
+        let env = 0;
+        for (let i = 0; i < n; i++) {
+          if (Math.random() < 2400 / sr) env = 0.35 + Math.random() * 0.65;
+          env *= decay;
+          d[i] = (Math.random() * 2 - 1) * (env + 0.05);
+        }
+        srcs = null;
+        ac.addEventListener("statechange", wokeUp);
+      }
+      if (!srcs) {
+        // the pour: noise in two bands, as loud as the sand flows
+        flowG = ac.createGain();
+        flowG.gain.value = 0;
+        flowG.connect(out);
+        const band = (f, q, v) => {
+          const s = ac.createBufferSource(), bp = ac.createBiquadFilter(), gg = ac.createGain();
+          s.buffer = noiseBuf; s.loop = true;
+          bp.type = "bandpass"; bp.frequency.value = f; bp.Q.value = q;
+          gg.gain.value = v;
+          s.connect(bp).connect(gg).connect(flowG);
+          s.start(ac.currentTime, Math.random() * 1.5);
+          return s;
+        };
+        srcs = [band(2400, 0.7, 1), band(6200, 1.1, 0.35)];
+      }
+      CB.audioUsers.add("mandala");
+      clearTimeout(idleT);
+      return ac;
+    }
+    // An iPhone starts sound only from a short tap, never from a drag (see core.js). If a stroke was drawn
+    // before any tap, the sand is silent: say so once, and say again when the sound is there.
+    let hinted = false;
+    function wokeUp() {
+      if (hinted && ac && ac.state === "running") { hinted = false; say("עכשיו אפשר לשמוע את החול."); }
+    }
+    function sleepSoon() {
+      clearTimeout(idleT);
+      idleT = setTimeout(() => {
+        if (srcs && ac) { const t = ac.currentTime; srcs.forEach((s) => { try { s.stop(t + 0.1); } catch (_) { /* stopped */ } }); }
+        const f = flowG;
+        if (f) setTimeout(() => { try { f.disconnect(); } catch (_) { /* gone */ } }, 300);
+        srcs = null;
+        flowG = null;
+        CB.audioUsers.delete("mandala");
+      }, 2500);
+    }
+    function tone(f, parts, peak, at) {
+      const t = ac.currentTime + (at || 0);
+      for (const [m, a, dur] of parts) {
+        const o = ac.createOscillator(), gg = ac.createGain();
+        o.frequency.value = f * m;
+        gg.gain.setValueAtTime(0.0001, t);
+        gg.gain.exponentialRampToValueAtTime(peak * a, t + 0.008);
+        gg.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(gg).connect(out);
+        o.start(t);
+        o.stop(t + dur + 0.05);
+      }
+    }
+    return {
+      get on() { return on; },
+      flow(level) { if (wake() && flowG) flowG.gain.setTargetAtTime(level, ac.currentTime, 0.05); },
+      stop() { if (flowG && ac) flowG.gain.setTargetAtTime(0, ac.currentTime, 0.12); sleepSoon(); },
+      checkAwake() {
+        if (!on || !ac) return;
+        setTimeout(() => { if (on && !hinted && ac.state !== "running") { hinted = true; say("כדי לשמוע את החול, נגעי פעם אחת במשטח."); } }, 700);
+      },
+      get hinted() { return hinted; },
+      // a soft bell, higher toward the centre, tuned like the sound bath
+      bell(ring) {
+        const now = performance.now();
+        if (now - lastBell < 150 || !wake()) return;
+        lastBell = now;
+        tone(tuning() * SCALE[[5, 4, 3, 1, 0][clamp(ring, 0, 4)]], [[1, 1, 2.6], [2.756, 0.3, 1.2], [5.404, 0.1, 0.6]], 0.035);
+      },
+      sweep(sec) {
+        if (!wake()) return;
+        const t = ac.currentTime, s = ac.createBufferSource(), bp = ac.createBiquadFilter(), gg = ac.createGain();
+        s.buffer = noiseBuf; s.loop = true;
+        bp.type = "bandpass"; bp.Q.value = 0.9;
+        bp.frequency.setValueAtTime(3800, t);
+        bp.frequency.exponentialRampToValueAtTime(260, t + sec);
+        gg.gain.setValueAtTime(0.0001, t);
+        gg.gain.exponentialRampToValueAtTime(0.08, t + sec * 0.3);
+        gg.gain.exponentialRampToValueAtTime(0.0001, t + sec);
+        s.connect(bp).connect(gg).connect(out);
+        s.start(t);
+        s.stop(t + sec + 0.1);
+      },
+      bowl() {
+        if (!wake()) return;
+        tone(tuning() / 2, [[1, 1, 5], [2.71, 0.35, 2.4], [5.1, 0.12, 1.2]], 0.07);
+        sleepSoon();
+      },
+      toggle(v) {
+        on = v;
+        try { localStorage.setItem("natasha-sound", on ? "on" : "off"); } catch (_) { /* storage blocked */ }
+        if (!on) this.stop();
+      },
+    };
+  })();
+  let lastRing = -1;
+  const ringOf = (x, y) => Math.min(4, Math.floor(Math.hypot(x - C, y - C) / (R / 5)));
+
+  /* ---------- Drawing ---------- */
+  const say = (msg) => { if (statusEl.textContent !== msg) statusEl.textContent = msg; };
+  // "a sand mandala in 8 directions", or just "a sand mandala" when several were mixed on one plate
+  const named = () => { const ns = new Set(strokes.map((s) => s.n)); return ns.size === 1 ? `מנדלת חול ב-${[...ns][0]} כיוונים` : "מנדלת חול"; };
+  function changed() {
+    stage.classList.toggle("has-sand", strokes.length > 0 || !!pourQ || !!rel);
+    undoBtn.disabled = !history.length || busy;
+    cv.setAttribute("aria-label", strokes.length ? named() : "משטח חול ריק");
+  }
+  const toLayer = (e, r = cv.getBoundingClientRect()) => [((e.clientX - r.left) / r.width) * S, ((e.clientY - r.top) / r.height) * S];
+  let pid = null, holdT = 0, lastMove = 0, lastPt = null, lastT = 0, speed = 0;
+  function hold() {
+    if (!cur || performance.now() - lastMove < 90) return;
+    cur.pts.push(lastPt[0], lastPt[1], 1);
+    step(cur, lastPt[0], lastPt[1], 1);
+    sound.flow(0.014);
+  }
+  cv.addEventListener("pointerdown", (e) => {
+    if (busy) { finishNow(); return; }
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    init();
+    const [x, y] = toLayer(e);
+    if (Math.hypot(x - C, y - C) > R) return;
+    e.preventDefault();
+    pid = e.pointerId;
+    try { cv.setPointerCapture(pid); } catch (_) { /* old browser */ }
+    group++;
+    cur = { c: color, s: size, n: sym, seed: (Math.random() * 1e9) | 0, g: group, pts: [x, y, 0] };
+    strokes.push(cur);
+    history.push({ g: group });
+    startStroke(cur);
+    lastPt = [x, y];
+    lastMove = lastT = performance.now();
+    speed = 0;
+    lastRing = ringOf(x, y);
+    sound.bell(lastRing);
+    clearInterval(holdT);
+    holdT = setInterval(hold, 70);
+    changed();
+  });
+  cv.addEventListener("pointermove", (e) => {
+    if (e.pointerId !== pid || !cur) return;
+    const list = (e.getCoalescedEvents && e.getCoalescedEvents()) || [], rect = cv.getBoundingClientRect();
+    for (const ev of list.length ? list : [e]) {
+      const [x, y] = toLayer(ev, rect);
+      cur.pts.push(x, y, 0);
+      step(cur, x, y, 0);
+      const now = performance.now(), dt = Math.max(1, now - lastT);
+      speed += (Math.hypot(x - lastPt[0], y - lastPt[1]) / dt - speed) * 0.3;
+      lastT = now;
+      lastPt = [x, y];
+      const ring = ringOf(x, y);
+      if (ring !== lastRing) { lastRing = ring; sound.bell(ring); }
+    }
+    lastMove = performance.now();
+    sound.flow(clamp(0.012 + speed * 0.012, 0.012, 0.06));
+  });
+  const end = (e) => {
+    if (e.pointerId !== pid) return;
+    pid = null;
+    clearInterval(holdT);
+    cur = null;
+    sound.stop();
+    sound.checkAwake();
+    changed();
+  };
+  cv.addEventListener("pointerup", end);
+  cv.addEventListener("pointercancel", end);
+
+  /* ---------- Surprise: a mandala that pours itself ----------
+     Built from the centre out, in the slice between two mirror lines (0 to PI/n): the pour copies it all around.
+     Motifs: bands of colour with fine edges, blocks of two colours, lotus petals filled with sand, scallops,
+     beads, soft waves; and a border. */
+  const PALETTES = [[0, 5, 3, 6, 1], [1, 2, 5, 6, 0], [4, 5, 0, 6, 1], [7, 3, 5, 2, 6], [2, 1, 3, 6, 5], [0, 1, 5, 4, 6], [7, 5, 4, 1, 6], [3, 0, 6, 5, 2]];
+  function compose_() {
+    const n = sym, half = Math.PI / n, rand = Math.random, pal = PALETTES[(rand() * PALETTES.length) | 0];
+    const pick = (i) => pal[i % pal.length];
+    const P = (r, a) => [C + r * Math.cos(a), C + r * Math.sin(a)];
+    const items = [];
+    group++;
+    const add = (ci, si, pts) => items.push({ c: ci, s: si, n, seed: (rand() * 1e9) | 0, g: group, pts });
+    const arc = (r, a0, a1) => {
+      const pts = [], steps = Math.max(3, Math.ceil((r * Math.abs(a1 - a0)) / 5));
+      for (let k = 0; k <= steps; k++) pts.push(...P(r, a0 + ((a1 - a0) * k) / steps), 0);
+      return pts;
+    };
+    const ring = (r) => arc(r, -0.02, half + 0.02);
+    // m rows of thick sand, 11px apart: one colour, or blocks of two that alternate around the ring
+    const band = (r, m, A, B) => {
+      for (let k = 0; k < m; k++) {
+        if (B == null) add(A, 2, ring(r + k * 11));
+        else { add(A, 2, arc(r + k * 11, -0.02, half / 2)); add(B, 2, arc(r + k * 11, half / 2, half + 0.02)); }
+      }
+    };
+    // a petal whose middle lies on a mirror line (at a0, opening toward dir): curves from its middle out to its
+    // edge fill it with sand, the mirror fills the other half; then a fine outline
+    const shape = (u) => Math.pow(Math.sin(Math.PI * u), 0.8) * (1.15 - 0.3 * u);
+    const petal = (r0, L, a0, dir, span, f) => { const pts = []; for (let k = 0; k <= 24; k++) { const u = k / 24; pts.push(...P(r0 + L * u, a0 + dir * span * f * shape(u)), 0); } return pts; };
+    const lotus = (r0, L, a0, dir, span, fill, line) => {
+      const curves = Math.max(2, Math.ceil((span * (r0 + L / 2)) / 9));
+      for (let k = 0; k <= curves; k++) add(fill, 1, petal(r0, L, a0, dir, span, k / curves));
+      if (line != null) add(line, 0, petal(r0, L, a0, dir, span, 1));
+    };
+    // the centre: a little pile, and a fine ring around it
+    add(pick(0), 2, [C, C, 0, C, C, 1, C, C, 1, C, C, 1, C, C, 1, C, C, 1, C, C, 1, C, C, 1]);
+    let r = 46 + rand() * 10, i = 1, last = -1;
+    add(pick(1), 0, ring(r));
+    r += 24;
+    const LIMIT = R * 0.83;
+    for (let tries = 0; tries < 24 && r < LIMIT; tries++) {
+      let kind = (rand() * 6) | 0;
+      if (kind === last) kind = (kind + 1) % 6;
+      const A = pick(i), B = pick(i + 1);
+      const m = 2 + ((rand() * 2) | 0), L = R * (0.11 + rand() * 0.06), h = R * (0.05 + rand() * 0.03), amp = 10 + rand() * 8;
+      const width = [40 + (m - 1) * 11 + 22, 14 + 11 + 14 + 18, L + 16, h + 30, 44, amp * 2 + 26][kind];
+      if (r + width > LIMIT) { if (r + 44 <= LIMIT) kind = 4; else break; }
+      last = kind;
+      if (kind === 0) { // a band of colour with fine edges
+        add(B, 0, ring(r));
+        band(r + 20, m, A);
+        add(B, 0, ring(r + 40 + (m - 1) * 11));
+      } else if (kind === 1) { // blocks: the band alternates two colours
+        band(r + 14, 2, A, B);
+      } else if (kind === 2) { // lotus: big petals on one mirror line, small ones on the other
+        const span = half * (0.62 + rand() * 0.2);
+        lotus(r, L, 0, 1, span, A, B);
+        lotus(r, L * 0.55, half, -1, span * 0.55, B, null);
+      } else if (kind === 3) { // scallops, a grain of sand in each
+        const pts = [];
+        for (let k = 0; k <= 30; k++) { const a = (half * k) / 30; pts.push(...P(r + h * Math.sin((Math.PI * a) / half), a), 0); }
+        add(A, 1, pts);
+        const [x, y] = P(r + h * 0.42, half / 2);
+        add(B, 1, [x, y, 0, x, y, 1, x, y, 1]);
+      } else if (kind === 4) { // beads on both mirror lines
+        const [x1, y1] = P(r + 12, 0), [x2, y2] = P(r + 12, half);
+        add(A, 2, [x1, y1, 0, x1, y1, 1, x1, y1, 1]);
+        add(B, 1, [x2, y2, 0, x2, y2, 1]);
+      } else { // a soft wave
+        const k2 = 1 + ((rand() * 3) | 0), pts = [];
+        for (let k = 0; k <= 36; k++) { const a = ((half + 0.02) * k) / 36; pts.push(...P(r + amp + amp * Math.cos((a / half) * Math.PI * k2), a), 0); }
+        add(A, 0, pts);
+      }
+      r += kind === 4 ? 44 : width;
+      i++;
+    }
+    // the border: a fine ring, then a band at the rim
+    add(pick(i), 0, ring(R * 0.87));
+    band(R * 0.915, 2, pick(i + 1));
+    return items;
+  }
+  function surprise() {
+    if (busy) return;
+    init();
+    // a fresh plate: what was there comes back with "step back"
+    history.push({ prev: strokes });
+    strokes = [];
+    g.clearRect(0, 0, S, S);
+    const items = compose_();
+    const total = items.reduce((a, s) => a + s.pts.length / 3, 0);
+    pourQ = { items, item: 0, idx: 0, done: 0, total, t0: performance.now() };
+    busy = true;
+    changed();
+    raf = requestAnimationFrame(pourTick);
+  }
+  function pourStep() {
+    const q = pourQ, s = q.items[q.item];
+    if (q.idx === 0) { strokes.push(s); startStroke(s); q.idx = 3; sound.bell(ringOf(s.pts[0], s.pts[1])); }
+    else { step(s, s.pts[q.idx], s.pts[q.idx + 1], s.pts[q.idx + 2]); q.idx += 3; }
+    if (q.idx >= s.pts.length) { q.item++; q.idx = 0; }
+  }
+  // About two and a half seconds of pouring, kept to a few milliseconds of work a frame: a slower phone pours
+  // a little longer instead of stuttering.
+  const POUR = 2600;
+  function pourTick() {
+    raf = 0;
+    const q = pourQ;
+    if (!q) return;
+    const t1 = performance.now(), want = CB.still ? q.total : Math.ceil((q.total * (t1 - q.t0)) / POUR);
+    while (q.item < q.items.length && (CB.still || (q.done < want && performance.now() - t1 < 10))) { pourStep(); q.done++; }
+    if (q.item < q.items.length) { sound.flow(0.03); raf = requestAnimationFrame(pourTick); return; }
+    pourQ = null;
+    busy = false;
+    sound.stop();
+    changed();
+    say("נשפכה מנדלה חדשה. אפשר להמשיך לצייר עליה, ו״צעד אחורה״ מחזיר את מה שהיה לפניה.");
+  }
+
+  /* ---------- Release: the sand is swept in a spiral into the centre, and is gone ----------
+     A brush goes round from the rim inward: each grain waits for it, then travels in, turning, scattering a little
+     and losing its colour into the warm grey of swept sand, to a small pile in the middle that fades away. */
+  const DUR = 4200, MAXP = 26000;
+  function release() {
+    if (busy) return;
+    if (!ready || !strokes.length) { say("אין עדיין חול לשחרר. אפשר לצייר משהו קודם."); return; }
+    history.push({ prev: strokes });
+    busy = true;
+    changed();
+    if (CB.still) {
+      cv.style.transition = "opacity .8s ease";
+      cv.style.opacity = "0";
+      rel = { still: true, timer: setTimeout(() => endRelease(), 850) };
+      sound.bowl();
+      return;
+    }
+    // The grains are read at half size: the plate is first drawn down onto the sweep's own canvas (on the GPU),
+    // so only a quarter of the pixels has to come back to the page.
+    const fx = fxCv.getContext("2d");
+    fx.clearRect(0, 0, FX, FX);
+    fx.imageSmoothingEnabled = false;
+    fx.drawImage(cv, 0, 0, FX, FX);
+    const data = fx.getImageData(0, 0, FX, FX).data;
+    fx.clearRect(0, 0, FX, FX);
+    let count = 0;
+    for (let i = 3; i < data.length; i += 4) if (data[i] > 50) count++;
+    const keep = Math.min(1, MAXP / Math.max(1, count)), h = FX / 2, rand = Math.random;
+    const r0 = [], th = [], dl = [], du = [], sw = [], jr = [], rf = [], col = [], al = [];
+    for (let y = 0; y < FX; y++) {
+      for (let x = 0; x < FX; x++) {
+        const i = (y * FX + x) * 4;
+        if (data[i + 3] <= 50 || rand() > keep) continue;
+        const px = x - h, py = y - h, r = Math.hypot(px, py), a = Math.atan2(py, px);
+        r0.push(r);
+        th.push(a);
+        dl.push(0.04 + (1 - r / h) * 0.5 + ((a < 0 ? a + TAU : a) / TAU) * 0.08 + rand() * 0.02); // the brush: from the rim, round and in
+        du.push(0.14 + rand() * 0.06);   // how long the way in takes
+        sw.push(0.8 + rand() * 1.6);     // how far round it turns on the way
+        jr.push((rand() - 0.5) * 16);    // how far it scatters on the way
+        rf.push(Math.pow(rand(), 1.6) * 18); // where it settles in the pile
+        col.push(data[i] | (data[i + 1] << 8) | (data[i + 2] << 16));
+        al.push(data[i + 3]);
+      }
+    }
+    g.clearRect(0, 0, S, S);
+    strokes = [];
+    const img = fx.createImageData(FX, FX), F = (a) => Float32Array.from(a);
+    rel = { fx, img, u32: new Uint32Array(img.data.buffer), r0: F(r0), th: F(th), dl: F(dl), du: F(du), sw: F(sw), jr: F(jr), rf: F(rf), col: Uint32Array.from(col), al: Uint8Array.from(al), t0: performance.now(), skip: false };
+    fxCv.classList.add("is-on");
+    sound.sweep(DUR / 1000);
+    raf = requestAnimationFrame(releaseFrame);
+  }
+  function releaseFrame(now) {
+    raf = 0;
+    const q = rel;
+    if (!q || q.still) return;
+    const t = q.skip ? 1 : Math.min(1, (now - q.t0) / DUR), h = FX / 2, u32 = q.u32, n = q.r0.length;
+    const fade = t < 0.86 ? 1 : Math.max(0, 1 - (t - 0.86) / 0.14);
+    u32.fill(0);
+    if (fade > 0) {
+      for (let k = 0; k < n; k++) {
+        let u = (t - q.dl[k]) / q.du[k];
+        u = u < 0 ? 0 : u > 1 ? 1 : u;
+        const e = u * u * (3 - 2 * u), r = q.r0[k] * (1 - e) + q.rf[k] * e + Math.sin(Math.PI * e) * q.jr[k], a = q.th[k] + q.sw[k] * e;
+        const x = (h + r * Math.cos(a)) | 0, y = (h + r * Math.sin(a)) | 0;
+        if (x < 0 || y < 0 || x > FX - 2 || y > FX - 2) continue;
+        // on the way in, the colours mix into the warm grey of swept sand
+        const c = q.col[k], m = e * 0.7;
+        const cr = c & 255, cg = (c >> 8) & 255, cb = (c >> 16) & 255;
+        const px = (((q.al[k] * fade) | 0) << 24 | ((cb + (118 - cb) * m) | 0) << 16 | ((cg + (150 - cg) * m) | 0) << 8 | ((cr + (176 - cr) * m) | 0)) >>> 0;
+        const i = y * FX + x;
+        u32[i] = px; u32[i + 1] = px; u32[i + FX] = px; u32[i + FX + 1] = px;
+      }
+    }
+    q.fx.putImageData(q.img, 0, 0);
+    if (t < 1) { raf = requestAnimationFrame(releaseFrame); return; }
+    endRelease();
+  }
+  function endRelease() {
+    const q = rel;
+    rel = null;
+    if (q && q.still) { clearTimeout(q.timer); g.clearRect(0, 0, S, S); strokes = []; cv.style.opacity = ""; cv.style.transition = ""; }
+    else { fxCv.getContext("2d").clearRect(0, 0, FX, FX); fxCv.classList.remove("is-on"); sound.bowl(); }
+    busy = false;
+    changed();
+    say("החול נאסף אל המרכז ונעלם. מה שיצרת נשאר איתך.");
+  }
+  // A tap while the sand pours or is being swept finishes it at once.
+  function finishNow() {
+    if (pourQ) { cancelAnimationFrame(raf); while (pourQ.item < pourQ.items.length) pourStep(); raf = 0; pourTick(); return; }
+    if (rel && !rel.still) rel.skip = true;
+  }
+
+  /* ---------- Keeping it: an image to save or share ---------- */
+  async function composeImage() {
+    const W = 1080, H = 1350, c = doc.createElement("canvas");
+    c.width = W; c.height = H;
+    const x = c.getContext("2d");
+    const bg = x.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#241C27"); bg.addColorStop(1, "#14111A");
+    x.fillStyle = bg;
+    x.fillRect(0, 0, W, H);
+    const D = 940, ox = (W - D) / 2, oy = 64;
+    x.save();
+    x.beginPath();
+    x.arc(W / 2, oy + D / 2, D / 2, 0, TAU);
+    x.clip();
+    x.drawImage(baseCv, ox, oy, D, D);
+    x.drawImage(cv, ox, oy, D, D);
+    const rim = x.createRadialGradient(W / 2, oy + D / 2, D * 0.42, W / 2, oy + D / 2, D / 2);
+    rim.addColorStop(0, "rgb(110 80 45 / 0)"); rim.addColorStop(1, "rgb(110 80 45 / .3)");
+    x.fillStyle = rim;
+    x.fillRect(ox, oy, D, D);
+    x.restore();
+    try { await Promise.all([doc.fonts.load('400 72px "Bellefair"', "המנדלה שלי NATASHA"), doc.fonts.load('600 26px "Assistant"', "אוקטובר 2026")]); } catch (_) { /* system fonts will do */ }
+    x.direction = "rtl";
+    x.textAlign = "center";
+    x.fillStyle = "#F3EBDD";
+    x.font = '400 72px "Bellefair", "David", serif';
+    x.fillText("המנדלה שלי", W / 2, 1140, 960);
+    const greg = new Intl.DateTimeFormat("he-IL", { day: "numeric", month: "long", year: "numeric" }).format(new Date());
+    x.fillStyle = "#CDBFA8";
+    x.font = '600 26px "Assistant", sans-serif';
+    x.fillText(CB.hdate ? `${CB.hdate} · ${greg}` : greg, W / 2, 1192, 960);
+    x.fillStyle = "#E6B98A";
+    x.font = '600 25px "Assistant", sans-serif';
+    x.fillText(named(), W / 2, 1240, 960);
+    x.direction = "ltr";
+    x.fillStyle = "rgb(243 235 221 / .6)";
+    x.font = '400 24px "Bellefair", serif';
+    if ("letterSpacing" in x) x.letterSpacing = "7px";
+    x.fillText("NATASHA  ·  MIND BODY SOUL", W / 2, 1310);
+    return c;
+  }
+  const blobOf = (c) => new Promise((res) => c.toBlob((b) => res(b), "image/png"));
+  const fileName = () => { const d = new Date(), z = (n) => String(n).padStart(2, "0"); return `natasha-sand-mandala-${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}.png`; };
+  async function save() {
+    if (!ready || !strokes.length) { say("המנדלה עוד ריקה. ציירי משהו, ואז אפשר לשמור."); return; }
+    const blob = await blobOf(await composeImage());
+    if (!blob) return;
+    const url = URL.createObjectURL(blob), a = doc.createElement("a");
+    a.href = url;
+    a.download = fileName();
+    doc.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    if (CB.toast) CB.toast("המנדלה נשמרה");
+  }
+  async function share() {
+    if (!ready || !strokes.length) { say("המנדלה עוד ריקה. ציירי משהו, ואז אפשר לשתף."); return; }
+    const blob = await blobOf(await composeImage());
+    if (!blob) return;
+    try { await navigator.share({ files: [new File([blob], fileName(), { type: "image/png" })], title: "המנדלה שלי" }); }
+    catch (err) { if (err && err.name !== "AbortError") save(); }
+  }
+
+  /* ---------- Controls ---------- */
+  colorsBox.innerHTML = SANDS.map((c, i) => `<button type="button" style="--c:${c.hex}" aria-pressed="${i === color}" aria-label="חול ${c.name}" data-i="${i}"></button>`).join("");
+  colorsBox.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-i]");
+    if (!b) return;
+    color = +b.dataset.i;
+    colorsBox.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  });
+  section.querySelectorAll('input[name="mandala-sym"]').forEach((i) => i.addEventListener("change", () => { if (i.checked) { sym = +i.value; drawGuides(); changed(); } }));
+  section.querySelectorAll('input[name="mandala-size"]').forEach((i) => i.addEventListener("change", () => { if (i.checked) size = +i.value; }));
+  undoBtn.addEventListener("click", () => {
+    if (busy || !history.length) return;
+    const h = history.pop();
+    strokes = h.prev ? h.prev : strokes.filter((s) => s.g !== h.g);
+    redraw();
+    changed();
+    say(strokes.length ? "צעד אחד אחורה." : "המשטח ריק שוב.");
+  });
+  surpriseBtn.addEventListener("click", surprise);
+  releaseBtn.addEventListener("click", release);
+  saveBtn.addEventListener("click", save);
+  if (shareBtn) {
+    let can = false;
+    try { can = !!(navigator.canShare && matchMedia("(pointer: coarse)").matches && navigator.canShare({ files: [new File([new Blob(["x"])], "x.png", { type: "image/png" })] })); } catch (_) { can = false; }
+    shareBtn.hidden = !can;
+    shareBtn.addEventListener("click", share);
+  }
+  guidesBtn.addEventListener("click", () => {
+    const on = guidesBtn.getAttribute("aria-pressed") !== "true";
+    guidesBtn.setAttribute("aria-pressed", String(on));
+    guides.classList.toggle("is-off", !on);
+  });
+  soundBtn.setAttribute("aria-pressed", String(sound.on));
+  soundBtn.addEventListener("click", () => {
+    const on = soundBtn.getAttribute("aria-pressed") !== "true";
+    soundBtn.setAttribute("aria-pressed", String(on));
+    sound.toggle(on);
+    if (on) sound.bell(2);
+  });
+
+  drawGuides();
+  // The plate is made when it comes near, not while the page loads.
+  watch(stage, (v) => { if (v) init(); }, "600px 0px");
+  changed();
+
+  CB.mandala = {
+    state: () => ({ ready, strokes: strokes.length, groups: new Set(strokes.map((s) => s.g)).size, steps: history.length, sym, color, size, busy, pouring: !!pourQ, releasing: !!rel, sound: sound.on, hinted: sound.hinted, status: statusEl.textContent }),
+    // for tests: how much sand lies at a point of the plate (u, v from 0 to 1)
+    alphaAt: (u, v) => (ready ? g.getImageData(Math.round(u * S), Math.round(v * S), 1, 1).data[3] : 0),
+    surprise, release, finish: finishNow, compose: composeImage,
   };
 })();
 
