@@ -1947,38 +1947,65 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
   .ws-trad { min-height: 40px; padding: 0 12px; font-size: .84rem; }
 }
 
-/* ---------- The film "לא לבד": a painted page glowing in the circle's night (src/film.js) ---------- */
-.film { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-block: 30px 12px; }
+/* ---------- The film "לא לבד": under the sea on the first page, a painted page that goes round on its own;
+   a finger, a mouse or a trackpad moves it through its time, right to left as the page reads (src/film.js) ---------- */
+.film-sec { padding-block: clamp(96px, 10vw, 150px) clamp(84px, 9vw, 130px); }
+.film {
+  /* the picture stays whole on the screen, with its thread under it */
+  --film-w: clamp(250px, calc((100vh - 210px) * 9 / 16), 380px);
+  display: grid; grid-template-columns: minmax(0, 460px) var(--film-w); grid-template-rows: 1fr 1fr;
+  grid-template-areas: "head reel" "txt reel"; justify-content: center; column-gap: clamp(36px, 7vw, 120px);
+}
+@supports (height: 100svh) { .film { --film-w: clamp(250px, calc((100svh - 210px) * 9 / 16), 380px); } }
+.film__head { grid-area: head; align-self: end; margin: 0 0 26px; }
+.film__reel { grid-area: reel; width: var(--film-w); }
+.film__txt { grid-area: txt; align-self: start; display: grid; gap: 18px; justify-items: start; }
 .film__frame {
   /* the film keeps its own watercolour palette, whatever the site's theme */
   --ground: #FBF6EE; --main: #9A3A63; --second: #2B2343; --accent: #B8955A;
   --rose: #E7A9BC; --peach: #F2C09B; --lav: #B9A6E2; --sage: #A9CDB4; --sky: #A9C4E6; --sand: #E8C98C; --plum: #C9A2D6;
   position: relative; width: 100%; aspect-ratio: 9 / 16; border-radius: 26px; overflow: hidden; isolation: isolate;
   background: radial-gradient(90% 60% at 60% 40%, #F7E3D3, #FBF6EE);
-  box-shadow: 0 0 0 1px rgb(227 200 143 / .5), 0 40px 90px -40px rgb(0 0 0 / .75), 0 0 70px -24px rgb(233 210 158 / .4);
+  box-shadow: 0 0 0 1px var(--hairline), 0 38px 74px -42px rgb(var(--shadow-rgb) / .75), 0 0 80px -34px rgb(233 210 158 / .5);
+  /* sideways is the film's own; up and down still scroll the page */
+  touch-action: pan-y pinch-zoom; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
 }
 .film__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-/* the play button sits low, so the picture it waits on stays in view */
-.film__big {
-  position: absolute; inset: auto 0 60px; margin: 0 auto; width: 78px; height: 78px; border: 0; border-radius: 50%; display: grid; place-items: center;
-  color: #FBF6EE; background: rgb(28 20 58 / .66); box-shadow: 0 0 0 2px rgb(233 210 158 / .75), 0 14px 34px -12px rgb(0 0 0 / .6); cursor: pointer;
+@media (hover: hover) and (pointer: fine) {
+  .film__frame { cursor: grab; }
+  .film-sec.is-scrubbing .film__frame { cursor: grabbing; }
 }
-.film__big svg { width: 34px; height: 34px; transform: translateX(2px); }
-@media (hover: hover) and (pointer: fine) { .film__big:hover { background: rgb(28 20 58 / .82); } }
-.film__big:focus-visible { outline: 3px solid var(--moon); outline-offset: 4px; }
-.film__bar { position: absolute; inset-inline: 22px; bottom: 18px; height: 3px; border-radius: 2px; background: rgb(43 35 67 / .16); overflow: hidden; }
-.film__bar i { display: block; height: 100%; background: #B8955A; transform: scaleX(0); transform-origin: right; }
-.film__txt { display: grid; gap: 14px; justify-items: start; }
-.film__txt .h3, .film__txt .eyebrow { margin: 0; }
-.film__lead { margin: 0; max-width: 38ch; color: var(--moon-2); font-size: var(--lead); line-height: 1.65; }
-.film__ctl { display: flex; flex-wrap: wrap; gap: 10px; }
-.film__story { max-width: 48ch; color: var(--moon-2); }
-.film__story summary { cursor: pointer; color: var(--moon); font-weight: 600; }
-.film__story p { margin: 10px 0 0; line-height: 1.75; }
+/* its time, for the keyboard: a thread with a bead over the foot of the picture, seen only while it has the
+   keyboard's focus (a finger or a mouse moves the picture itself). The bead goes from right to left as the film goes on;
+   it is moved by the player (its transform) and drawn by its ::before. Colours are the site's light ones, on purpose:
+   inside the frame the film's own palette is in force. */
+.film__scrub {
+  position: absolute; inset-inline: 14px; bottom: 14px; z-index: 2; display: grid; align-items: center; height: 44px; padding-inline: 18px;
+  border-radius: 999px; background: rgb(251 246 238 / .92); box-shadow: 0 8px 22px -10px rgb(43 35 67 / .55);
+  opacity: 0; pointer-events: none; transition: opacity .2s var(--ease-out);
+}
+.film__scrub:focus { opacity: 1; outline: 3px solid #9A3A63; outline-offset: 2px; }
+.film__scrub:focus:not(:focus-visible) { opacity: 0; outline: none; }
+.film__track { position: relative; display: block; height: 4px; border-radius: 2px; background: rgb(95 86 114 / .42); }
+.film__fill { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(270deg, #B8955A, #9A3A63); transform: scaleX(0); transform-origin: right; }
+.film__knob { position: absolute; top: 50%; inset-inline-start: 9px; width: 18px; height: 18px; margin-top: -9px; }
+.film__knob::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: #9A3A63; box-shadow: 0 0 0 3px #FBF6EE, 0 3px 10px -2px rgb(43 35 67 / .5);
+}
+.film__hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px 0 0; font-size: .88rem; line-height: 1.45; color: var(--ink-2); text-align: center; text-wrap: balance; }
+.film__hint svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
+.film__lead { margin: 0; max-width: 40ch; color: var(--ink-2); font-size: var(--lead); line-height: 1.65; text-wrap: pretty; }
+.film__story { max-width: 46ch; color: var(--ink-2); }
+.film__story summary { width: fit-content; padding-block: 6px; cursor: pointer; color: var(--ink); font-weight: 700; }
+.film__story p { margin: 8px 0 0; line-height: 1.75; }
 @media (max-width: 760px) {
-  .film { grid-template-columns: 1fr; justify-items: center; }
-  .film__frame { width: min(100%, 330px); }
-  .film__txt { justify-items: center; text-align: center; }
+  /* a short phone gets a smaller picture, so the picture and its thread fit under the bar together */
+  .film { --film-w: min(100%, 330px, max(220px, calc((100vh - 172px) * 9 / 16))); grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "head" "reel" "txt"; }
+  @supports (height: 100svh) { .film { --film-w: min(100%, 330px, max(220px, calc((100svh - 172px) * 9 / 16))); } }
+  .film__head { margin-bottom: 28px; }
+  .film__reel { justify-self: center; }
+  .film__txt { margin-top: 30px; }
 }
 
 .gate--retreats, .menu-world--retreats { --paint: url("data:image/webp;base64,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"); }
@@ -2057,6 +2084,30 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
         <button class="icon-btn" id="water-close" type="button" aria-label="חזרה לטקסט">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
+      </div>
+    </div>
+  </section>
+  <section class="section film-sec" id="film" aria-labelledby="film-title" data-flourish="on">
+    <div class="wrap film">
+      <header class="head film__head">
+        <p class="eyebrow">סרט קצר · בלי מילים</p>
+        <h2 class="h2" id="film-title">לא לבד</h2>
+      </header>
+      <div class="film__reel">
+        <div class="film__frame">
+          <canvas class="film__canvas" role="img" aria-label="סרט אנימציה קצר בלי מילים: לא לבד" aria-describedby="film-story"></canvas>
+          <div class="film__scrub" role="slider" tabindex="0" aria-label="הזמן בסרט" aria-valuemin="0" aria-valuemax="45" aria-valuenow="0" aria-valuetext="שנייה 0 מתוך 45: היא הולכת בשביל, עם אבן קטנה על הגב">
+            <span class="film__track"><i class="film__fill"></i></span><span class="film__knob"></span>
+          </div>
+        </div>
+        <p class="film__hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8L4 12l4 4M16 8l4 4-4 4M4 12h16"/></svg>גררי על הסרט: מימין לשמאל קדימה, משמאל לימין אחורה</p>
+      </div>
+      <div class="film__txt">
+        <p class="film__lead">ארבעים וחמש שניות על משא שגדל בשקט, ועל הרגע שבו מישהי עוצרת ומושיטה יד. בשביל זה יש מעגל.</p>
+        <details class="film__story">
+          <summary>מה קורה בסרט, במילים</summary>
+          <p id="film-story">אישה הולכת בשביל עם אבן קטנה וכהה על הגב. טיפות דיו נוחתות עליה מכל הכיוונים, והמשא גדל עד שהוא גדול ממנה, והיא מתכופפת תחתיו. אנשים עוברים לידה ולא רואים. היא נעצרת וכורעת על הברכיים בגשם. אישה אחרת עוברת, נעצרת, חוזרת אליה, כורעת לידה ומושיטה יד. הידיים נפגשות באור זהב והגשם נעצר. יחד הן קמות ומורידות את המשא מהגב, והיא מזדקפת והצבע חוזר לעולם. המשא נסדק ומתפרק ללהקת ציפורים, ובמקום שבו הוא היה פורח פרח. השתיים ממשיכות יד ביד אל השמש.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -2577,23 +2628,6 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
           </div>
           <p class="lead">נשים שבוחרות לצמוח יחד. מפגשים, שיחות ותמיכה, גם בין האירועים.</p>
         </header>
-        <div class="film" id="film">
-          <div class="film__frame">
-            <canvas class="film__canvas" role="img" aria-label="סרט אנימציה קצר בלי מילים: לא לבד" aria-describedby="film-story"></canvas>
-            <button class="film__big" type="button" aria-label="לצפות בסרט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></button>
-            <div class="film__bar" aria-hidden="true"><i></i></div>
-          </div>
-          <div class="film__txt">
-            <p class="eyebrow">סרט קצר · בלי מילים</p>
-            <h3 class="h3" id="film-title">לא לבד</h3>
-            <p class="film__lead">ארבעים וחמש שניות על משא שגדל בשקט, ועל הרגע שבו מישהי עוצרת ומושיטה יד. בשביל זה יש מעגל.</p>
-            <div class="film__ctl"><button class="btn btn--primary btn--sm" type="button" id="film-toggle">לצפות</button><button class="btn btn--ghost btn--sm" type="button" id="film-again">מההתחלה</button></div>
-            <details class="film__story">
-              <summary>מה קורה בסרט, במילים</summary>
-              <p id="film-story">אישה הולכת בשביל עם אבן קטנה וכהה על הגב. טיפות דיו נוחתות עליה מכל הכיוונים, והמשא גדל עד שהוא גדול ממנה, והיא מתכופפת תחתיו. אנשים עוברים לידה ולא רואים. היא נעצרת וכורעת על הברכיים בגשם. אישה אחרת עוברת, נעצרת, חוזרת אליה, כורעת לידה ומושיטה יד. הידיים נפגשות באור זהב והגשם נעצר. יחד הן קמות ומורידות את המשא מהגב, והיא מזדקפת והצבע חוזר לעולם. המשא נסדק ומתפרק ללהקת ציפורים, ובמקום שבו הוא היה פורח פרח. השתיים ממשיכות יד ביד אל השמש.</p>
-            </details>
-          </div>
-        </div>
         <div class="join-grid">
           <a class="join" id="join-whatsapp" href="https://wa.me/972545953562" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8.5 8.5 0 0 1-12.4 7.5L3.5 20.5l1.6-4A8.5 8.5 0 1 1 20 11.5z"/><path d="M9 8.6c0 3.4 2.9 6.4 6.4 6.4l1-1.5-2-1-1 1a5.6 5.6 0 0 1-2.9-2.9l1-1-1-2L9 8.6z"/></svg>
@@ -5050,7 +5084,8 @@ window.ART = (() => {
   doc.querySelectorAll(".view").forEach((view) => {
     const secs = [...view.querySelectorAll(".section, .world-next")].filter((s) => !s.closest(".world-head"));
     secs.forEach((sec, i) => {
-      if (i === 0 && !sec.classList.contains("world-next")) return;        // the first section follows the head
+      // the first section follows the head (unless it asks for one: the film, under the sea on the first page)
+      if (i === 0 && !sec.classList.contains("world-next") && sec.dataset.flourish !== "on") return;
       if (sec.dataset.flourish === "off") return;
       const f = doc.createElement("div");
       f.className = "flourish";
@@ -9429,7 +9464,8 @@ void main(){
 
 </script>
 <script>
-/* "לא לבד" (Not alone): the wordless watercolour film, shown on the circle's page.
+/* "לא לבד" (Not alone): the wordless watercolour film, on the first page under the sea. It goes round on its own,
+   and a hand moves it through its time, right to left.
    The same film as its Motion artifact: the painting kit (WC) and nine scenes, each a pure function of time,
    drawn into one canvas by a small player at the end. Built by make_film.py from the film's own modules. */
 (() => {
@@ -9444,13 +9480,46 @@ void main(){
   const eo = (x) => 1 - Math.pow(1 - x, 3), ei = (x) => x * x * x;
   const eio = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const eob = (x, o = 1.4) => 1 + (o + 1) * Math.pow(x - 1, 3) + o * Math.pow(x - 1, 2);
+  // a moment for the page between two pieces of work, so it never waits long
+  const breath = () => new Promise((ok) => setTimeout(ok, 0));
   const rng = (a) => () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let x = Math.imul(a ^ (a >>> 15), 1 | a); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
   // the site's own paper and washes (story.css), as files beside the page or data URIs in the one-file version
   const VARS = { paper: "--paper", "wash-rose": "--w-rose", "wash-lav": "--w-lav", "wash-sage": "--w-sage", "wash-peach": "--w-peach", "wash-plum": "--w-plum" };
-  const image = (name) => new Promise((ok, fail) => {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(VARS[name.replace(/\.webp$/, "")] || "");
-    const m = /url\(\s*["']?(.*?)["']?\s*\)/.exec(v), img = new Image();
-    img.onload = () => ok(img); img.onerror = fail; img.src = m ? m[1] : "";
+  // when a picture cannot be had (the page opened alone, without its img folder, or a very slow line), the film
+  // paints a look-alike of its own, so it is never left blank: a fine brown grain, or a soft bloom of the wash's colour
+  const TINT = { "wash-rose": "236,185,175", "wash-lav": "175,182,227", "wash-sage": "174,205,210", "wash-peach": "236,196,147", "wash-plum": "216,165,199" };
+  function standIn(key) {
+    const c = document.createElement("canvas"), g = c.getContext("2d"), r = rng(key.length * 7919 + key.charCodeAt(5 % key.length));
+    if (key === "paper") {
+      c.width = c.height = 320;
+      for (let i = 0; i < 5200; i++) {
+        g.fillStyle = "rgba(110,80,56," + (0.04 + r() * 0.09).toFixed(3) + ")";
+        g.fillRect(r() * 320, r() * 320, 1 + r() * 1.3, 1 + r() * 1.3);
+      }
+      return c;
+    }
+    c.width = c.height = 400;
+    const tint = TINT[key] || "200,185,200";
+    for (let i = 0; i < 7; i++) {
+      const x = 200 + (r() - 0.5) * 130, y = 200 + (r() - 0.5) * 130, rad = 70 + r() * 70;
+      const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+      gr.addColorStop(0, "rgba(" + tint + ",.42)"); gr.addColorStop(0.55, "rgba(" + tint + ",.2)"); gr.addColorStop(1, "rgba(" + tint + ",0)");
+      g.fillStyle = gr; g.fillRect(0, 0, 400, 400);
+    }
+    return c;
+  }
+  const image = (name) => new Promise((ok) => {
+    const key = name.replace(/\.webp$/, "");
+    const v = getComputedStyle(document.documentElement).getPropertyValue(VARS[key] || "");
+    const m = /url\(\s*["']?(.*?)["']?\s*\)/.exec(v);
+    let done = false;
+    const give = (x) => { if (!done) { done = true; ok(x); } };
+    if (!m || !m[1]) { give(standIn(key)); return; }
+    const img = new Image();
+    img.onload = () => give(img);
+    img.onerror = () => give(standIn(key));
+    setTimeout(() => give(standIn(key)), 6000);
+    img.src = m[1];
   });
   const SC = {};
   const kit = { W: 1080, H: 1920, stage: frame, seg, lerp, eo, ei, eio, eob, clamp01, rng, assets: { image }, scene: (id, def) => { SC[id] = def; } };
@@ -9482,13 +9551,14 @@ void main(){
       const names = ['paper', 'wash-rose', 'wash-lav', 'wash-sage', 'wash-peach', 'wash-plum'];
       const imgs = await Promise.all(names.map((n) => kit.assets.image(n + '.webp')));
       const rng = kit.rng(11);
-      return {
-        paper: imgs[0],
-        wash: { rose: imgs[1], lav: imgs[2], sage: imgs[3], peach: imgs[4], plum: imgs[5] },
-        far: hill(2400, 520, 150, [[2, 62], [5, 24], [11, 8]], rng, mix(P.lav, P.sky, 0.4), 0.5),
-        mid: hill(2400, 600, 170, [[3, 66], [7, 20], [13, 7]], rng, mix(P.sage, P.sky, 0.25), 0.58),
-        near: land(2400, 1150, rng),
-      };
+      // on the page the land is painted a band at a time, each in its own moment (same bands, same order)
+      const far = hill(2400, 520, 150, [[2, 62], [5, 24], [11, 8]], rng, mix(P.lav, P.sky, 0.4), 0.5);
+      await breath();
+      const mid = hill(2400, 600, 170, [[3, 66], [7, 20], [13, 7]], rng, mix(P.sage, P.sky, 0.25), 0.58);
+      await breath();
+      const near = land(2400, 1150, rng);
+      await breath();
+      return { paper: imgs[0], wash: { rose: imgs[1], lav: imgs[2], sage: imgs[3], peach: imgs[4], plum: imgs[5] }, far, mid, near };
     }
 
     function canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.round(w * QS); c.height = Math.round(h * QS); c.getContext('2d').scale(QS, QS); return c; }
@@ -10171,86 +10241,193 @@ void main(){
     });
   }
 
-  /* ---------- the player: plays when it is seen, rests off screen, and stays still for those who asked ---------- */
+  /* ---------- the player ----------
+     The film goes round on its own while it is seen (with a breath of paper between one round and the next) and rests
+     when it is not. A hand moves it through its time, right to left as the page reads: a finger or a mouse dragged
+     across the picture, or a trackpad swiped sideways. While a hand holds it, it waits; let go, and it goes on from
+     there. The keyboard has a thread of its own (a slider over the foot of the picture, seen only while it has the
+     focus). For those who asked for stillness it never moves by itself: it shows the moment the hands meet, and a hand
+     can still move it. */
   const TL = [["road", 4.5], ["weight", 6], ["passing", 6], ["stop", 4.5], ["notice", 5], ["touch", 4], ["lift", 5], ["birds", 4], ["onward", 6]];
+  // what is happening in each part, for the slider's spoken value
+  const SAY = {
+    road: "היא הולכת בשביל, עם אבן קטנה על הגב", weight: "המשא גדל", passing: "אנשים עוברים ולא רואים",
+    stop: "היא כורעת בגשם", notice: "מישהי נעצרת וחוזרת אליה", touch: "הידיים נפגשות באור",
+    lift: "יחד הן מורידות את המשא", birds: "המשא הופך לציפורים", onward: "הן ממשיכות יד ביד",
+  };
   let acc = 0;
   const parts = TL.map(([id, dur]) => { const p = { id, dur, start: acc }; acc += dur; return p; });
-  const LEN = acc, STILL_AT = 28.7;   // the still: the moment the two hands meet
+  const LEN = acc, STILL_AT = 28.7, DIP = 0.6;   // the still: the moment the two hands meet; the breath between rounds
+  const TEST = window.__CB_TEST || null;
   const cv = sec.querySelector(".film__canvas"), ctx = cv.getContext("2d");
-  const big = sec.querySelector(".film__big"), toggle = sec.querySelector("#film-toggle"), again = sec.querySelector("#film-again"), bar = sec.querySelector(".film__bar i");
-  let ready = null, t = 0, shown = 0, playing = false, ended = false, userPaused = false, raf = 0, last = 0, rz = 0;
+  const scrub = sec.querySelector(".film__scrub"), track = sec.querySelector(".film__track");
+  const fill = sec.querySelector(".film__fill"), knob = sec.querySelector(".film__knob");
+  // time runs toward the end of the line: leftward in Hebrew
+  const rtl = getComputedStyle(scrub).direction === "rtl", dir = rtl ? -1 : 1;
+  const holds = new Set();
+  let ready = null, isReady = false, t = 0, shown = 0, playing = false, seen = false, raf = 0, last = 0, rz = 0, wheelT = 0;
+  let ran = 0, wrapAt = -1e9, quality = 1, slow = 0, trackW = 0, said = -1, drag = null, dip = 0;
   const still = () => !!CB.still || !document.documentElement.classList.contains("motion");
+  const partAt = (T) => parts.find((x) => T < x.start + x.dur) || parts[parts.length - 1];
+  const soft = (x) => x * x * (3 - 2 * x);
 
   function size() {
     const w = frame.clientWidth || 360, dpr = Math.min(2, window.devicePixelRatio || 1);
-    const q = Math.max(0.36, Math.min(0.8, (w * dpr) / 1080)), cw = Math.round(1080 * q);
+    const q = Math.max(0.3, Math.min(0.8, (w * dpr) / 1080) * quality), cw = Math.round(1080 * q);
     if (cv.width !== cw) { cv.width = cw; cv.height = Math.round(1920 * q); }
+    trackW = track.clientWidth || w;
   }
   function draw(T) {
     shown = T;
-    const p = parts.find((x) => T < x.start + x.dur) || parts[parts.length - 1], s = SC[p.id];
+    const p = partAt(T), s = SC[p.id];
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(cv.width / 1080, 0, 0, cv.height / 1920, 0, 0);
     s.render.call(s, Math.min(T, LEN) - p.start, Object.assign(Object.create(kit), { fx: ctx, start: p.start, dur: p.dur }));
-    if (bar) bar.style.transform = "scaleX(" + Math.min(1, T / LEN).toFixed(4) + ")";
+    // between one round and the next the page turns: a breath of paper as it ends, and as it begins again
+    const a = playing ? Math.max(soft(seg(T, LEN - DIP, LEN)) * clamp01(ran / 0.3), 1 - soft(clamp01((ran - wrapAt) / DIP))) : 0;
+    dip = a;
+    if (a > 0.003) { ctx.fillStyle = WC.rgba(WC.P.ground, a); ctx.fillRect(0, 0, 1080, 1920); }
+    const k = Math.min(1, T / LEN);
+    fill.style.transform = "scaleX(" + k.toFixed(4) + ")";
+    knob.style.transform = "translateX(" + (dir * k * trackW).toFixed(1) + "px)";
+    const n = Math.floor(T);
+    if (n !== said) {
+      said = n;
+      scrub.setAttribute("aria-valuenow", String(n));
+      scrub.setAttribute("aria-valuetext", "שנייה " + n + " מתוך " + LEN + ": " + SAY[p.id]);
+    }
   }
   function setup() {
-    if (!ready) ready = (async () => {
-      for (const s of Object.values(SC)) if (s.init) await s.init.call(s, kit);
-      size();
-      draw(still() ? STILL_AT : t);
-      frame.classList.add("is-ready");
-    })();
+    if (!ready) {
+      ready = (async () => {
+        for (const s of Object.values(SC)) if (s.init) await s.init.call(s, kit);
+        await breath();
+        size();
+        if (still()) t = STILL_AT;
+        isReady = true;
+        draw(t);
+        frame.classList.add("is-ready");
+      })();
+      ready.catch(() => { /* the paintings did not load: the frame keeps its paper */ });
+    }
     return ready;
   }
-  function ui() {
-    sec.classList.toggle("is-playing", playing);
-    toggle.textContent = playing ? "להשהות" : ended ? "לצפות שוב" : "לצפות";
-    big.hidden = playing;
-    big.setAttribute("aria-label", ended ? "לצפות שוב בסרט" : "לצפות בסרט");
-  }
   function tick(ts) {
+    raf = 0;
     if (!playing) return;
     const dt = Math.min(0.1, Math.max(0, (ts - last) / 1000));
     last = ts;
-    t = Math.min(LEN, t + dt);
+    // a slower device gets a smaller canvas instead of a stuttering film
+    if (!TEST) { slow = dt > 0.028 ? slow + 1 : Math.max(0, slow - 1); if (slow > 45 && quality > 0.55) { quality *= 0.8; slow = 0; size(); } }
+    ran += dt;
+    t += dt;
+    if (t >= LEN) { t -= LEN; wrapAt = ran; }   // round again
     draw(t);
-    if (t >= LEN) { playing = false; ended = true; ui(); return; }
     raf = requestAnimationFrame(tick);
   }
-  async function play(from) {
-    await setup();
-    if (from != null) t = from;
-    if (t >= LEN - 0.01) t = 0;
-    ended = false; playing = true; last = performance.now();
-    cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); ui();
+  // it runs whenever it is seen, ready, not held by a hand, and stillness was not asked for
+  const want = () => seen && isReady && !still() && !holds.size && !document.hidden;
+  function sync() {
+    if (want()) {
+      if (!playing) { playing = true; ran = 0; wrapAt = -1e9; slow = 0; last = performance.now(); raf = requestAnimationFrame(tick); }
+    } else if (playing) {
+      playing = false; cancelAnimationFrame(raf); raf = 0;
+      draw(t);   // without the breath of paper, if the page was turning
+    }
+    sec.classList.toggle("is-playing", playing);
   }
-  function pause() { playing = false; cancelAnimationFrame(raf); ui(); }
+  const hold = (why) => { holds.add(why); sync(); };
+  const letGo = (why) => { if (holds.delete(why)) sync(); };
+  const seek = (T) => { t = Math.max(0, Math.min(LEN, T)); if (isReady) draw(t); };
+  // the whole width of the picture is the whole film
+  const perPx = () => LEN / (frame.clientWidth || 360);
 
-  toggle.addEventListener("click", () => { if (playing) { userPaused = true; pause(); } else { userPaused = false; play(); } });
-  big.addEventListener("click", () => { userPaused = false; play(); });
-  again.addEventListener("click", () => { userPaused = false; play(0); });
-  // it plays by itself once most of it is on screen (never for "stop animations" or reduced motion), and rests when it leaves
+  // a finger or a mouse on the picture: held, it waits; drawn sideways, it moves through time (leftward is onward)
+  frame.addEventListener("pointerdown", (e) => {
+    if (drag || (e.pointerType === "mouse" && e.button !== 0)) return;
+    if (document.activeElement === scrub) scrub.blur();
+    drag = { id: e.pointerId, x: e.clientX, t0: t, on: false };
+    try { frame.setPointerCapture(e.pointerId); } catch (_) { /* not capturable */ }
+    hold("hand");
+  });
+  frame.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.on) {
+      if (Math.abs(e.clientX - drag.x) < 6) return;
+      drag.on = true; sec.classList.add("is-scrubbing");   // from here the film follows the hand exactly
+    }
+    seek(drag.t0 + dir * (e.clientX - drag.x) * perPx());
+  });
+  const dropHand = (e) => { if (!drag || e.pointerId !== drag.id) return; drag = null; sec.classList.remove("is-scrubbing"); letGo("hand"); };
+  frame.addEventListener("pointerup", dropHand);
+  frame.addEventListener("pointercancel", dropHand);   // the page took the touch for scrolling
+  frame.addEventListener("lostpointercapture", dropHand);
+
+  // the keys: while the thread has the keyboard's focus the film waits (and the thread shows), and the arrows step
+  // through it: left goes on, right goes back (as the page reads), Page Up and Down five seconds, Home and End
+  const KEYS = { ArrowLeft: -dir, ArrowRight: dir, ArrowUp: 1, ArrowDown: -1, PageUp: 5, PageDown: -5 };
+  scrub.addEventListener("keydown", (e) => {
+    let T = null;
+    if (Object.prototype.hasOwnProperty.call(KEYS, e.key)) T = Math.round(t) + KEYS[e.key];
+    else if (e.key === "Home") T = 0;
+    else if (e.key === "End") T = LEN;
+    if (T == null) return;
+    e.preventDefault();
+    hold("keys");
+    seek(T);
+  });
+  scrub.addEventListener("focus", () => { let kb = false; try { kb = scrub.matches(":focus-visible"); } catch (_) { kb = false; } if (kb) hold("keys"); });
+  scrub.addEventListener("blur", () => letGo("keys"));
+
+  // a trackpad swiped sideways (or a wheel turned with Shift) moves it too; up and down still scroll the page
+  const onWheel = (e) => {
+    let dx = e.deltaX, dy = e.deltaY;
+    if (e.shiftKey && !dx) { dx = dy; dy = 0; }
+    if (!dx || Math.abs(dx) <= Math.abs(dy)) return;
+    e.preventDefault(); e.stopPropagation();
+    const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? frame.clientWidth : 1;
+    hold("wheel"); clearTimeout(wheelT); wheelT = setTimeout(() => letGo("wheel"), 450);
+    seek(t - dir * dx * unit * perPx());
+  };
+  frame.addEventListener("wheel", onWheel, { passive: false });
+
+  // it gets ready as it comes near (once the opening wave is over, the page has loaded, and there is a quiet moment),
+  // runs once a good part of it is on screen, and rests when it leaves
+  const go = () => setup().then(sync, () => {});
+  const idle = window.requestIdleCallback ? (f) => window.requestIdleCallback(f, { timeout: 2500 }) : (f) => setTimeout(f, 300);
+  // nothing is prepared under the opening wave (it would hold the wave back); it is gone after 4.5 s at most
+  const introOver = new Promise((ok) => {
+    if (document.getElementById("intro") && document.documentElement.classList.contains("has-intro")) {
+      document.addEventListener("intro:done", () => ok(), { once: true });
+      setTimeout(ok, 6000);
+    } else ok();
+  });
+  // ahead of time it waits a little longer: for the page to load and the first page to settle in
+  const settled = introOver.then(() => new Promise((ok) => {
+    if (document.readyState === "complete") ok(); else addEventListener("load", () => ok(), { once: true });
+  })).then(() => new Promise((ok) => setTimeout(ok, 900)));
   if ("IntersectionObserver" in window) {
+    const near = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { near.disconnect(); settled.then(() => idle(go)); }
+    }, { rootMargin: "0px 0px 100% 0px" });
+    near.observe(frame);
     new IntersectionObserver((es) => {
-      for (const e of es) {
-        if (e.isIntersecting) setup();
-        if (e.intersectionRatio >= 0.6) { if (!playing && !userPaused && !ended && !still()) play(); }
-        else if (playing) pause();
-      }
-    }, { threshold: [0, 0.6] }).observe(frame);
-  }
-  if (CB.bus) CB.bus.addEventListener("a11y", () => { if (still() && playing) { userPaused = true; pause(); } });
+      for (const e of es) seen = e.isIntersecting && e.intersectionRatio >= 0.34;
+      if (seen) introOver.then(go); else sync();
+    }, { threshold: [0, 0.35] }).observe(frame);
+  } else { seen = true; introOver.then(go); }
+  document.addEventListener("visibilitychange", sync);
+  if (CB.bus) CB.bus.addEventListener("a11y", sync);
   addEventListener("resize", () => {
-    if (!ready) return;
+    if (!isReady) return;
     clearTimeout(rz);
-    rz = setTimeout(() => ready.then(() => { size(); draw(shown); }), 150);
+    rz = setTimeout(() => { size(); draw(t); }, 150);
   }, { passive: true });
-  ui();
 
   CB.film = {
-    state: () => ({ t, shown, playing, ended, ready: frame.classList.contains("is-ready"), w: cv.width, h: cv.height, len: LEN }),
-    play, pause, seek: (T) => setup().then(() => { t = Math.max(0, Math.min(LEN, T)); draw(t); }),
+    state: () => ({ t, shown, playing, seen, ready: isReady && frame.classList.contains("is-ready"), w: cv.width, h: cv.height, len: LEN, holds: [...holds], quality, dip }),
+    seek: (T) => setup().then(() => seek(T)),
+    hold, letGo,
   };
 })();
 
