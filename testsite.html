@@ -2200,8 +2200,8 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
   .who-chip:hover { box-shadow: 0 0 0 1px rgb(255 244 222 / .95), 0 14px 34px -10px rgb(240 160 190 / 1), 0 0 34px rgb(255 220 180 / .6); }
 }
 .who-chip:focus-visible { outline: 3px solid #FFF3DA; outline-offset: 5px; }
-/* at the top of every page, beside "לריטריט הבא"; a phone has no room up there, so its first screen keeps the chip
-   beside the next event instead (one door at a time, never both) */
+/* at the top of every page, beside "לריטריט הבא". A phone has no room up there: its door floats on the lake instead
+   (the woman on the rug, below) */
 .who-chip--nav { flex: none; min-height: 44px; padding: 8px 18px 8px 15px; gap: 8px; font-size: .95rem; white-space: nowrap; }
 .who-chip--nav .who-chip__star { width: 16px; height: 16px; }
 .who-chip--nav::before { inset: -13px -15px; }
@@ -2209,7 +2209,51 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
 .nav[data-solid] .who-chip--nav:focus-visible { outline-color: var(--accent); }
 .who-chip--nav[aria-current="page"] { box-shadow: 0 0 0 2px #3B1532, 0 10px 24px -12px rgb(200 110 150 / .9); }
 @media (max-width: 659px) { .who-chip--nav { display: none; } }
-@media (min-width: 660px) { .hero__chips .who-chip { display: none; } }
+
+/* ---------- on a phone, the door on the lake: a woman meditating on a small rug (who-float.js) ---------- */
+/* she is painted on the journey's layer; this is the real button over her (the words above her are its name) */
+.who-float {
+  position: absolute; z-index: 2; left: var(--wf-x, 30%); top: var(--wf-top, 50%); width: var(--wf-w, 140px); height: var(--wf-h, 140px);
+  translate: -50% 0; display: grid; justify-items: center; align-content: start; padding: 0; margin: 0;
+  border: 0; border-radius: 22px; background: transparent; color: #FBF7FA; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.who-float[hidden] { display: none; }
+.who-float__cap {
+  display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px 8px 12px; border-radius: 999px; white-space: nowrap;
+  font: 700 .92rem/1 var(--font-body); background: rgb(12 16 38 / .62); border: 1px solid rgb(255 236 214 / .42);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); text-shadow: 0 1px 8px rgb(10 14 34 / .5);
+  box-shadow: 0 0 24px rgb(255 214 176 / .3); transition: opacity .3s var(--ease-out);
+}
+.who-float__cap .who-chip__star { width: 15px; height: 15px; color: #F6D48E; }
+.motion .who-float__cap { animation: jr-float 4.2s var(--ease-in-out) infinite; }
+.who-float.is-asking .who-float__cap { opacity: 0; }
+.who-float:focus-visible { outline: none; }
+.who-float:focus-visible .who-float__cap { outline: 2px solid #FBF7FA; outline-offset: 3px; }
+/* a tap on her: a small bubble over her head, the glowing door and "לא עכשיו" */
+.who-float__talk {
+  position: absolute; z-index: 5; left: var(--wf-bx, 50%); top: var(--wf-by, 50%); translate: -50% calc(-100% - 12px);
+  width: min(300px, calc(100% - 24px)); display: grid; gap: 12px; padding: 16px 16px 14px; border-radius: 20px;
+  color: #2A1B24; background: #FFF8EE; box-shadow: 0 18px 40px -18px rgb(30 10 20 / .55), 0 0 0 1px rgb(60 30 40 / .08);
+  opacity: 0; scale: .96; transform-origin: 50% 100%; transition: opacity .3s var(--ease-out), scale .3s var(--ease-out);
+}
+.who-float__talk[hidden] { display: none; }
+.who-float__talk.is-on { opacity: 1; scale: 1; }
+.who-float__talk::after {
+  content: ""; position: absolute; left: calc(50% + var(--wf-tail, 0px)); bottom: -8px; translate: -50% 0;
+  width: 16px; height: 16px; rotate: 45deg; background: inherit; border-radius: 3px;
+}
+.who-float__line { margin: 0; font: 400 1.12rem/1.4 var(--font-display); text-wrap: pretty; }
+.who-float__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.who-float__acts .who-chip { min-height: 44px; padding: 8px 18px 8px 14px; font-size: .95rem; }
+.who-float__acts .who-chip::before { inset: -10px -12px; }
+.who-float__acts .who-chip:focus-visible { outline-color: #4A1030; outline-offset: 3px; }
+.who-float__no {
+  min-height: 44px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+  font: 600 .95rem/1 var(--font-body); color: #5A3550; text-decoration: underline; text-underline-offset: 4px;
+}
+.who-float__no:focus-visible { outline: 2px solid #4A1030; outline-offset: 2px; }
+.a11y-still .who-float__talk { transition: none; }
+@media (min-width: 660px) { .who-float, .who-float__talk { display: none !important; } }
 
 /* ---------- the door in the moon world ---------- */
 .quiz-door { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
@@ -2500,7 +2544,6 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
       <div class="hero__foot">
         <div class="hero__chips">
           <a class="next-chip" href="#next-retreat" id="next-chip"><i></i><span>האירוע הבא: <b class="latin" lang="en">MANIFEST 2027</b><span class="next-chip__place">, פאפוס, קפריסין</span></span></a>
-          <a class="who-chip" href="#who" id="who-chip"><svg class="who-chip__star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5C12.7 8 16 11.3 22.5 12C16 12.7 12.7 16 12 22.5C11.3 16 8 12.7 1.5 12C8 11.3 11.3 8 12 1.5Z" fill="currentColor"/></svg><span>גלי מי את</span></a>
         </div>
       </div>
     </div>
@@ -2551,6 +2594,17 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
       <span class="jr-home__label">חזרה לאגם</span>
     </button>
     <p class="sr-only" id="jr-live" aria-live="polite"></p>
+    <!-- [who] on a phone, the questionnaire's door floats on the lake: a woman meditating on a small rug (who-float.js) -->
+    <button class="who-float" id="who-float" type="button" hidden aria-haspopup="dialog" aria-expanded="false" aria-controls="who-float-talk">
+      <span class="who-float__cap"><svg class="who-chip__star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5C12.7 8 16 11.3 22.5 12C16 12.7 12.7 16 12 22.5C11.3 16 8 12.7 1.5 12C8 11.3 11.3 8 12 1.5Z" fill="currentColor"/></svg>בואי לגלות מי את</span>
+    </button>
+    <div class="who-float__talk" id="who-float-talk" role="dialog" aria-label="בואי לגלות מי את" hidden>
+      <p class="who-float__line">שאלון קצר של 24 רגעים מהחיים, ובסופו תפגשי את הדמות שלך.</p>
+      <div class="who-float__acts">
+        <a class="who-chip" href="#who"><svg class="who-chip__star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5C12.7 8 16 11.3 22.5 12C16 12.7 12.7 16 12 22.5C11.3 16 8 12.7 1.5 12C8 11.3 11.3 8 12 1.5Z" fill="currentColor"/></svg><span>גלי מי את</span></a>
+        <button class="who-float__no" type="button">לא עכשיו</button>
+      </div>
+    </div>
   </section>
   <section class="section film-sec" id="film" aria-labelledby="film-title" data-flourish="on">
     <div class="wrap film">
@@ -8902,7 +8956,9 @@ void main(){
     g.clearRect(0, 0, W, H);
     sx = (fx.focus + fx.pan) * W;
     sU = H * 0.00026 * Math.min(1, Math.sqrt(Math.max(0.35, W / H) / 1.2)) * (W / H < 0.9 ? 1.5 : 1);
-    if (lakeA > 0.01) { drawFishing(g, clock, still() ? 0 : dt, lakeA); drawBirds(g, clock); }
+    // [who] on a phone, in the water moment, the fishing boat gives way to a woman meditating on a small rug (who-float.js)
+    const wf = CB.whoFloat ? CB.whoFloat.update(still() ? 0 : dt, state === "lake" && waterOn(), { W, H, hzY: (1 - (lay().hz - fx.dip)) * H }) : 0;
+    if (lakeA > 0.01) { drawFishing(g, clock, still() ? 0 : dt, lakeA * (1 - wf)); drawBirds(g, clock); if (wf > 0.002) CB.whoFloat.draw(g, clock, lakeA * wf, { night: NIGHT, day: DAY, dpr }); }
     else if (fbBtn) fbBtn.hidden = true;
     if (cam.town > 0.003) {
       og.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -8976,6 +9032,284 @@ void main(){
   resize();
 
   CB.journey = { sail, sailBack, openTalk, sad: () => ({ phase: S.phase, mood: S.mood, at: sadScreen }), boat: () => ({ x: FB.x, dir: FB.dir, act: FB.act, geo: fbGeo() }), state: () => ({ state, p, phase: fx.phase, step, shoots: fx.shoots.length, halo: fx.halo }) };
+})();
+
+</script>
+<script>
+/* "בואי לגלות מי את" on the water (phones only).
+   On a phone there is no room for the glowing chip at the top, so the questionnaire waits on the lake instead: once the
+   visitor touches the water, the fishing boat gives way to a woman meditating on a small embroidered rug that floats and
+   glows a little. She breathes with the moon (4 seconds in, 6 out), the rug rocks on the swell, its tassels sway and a
+   lotus floats beside her. Above her: "בואי לגלות מי את". A tap opens a small bubble with the glowing "גלי מי את"
+   (to the questionnaire) and "לא עכשיו" (which only closes the bubble; she stays on the water).
+   She is drawn on the journey's layer (#jr-layer), inside its frame (journey.js asks for update() and draw()), so she
+   sits in the same water, fades out when the boat sails for the town and comes back with the lake. The words and the
+   bubble are real HTML over her: a button that Tab reaches, a dialog that Esc closes. On a computer nothing changes. */
+(() => {
+  "use strict";
+  const doc = document, hero = doc.querySelector(".hero");
+  const btn = doc.getElementById("who-float"), talk = doc.getElementById("who-float-talk");
+  if (!hero || !btn || !talk) return;
+  const go = talk.querySelector(".who-chip"), no = talk.querySelector(".who-float__no");
+  const phone = window.matchMedia("(max-width: 659px)");
+  const still = () => !!CB.still;
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const breath = (t) => (CB.breathAt ? CB.breathAt(t) : 0.5 + 0.5 * Math.sin(t * 0.63));
+
+  /* ---------- where she floats: a third of the way across, a little nearer than the boat ---------- */
+  let k = 0, shown = false, G = null, nextRip = 0, cv = null, cg = null;
+  const place = (geo) => {
+    const { W, H, hzY } = geo;
+    const u = H * 0.00235;
+    return { W, H, u, X: clamp(W * 0.29, 40 * u, W - 46 * u), Y: hzY + H * 0.205 };
+  };
+  const setVar = (n, v) => { const s = v.toFixed(1) + "px"; if (btn.style.getPropertyValue(n) !== s) btn.style.setProperty(n, s); };
+  function syncDom() {
+    const want = k > 0.6;
+    if (want !== shown) {
+      shown = want;
+      btn.hidden = !want;
+      if (!want) close(false);
+    }
+    if (!want || !G) return;
+    const { W, u, X, Y } = G;
+    // the words just over her bun; the button reaches down to the rug, so a tap on her opens it too
+    setVar("--wf-x", X); setVar("--wf-top", Y - 44 * u - 40); setVar("--wf-w", 70 * u); setVar("--wf-h", 50 * u + 40);
+    // the bubble: over her head, kept inside the screen, its tail pointing at her
+    const bw = Math.min(300, W - 24), bx = clamp(X, 12 + bw / 2, W - 12 - bw / 2);
+    talk.style.setProperty("--wf-bx", bx.toFixed(1) + "px");
+    talk.style.setProperty("--wf-by", (Y - 46 * u).toFixed(1) + "px");
+    talk.style.setProperty("--wf-tail", clamp(X - bx, -bw / 2 + 26, bw / 2 - 26).toFixed(1) + "px");
+  }
+
+  /* ---------- the bubble ---------- */
+  // one state decides (a quick tap-tap can never leave it showing while it is meant to be closed)
+  let isOpen = false;
+  function open() {
+    isOpen = true;
+    talk.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    btn.classList.add("is-asking");
+    requestAnimationFrame(() => { if (isOpen) talk.classList.add("is-on"); });
+    go.focus({ preventScroll: true });
+    chime();
+    ripple(0.8);
+  }
+  function close(focusBack = true) {
+    if (!isOpen) return;
+    isOpen = false;
+    talk.classList.remove("is-on");
+    btn.setAttribute("aria-expanded", "false");
+    btn.classList.remove("is-asking");
+    const done = () => { if (!isOpen) talk.hidden = true; };
+    if (still()) done(); else setTimeout(done, 260);
+    if (focusBack && shown) btn.focus({ preventScroll: true });
+  }
+  btn.addEventListener("click", (e) => { e.stopPropagation(); if (isOpen) close(); else open(); });
+  no.addEventListener("click", (e) => { e.stopPropagation(); close(); });
+  // to the questionnaire: the water moment ends first, so the first page is whole again on the way back
+  go.addEventListener("click", () => { close(false); if (CB.water) CB.water.exit(false); });
+  talk.addEventListener("click", (e) => e.stopPropagation());
+  talk.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } });
+  // a touch anywhere else on the water closes the bubble
+  hero.addEventListener("pointerdown", (e) => { if (isOpen && !talk.contains(e.target) && !btn.contains(e.target)) close(false); }, true);
+  phone.addEventListener?.("change", () => { if (!phone.matches) close(false); });
+
+  /* ---------- a soft sound and the water's answer ---------- */
+  function chime() {
+    try {
+      if (CB.water && !CB.water.state().soundOn) return;
+      const ac = CB.audioCtx && CB.audioCtx();
+      if (!ac || ac.state !== "running") return;
+      const t = ac.currentTime + 0.01, out = ac.createGain();
+      out.gain.value = 0.9; out.connect(ac.destination);
+      [[659.25, 0], [987.77, 0.14], [1318.5, 0.3]].forEach(([f, d]) => {
+        const o = ac.createOscillator(), a = ac.createGain();
+        o.type = "sine"; o.frequency.value = f;
+        a.gain.setValueAtTime(0.0001, t + d); a.gain.exponentialRampToValueAtTime(0.045, t + d + 0.02); a.gain.exponentialRampToValueAtTime(0.0001, t + d + 1.6);
+        o.connect(a).connect(out); o.start(t + d); o.stop(t + d + 1.7);
+      });
+    } catch (_) { /* sound is a bonus */ }
+  }
+  function ripple(s) {
+    if (!G || !CB.seaRipple || still()) return;
+    const r = hero.getBoundingClientRect();
+    CB.seaRipple(r.left + G.X + 26 * G.u * (Math.random() < 0.5 ? -1 : 1), r.top + G.Y + 3 * G.u, s);
+  }
+
+  /* ---------- the painting ---------- */
+  const P = {
+    rug: "#6E2A4F", rugEdge: "#4A1838", band: "#D9A441", field: "#A8436A", gem: "#E9C46A", gemIn: "#3E7C8C", gemDot: "#F6E7C8", tassel: "#F3E3C3",
+    dress: "#B9A3E3", dressHi: "#DCD0F5", bodice: "#A58ED6", skin: "#E2B48F", skinSh: "#C8946E", hair: "#3A2230", lip: "#9A4A50",
+    lotus: "#F2A9C4", lotusIn: "#FFE0EA", pad: "#4E8C6A", padHi: "#6FAE86",
+  };
+  function figure(c, u, t, b, night) {
+    const r = 0.55 * u * b; // the breath lifts her chest a little
+    // her light, breathing
+    const aura = c.createRadialGradient(0, -24 * u, 2 * u, 0, -24 * u, (17 + 3.5 * b) * u);
+    aura.addColorStop(0, `rgba(255,238,214,${0.16 + 0.22 * night})`);
+    aura.addColorStop(0.55, `rgba(214,190,255,${0.08 + 0.1 * night})`);
+    aura.addColorStop(1, "rgba(214,190,255,0)");
+    c.fillStyle = aura; c.beginPath(); c.arc(0, -24 * u, (17 + 3.5 * b) * u, 0, Math.PI * 2); c.fill();
+    // her shadow on the rug
+    c.fillStyle = "rgba(40,10,30,.32)"; c.beginPath(); c.ellipse(0, -1.8 * u, 15.5 * u, 2.6 * u, 0, 0, Math.PI * 2); c.fill();
+    // hair falling behind her shoulders
+    c.fillStyle = P.hair;
+    c.beginPath(); c.moveTo(-4.4 * u, -31 * u - r); c.quadraticCurveTo(-6.6 * u, -26 * u - r, -6.2 * u, -20.5 * u); c.lineTo(-3 * u, -21.5 * u); c.closePath(); c.fill();
+    c.beginPath(); c.moveTo(4.4 * u, -31 * u - r); c.quadraticCurveTo(6.6 * u, -26 * u - r, 6.2 * u, -20.5 * u); c.lineTo(3 * u, -21.5 * u); c.closePath(); c.fill();
+    // crossed legs under the skirt
+    c.fillStyle = P.dress;
+    c.beginPath();
+    c.moveTo(-16.5 * u, -2.4 * u);
+    c.quadraticCurveTo(-17.5 * u, -8.8 * u, -9 * u, -9.2 * u);
+    c.quadraticCurveTo(0, -6.8 * u, 9 * u, -9.2 * u);
+    c.quadraticCurveTo(17.5 * u, -8.8 * u, 16.5 * u, -2.4 * u);
+    c.quadraticCurveTo(0, 0.8 * u, -16.5 * u, -2.4 * u);
+    c.closePath(); c.fill();
+    c.strokeStyle = P.dressHi; c.lineWidth = 0.7 * u; c.lineCap = "round";
+    c.beginPath(); c.moveTo(-14 * u, -7.6 * u); c.quadraticCurveTo(-9 * u, -9.4 * u, -3 * u, -7.6 * u); c.stroke();
+    c.beginPath(); c.moveTo(14 * u, -7.6 * u); c.quadraticCurveTo(9 * u, -9.4 * u, 3 * u, -7.6 * u); c.stroke();
+    c.strokeStyle = "rgba(90,60,140,.35)"; c.lineWidth = 0.5 * u;
+    c.beginPath(); c.moveTo(-2 * u, -6.8 * u); c.quadraticCurveTo(0, -3 * u, 3.5 * u, -1.6 * u); c.stroke();
+    // her feet, one over the other
+    c.fillStyle = P.skin;
+    c.beginPath(); c.ellipse(-5.4 * u, -3.3 * u, 2.5 * u, 1.05 * u, -0.15, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(5.2 * u, -3.9 * u, 2.5 * u, 1.05 * u, 0.15, 0, Math.PI * 2); c.fill();
+    // her body, straight and soft
+    c.fillStyle = P.bodice;
+    c.beginPath();
+    c.moveTo(-6.4 * u, -8 * u);
+    c.quadraticCurveTo(-7 * u, -16 * u, -7.6 * u, -22.6 * u - r);
+    c.quadraticCurveTo(0, -24.4 * u - r, 7.6 * u, -22.6 * u - r);
+    c.quadraticCurveTo(7 * u, -16 * u, 6.4 * u, -8 * u);
+    c.quadraticCurveTo(0, -6.8 * u, -6.4 * u, -8 * u);
+    c.closePath(); c.fill();
+    c.fillStyle = P.skin;
+    c.beginPath(); c.moveTo(-2.3 * u, -23.3 * u - r); c.lineTo(2.3 * u, -23.3 * u - r); c.lineTo(0, -19.6 * u - r); c.closePath(); c.fill();
+    // arms resting on her knees, palms up
+    const arm = (s) => {
+      c.lineCap = "round"; c.lineJoin = "round";
+      c.strokeStyle = P.bodice; c.lineWidth = 2.9 * u;
+      c.beginPath(); c.moveTo(s * 7 * u, -21.6 * u - r); c.lineTo(s * 11.4 * u, -14 * u); c.stroke();
+      c.strokeStyle = P.skin; c.lineWidth = 2.3 * u;
+      c.beginPath(); c.moveTo(s * 11.4 * u, -14 * u); c.lineTo(s * 12.6 * u, -9.4 * u); c.stroke();
+      c.fillStyle = P.skin; c.beginPath(); c.ellipse(s * 13 * u, -8.8 * u, 1.7 * u, 1.2 * u, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = P.skinSh; c.beginPath(); c.arc(s * 13.4 * u, -9.1 * u, 0.45 * u, 0, Math.PI * 2); c.fill(); // the finger and thumb meet
+    };
+    arm(-1); arm(1);
+    // neck and head, bowed a little
+    c.fillStyle = P.skinSh; c.fillRect(-1.4 * u, -26.4 * u - r, 2.8 * u, 3.6 * u);
+    c.fillStyle = P.skin; c.beginPath(); c.arc(0, -30.4 * u - r, 4.4 * u, 0, Math.PI * 2); c.fill();
+    // hair: parted, around the face, a bun on top
+    c.fillStyle = P.hair;
+    c.beginPath(); c.arc(0, -30.9 * u - r, 4.85 * u, Math.PI * 1.02, Math.PI * 1.98); c.quadraticCurveTo(2.2 * u, -32.6 * u - r, 0, -33.4 * u - r); c.quadraticCurveTo(-2.2 * u, -32.6 * u - r, -4.8 * u, -31.6 * u - r); c.closePath(); c.fill();
+    c.beginPath(); c.arc(0, -36.2 * u - r, 2.5 * u, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "rgba(255,255,255,.12)"; c.beginPath(); c.arc(-0.8 * u, -36.9 * u - r, 0.9 * u, 0, Math.PI * 2); c.fill();
+    // eyes closed, a quiet smile
+    c.strokeStyle = P.hair; c.lineWidth = 0.42 * u; c.lineCap = "round";
+    c.beginPath(); c.arc(-1.7 * u, -30.4 * u - r, 0.95 * u, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+    c.beginPath(); c.arc(1.7 * u, -30.4 * u - r, 0.95 * u, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+    c.strokeStyle = P.lip; c.lineWidth = 0.4 * u;
+    c.beginPath(); c.arc(0, -28.9 * u - r, 1.05 * u, 0.22 * Math.PI, 0.78 * Math.PI); c.stroke();
+    c.fillStyle = "rgba(232,93,117,.18)";
+    c.beginPath(); c.arc(-2.6 * u, -29 * u - r, 0.9 * u, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(2.6 * u, -29 * u - r, 0.9 * u, 0, Math.PI * 2); c.fill();
+  }
+  function rug(c, u, t, night, quiet) {
+    // its edge, then its face: a small carpet seen from a little above
+    c.fillStyle = P.rugEdge;
+    c.beginPath(); c.moveTo(-30 * u, 2 * u); c.lineTo(30 * u, 2 * u); c.lineTo(29.4 * u, 3.9 * u); c.lineTo(-29.4 * u, 3.9 * u); c.closePath(); c.fill();
+    const quad = (inset, fill) => {
+      const bx = 25 - inset * 1.06, fx = 30 - inset * 1.12, by = -7 + inset * 0.62, fy = 2 - inset * 0.62;
+      c.fillStyle = fill; c.beginPath(); c.moveTo(-bx * u, by * u); c.lineTo(bx * u, by * u); c.lineTo(fx * u, fy * u); c.lineTo(-fx * u, fy * u); c.closePath(); c.fill();
+    };
+    quad(0, P.rug); quad(1.6, P.band); quad(2.6, P.rug); quad(3.6, P.field);
+    // little diamonds along the border
+    c.fillStyle = P.gem;
+    for (let i = -5; i <= 5; i++) { const x = i * 5.1 * u, y = 0.5 * u; c.beginPath(); c.moveTo(x, y - 0.55 * u); c.lineTo(x + 1.1 * u, y); c.lineTo(x, y + 0.55 * u); c.lineTo(x - 1.1 * u, y); c.closePath(); c.fill(); }
+    // the medallion in the middle (mostly under her; its points show at the sides)
+    c.fillStyle = P.gem; c.beginPath(); c.moveTo(-15 * u, -2.6 * u); c.lineTo(0, -5.6 * u); c.lineTo(15 * u, -2.6 * u); c.lineTo(0, 0.4 * u); c.closePath(); c.fill();
+    c.fillStyle = P.gemIn; c.beginPath(); c.moveTo(-11 * u, -2.6 * u); c.lineTo(0, -4.8 * u); c.lineTo(11 * u, -2.6 * u); c.lineTo(0, -0.4 * u); c.closePath(); c.fill();
+    // a soft glow of its own at night
+    if (night > 0.05) {
+      const gl = c.createRadialGradient(0, -2 * u, 2 * u, 0, -2 * u, 30 * u);
+      gl.addColorStop(0, `rgba(255,214,170,${0.22 * night})`); gl.addColorStop(1, "rgba(255,214,170,0)");
+      c.fillStyle = gl; c.beginPath(); c.moveTo(-25 * u, -7 * u); c.lineTo(25 * u, -7 * u); c.lineTo(30 * u, 2 * u); c.lineTo(-30 * u, 2 * u); c.closePath(); c.fill();
+    }
+    // tassels at both ends, swaying
+    c.strokeStyle = P.tassel; c.lineWidth = 0.75 * u; c.lineCap = "round";
+    for (const s of [-1, 1]) for (let i = 0; i < 6; i++) {
+      const f = i / 5, x = s * (25 + 5 * f) * u, y = (-7 + 9 * f) * u, sway = quiet ? 0 : Math.sin(t * 1.7 + i * 0.9 + s) * 0.35;
+      c.beginPath(); c.moveTo(x, y); c.lineTo(x + s * Math.cos(sway) * 3.2 * u, y + Math.sin(sway) * 3.2 * u + 0.6 * u); c.stroke();
+    }
+  }
+  function lotus(c, u, t, quiet) {
+    const bob = quiet ? 0 : Math.sin(t * 1.1 + 2) * 0.6 * u;
+    c.save(); c.translate(0, bob);
+    c.fillStyle = P.pad; c.beginPath(); c.ellipse(0, 1 * u, 7 * u, 2.2 * u, 0, 0.25, Math.PI * 2 - 0.25); c.lineTo(0, 1 * u); c.closePath(); c.fill();
+    c.fillStyle = P.padHi; c.beginPath(); c.ellipse(-1.5 * u, 0.6 * u, 3.6 * u, 1 * u, 0, 0, Math.PI * 2); c.fill();
+    const petal = (a, len, w, col) => { c.save(); c.rotate(a); c.fillStyle = col; c.beginPath(); c.ellipse(0, -len / 2, w, len / 2, 0, 0, Math.PI * 2); c.fill(); c.restore(); };
+    c.translate(0, -0.6 * u);
+    [-1.1, 1.1, -0.6, 0.6].forEach((a) => petal(a, 4.6 * u, 1.3 * u, P.lotus));
+    petal(0, 5.2 * u, 1.4 * u, P.lotusIn);
+    c.fillStyle = "#F6C453"; c.beginPath(); c.arc(0, -0.6 * u, 0.7 * u, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+  // everything of hers on its own small canvas, then laid on the water at once (one alpha, and the night's tint)
+  function paint(c, X, Y, u, t, alpha, night, day, dpr) {
+    const quiet = still(), b = quiet ? 0.5 : breath(t);
+    const dy = quiet ? 0 : Math.sin(t * 0.85) * 1.1 * u, roll = quiet ? 0 : Math.sin(t * 0.62 + 0.8) * 0.022;
+    // the glow on the water around her, and her reflection
+    c.save(); c.globalAlpha = alpha;
+    const gw = c.createRadialGradient(X, Y + 3 * u, 2 * u, X, Y + 3 * u, 44 * u);
+    gw.addColorStop(0, `rgba(255,214,176,${(0.08 + 0.26 * night) * (0.85 + 0.25 * b)})`); gw.addColorStop(1, "rgba(255,214,176,0)");
+    c.fillStyle = gw; c.beginPath(); c.ellipse(X, Y + 3 * u, 44 * u, 10 * u, 0, 0, Math.PI * 2); c.fill();
+    for (let i = 0; i < 8; i++) {
+      const y = Y + (4.2 + i * 2.9) * u, w = (27 - i * 2.6) * u, off = quiet ? 0 : Math.sin(t * 1.3 + i * 1.7) * 1.6 * u;
+      c.fillStyle = i < 3 ? `rgba(110,42,79,${0.42 - i * 0.05})` : `rgba(185,163,227,${0.3 - i * 0.03})`;
+      c.fillRect(X - w + off, y, 2 * w, 1.35 * u);
+    }
+    c.restore();
+    // her own small canvas: 90 by 60 units, the rug's middle at (40, 50); the lotus floats 35 units to the side
+    const SW = 90 * u, SH = 60 * u, OX = 40 * u, OY = 50 * u, pw = Math.ceil(SW * dpr), ph = Math.ceil(SH * dpr);
+    if (!cv) { cv = doc.createElement("canvas"); cg = cv.getContext("2d"); }
+    if (cv.width !== pw || cv.height !== ph) { cv.width = pw; cv.height = ph; }
+    cg.setTransform(1, 0, 0, 1, 0, 0); cg.clearRect(0, 0, pw, ph);
+    cg.setTransform(dpr, 0, 0, dpr, OX * dpr, OY * dpr);
+    cg.translate(0, dy); cg.rotate(roll);
+    rug(cg, u, t, night, quiet);
+    figure(cg, u, t, b, night);
+    cg.setTransform(dpr, 0, 0, dpr, (OX + 35 * u) * dpr, (OY + 4 * u) * dpr);
+    lotus(cg, u, t, quiet);
+    if (night > 0.02) { // by night she takes the lake's violet light
+      cg.setTransform(1, 0, 0, 1, 0, 0);
+      cg.globalCompositeOperation = "source-atop";
+      cg.fillStyle = `rgba(36,30,86,${0.26 * night * (1 - day)})`; cg.fillRect(0, 0, pw, ph);
+      cg.globalCompositeOperation = "source-over";
+    }
+    c.save(); c.globalAlpha = alpha;
+    c.drawImage(cv, X - OX, Y - OY, SW, SH);
+    c.restore();
+  }
+
+  /* ---------- what journey.js asks of her, every frame of the lake ---------- */
+  CB.whoFloat = {
+    // lake: the visitor is on the water and the boat is home. Returns how much she is there (0 to 1): the fishing boat shows the rest.
+    update(dt, lake, geo) {
+      const target = lake && phone.matches ? 1 : 0;
+      if (still() || !dt) k = target; else k += (target - k) * Math.min(1, dt * 2.4);
+      if (Math.abs(k - target) < 0.004) k = target;
+      G = place(geo);
+      syncDom();
+      const now = performance.now() / 1000;
+      if (shown && now > nextRip) { nextRip = now + 4.5 + Math.random() * 2; ripple(0.3); }
+      return k;
+    },
+    draw(c, t, alpha, env) { if (G && alpha > 0.002) paint(c, G.X, G.Y, G.u, t, alpha, env.night || 0, env.day || 0, env.dpr || 1); },
+    // for the tests and the review sheets
+    state: () => ({ k, shown, open: isOpen, at: G && { x: G.X, y: G.Y, u: G.u } }),
+    paintAt: (c, X, Y, u, t, night = 1, day = 0, dpr = 1) => paint(c, X, Y, u, t, 1, night, day, dpr),
+  };
 })();
 
 </script>
