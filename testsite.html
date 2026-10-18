@@ -485,6 +485,71 @@ html.lenis, html.lenis body { height: auto; }
 /* while sailing and in the town the lake's own hint steps aside */
 .hero.jr-away .water-ui__hint, .hero.jr-away .jr-tip { opacity: 0 !important; }
 
+/* ---------- [hill] the girl's balloon, the stairs up to the chapel, and the view from the hill ---------- */
+/* up the stairs: a pill that floats under the chapel once the town has said hello */
+.jr-up {
+  position: absolute; z-index: 2; left: var(--x, 50%); top: var(--y, 40%); translate: -50% 0;
+  display: grid; place-items: center; min-height: 44px; padding: 0 16px 0 13px; margin: 0; border-radius: 999px; cursor: pointer;
+  font: 600 .92rem/1 var(--font-body); white-space: nowrap; color: #FBF7FA; background: rgb(12 16 38 / .58); border: 1px solid rgb(255 255 255 / .26);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); text-shadow: 0 1px 8px rgb(10 14 34 / .5); -webkit-tap-highlight-color: transparent;
+  opacity: 0; pointer-events: none; transition: opacity .9s var(--ease-out), background-color .2s var(--ease-out);
+}
+.jr-up.is-on { opacity: 1; pointer-events: auto; }
+.jr-up[hidden] { display: none; }
+.jr-up__in { display: inline-flex; align-items: center; gap: 8px; animation: jr-float 4.2s var(--ease-in-out) infinite; }
+.jr-up svg { width: 18px; height: 18px; flex: none; }
+.jr-up:focus-visible { outline: 2px solid #FBF7FA; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .jr-up:hover { background: rgb(12 16 38 / .72); border-color: rgb(255 255 255 / .5); } }
+.has-intro .jr-up__in, .is-veiled .jr-up__in { animation-play-state: paused; }
+
+/* invisible buttons that ride on things in the drawing (the stuck balloon, the bell, the bench), with a name that shows for a moment */
+.jr-spot {
+  position: absolute; z-index: 3; left: var(--x, -100px); top: var(--y, -100px); translate: -50% -50%;
+  width: max(44px, var(--w, 44px)); height: max(44px, var(--h, 44px)); padding: 0; margin: 0; border: 0; border-radius: 18px;
+  background: transparent; color: #FFF8EE; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.jr-spot[hidden] { display: none; }
+.jr-spot:focus-visible { outline: 2px dashed #FFF8EE; outline-offset: 2px; }
+.jr-spot__label {
+  position: absolute; left: 50%; bottom: calc(100% + 8px); translate: calc(-50% + var(--lx, 0px)) 0; padding: 7px 12px; border-radius: 999px; white-space: nowrap;
+  font: 600 .88rem/1 var(--font-body); background: rgb(40 20 30 / .72); box-shadow: 0 0 0 1px rgb(255 248 238 / .22) inset;
+  opacity: 0; pointer-events: none; transition: opacity .4s var(--ease-out);
+}
+.jr-spot.is-below .jr-spot__label { top: calc(100% + 8px); bottom: auto; }
+.jr-spot.is-hint .jr-spot__label, .jr-spot:focus-visible .jr-spot__label { opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .jr-spot:hover .jr-spot__label { opacity: 1; } }
+/* sitting on the bench, its button is the one way up again: a plain pill at the bottom */
+.jr-spot.is-sit {
+  left: 50%; top: auto; bottom: calc(clamp(18px, 4vh, 32px) + 58px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: auto; height: 44px; padding: 0 18px;
+  border-radius: 999px; border: 1px solid rgb(255 248 238 / .45); background: rgb(40 20 30 / .5); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.jr-spot.is-sit .jr-spot__label { position: static; translate: none; display: block; padding: 0; opacity: 1; background: none; box-shadow: none; }
+.jr-spot.is-sit:focus-visible { outline: 2px solid #FFF8EE; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .jr-spot.is-sit:hover { background: rgb(40 20 30 / .68); } }
+
+/* up on the hill the drawing behind the controls can be light (the white tower, sunny roofs): a deeper glass there */
+.hero.jr-hill .jr-home { background: rgb(40 20 30 / .72); }
+.hero.jr-hill .jr-home__label { background: rgb(40 20 30 / .8); }
+.hero.jr-hill .water-ui__bar .icon-btn { background: rgb(12 16 38 / .62); }
+@media (hover: hover) and (pointer: fine) { .hero.jr-hill .jr-home:hover { background: rgb(40 20 30 / .86); } }
+/* the hill's welcome sits over the sky (on a phone, over the moon itself): a deeper glass at night,
+   and by day dark ink on light glass */
+.hero.jr-hill .jr-ui { background: rgb(40 18 34 / .6); }
+.hero.jr-hill .jr-ui.is-light { background: rgb(255 250 244 / .64); box-shadow: 0 0 0 1px rgb(60 30 50 / .14) inset; }
+.hero.jr-hill .jr-ui.is-light .jr-ui__title { color: #2A1830; text-shadow: 0 1px 10px rgb(255 250 244 / .7); }
+.hero.jr-hill .jr-ui.is-light .jr-ui__sub { color: #3A2440; text-shadow: none; }
+
+/* a few quiet words in the sky, while sitting on the bench */
+.jr-muse {
+  position: absolute; z-index: 2; left: var(--x, 50%); top: var(--y, 22%); translate: -50% 0; width: min(520px, var(--w, calc(100% - 2 * var(--gutter, 16px))));
+  margin: 0; text-align: center; text-wrap: balance; pointer-events: none;
+  font: 400 clamp(1.55rem, 2.6vw, 2.1rem)/1.25 var(--font-display); color: #FFF8EE;
+  text-shadow: 0 2px 22px rgb(10 14 34 / .7), 0 1px 3px rgb(10 14 34 / .55); opacity: 0; transition: opacity 1.1s var(--ease-out);
+}
+.jr-muse.is-on { opacity: 1; }
+/* by day and at sunset the sky behind the words is light: dark ink with a soft light halo */
+.jr-muse.is-light { color: #2A1830; text-shadow: 0 0 18px rgb(255 248 240 / .9), 0 0 4px rgb(255 248 240 / .85); }
+
 /* ---------- Events ---------- */
 .events { background: var(--bg); }
 .event-grid { display: grid; gap: 18px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
@@ -2568,7 +2633,7 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
     <p class="jr-tip" id="jr-tip" aria-live="polite"></p>
     <div class="jr-ui" id="jr-ui" hidden>
       <p class="jr-ui__title" id="jr-title" tabindex="-1">ברוכים הבאים לעיירה</p>
-      <p class="jr-ui__sub">שוק, מוזיקה וילדים על המזח. ומישהו אחד יושב לבד בצד.</p>
+      <p class="jr-ui__sub" id="jr-sub">שוק, מוזיקה וילדים על המזח. ומישהו אחד יושב לבד בצד.</p>
     </div>
     <button class="jr-sad" id="jr-sad" type="button" hidden aria-label="לגשת לאיש שיושב לבד על שפת המזח" aria-controls="jr-talk"></button>
     <div class="jr-talk" id="jr-talk" role="dialog" aria-label="שיחה עם האיש על המזח" hidden>
@@ -2578,6 +2643,14 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>
       </button>
     </div>
+    <!-- [hill] the girl's balloon, the stairs up to the chapel, and on the hill: the bell, the bench and a few quiet words -->
+    <button class="jr-up" id="jr-up" type="button" hidden aria-label="לעלות לכנסייה שבראש הגבעה">
+      <span class="jr-up__in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h4.5v-4h4.5v-4h4.5V9H21"/><path d="M15 6.5L18 3.5l3 3M18 3.5v6"/></svg>לעלות לכנסייה</span>
+    </button>
+    <button class="jr-spot" id="jr-balloon" type="button" hidden aria-label="להחזיר לה את הבלון שנתקע במגדל הכנסייה"><span class="jr-spot__label" aria-hidden="true">להחזיר לה את הבלון</span></button>
+    <button class="jr-spot" id="jr-bell" type="button" hidden aria-label="לצלצל בפעמון של הכנסייה"><span class="jr-spot__label" aria-hidden="true">לצלצל בפעמון</span></button>
+    <button class="jr-spot" id="jr-bench" type="button" hidden aria-label="לשבת על הספסל מול האגם"><span class="jr-spot__label" aria-hidden="true">לשבת על הספסל</span></button>
+    <p class="jr-muse" id="jr-muse" aria-live="polite"></p>
     <button class="jr-home" id="jr-back" type="button" hidden aria-label="חזרה לאגם" title="חזרה לאגם">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="jr-home__label">חזרה לאגם</span>
@@ -7742,6 +7815,7 @@ void main(){
   const fx = CB.seaFx;
   const g = cv.getContext("2d");
   const off = doc.createElement("canvas"), og = off.getContext("2d"); // the town, drawn whole, then faded in at once
+  const off2 = doc.createElement("canvas"), hg = off2.getContext("2d"); // [hill] the view from the chapel, the same way
 
   /* ---------- small helpers ---------- */
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -7838,6 +7912,50 @@ void main(){
     nodes.forEach((n) => { try { n.stop(t + 1.7); } catch (_) { /* stopped */ } });
   };
   const sHi = (x) => { if (!audio()) return; const t = ac.currentTime + 0.01, d = bus(panAt(x), 0.8, 0.3); tone(d, t, 880, 0.05, 0.16, "triangle"); tone(d, t + 0.12, 1175, 0.05, 0.22, "triangle"); };
+  // [hill] the town grows quieter as you climb above it, and louder again on the way down
+  const townVol = (v, s = 2) => {
+    if (!townSnd || !ac) return;
+    const gg = townSnd.fade.gain, t = ac.currentTime;
+    gg.cancelScheduledValues(t); gg.setValueAtTime(Math.max(0.0001, gg.value), t); gg.exponentialRampToValueAtTime(Math.max(0.0001, v), t + s);
+  };
+  // [hill] footsteps on the old stone stairs
+  const sStep = (k) => { if (!audio()) return; const t = ac.currentTime + 0.01, d = bus(k % 2 ? 0.18 : -0.18, 0.7, 0.12); swish(d, t, 560, 190, 0.045, 0.15, 1.3); tone(d, t, 96, 0.026, 0.11, "sine", 0.002); };
+  // [hill] the chapel bell, close by: deep strokes with a long, shimmering tail
+  const sBell = (k = 1, at = 0) => { if (!audio()) return; const t = ac.currentTime + 0.02 + at, d = bus(0.5, 0.75, 0.95); bell(d, t, 174.61, 0.19 * k, 7.5); bell(d, t + 0.005, 349.23, 0.045 * k, 4.2); tone(d, t, 1397, 0.012 * k, 0.6, "triangle", 0.002); };
+  // [hill] the doves: wings, and now and then a soft coo
+  const sFlap = (x, n = 7, k = 1) => { if (!audio()) return; const t = ac.currentTime + 0.01, d = bus(panAt(x), 0.8, 0.25); for (let i = 0; i < n; i++) swish(d, t + i * 0.075 + Math.random() * 0.02, 1500, 650, 0.034 * k * (1 - i / (n + 3)), 0.09, 1.1); };
+  const sCoo = (x) => { if (!audio()) return; const t = ac.currentTime + 0.01, d = bus(panAt(x), 0.55, 0.35); [[0, 349.23, 0.22], [0.3, 392, 0.34], [0.72, 349.23, 0.26]].forEach(([dt, f, len]) => { const o = tone(d, t + dt, f, 0.03, len, "sine", 0.05); o.frequency.exponentialRampToValueAtTime(f * 0.86, t + dt + len * 0.8); }); };
+  // [balloon] a balloon slips away: a little rising whistle, and her "oh"
+  const sSlip = (x) => { if (!audio()) return; const t = ac.currentTime + 0.01, d = bus(panAt(x), 0.8, 0.45); const o = tone(d, t, 660, 0.03, 0.7); o.frequency.exponentialRampToValueAtTime(1480, t + 0.65); tone(d, t + 0.5, 587.33, 0.045, 0.32, "triangle"); tone(d, t + 0.78, 466.16, 0.045, 0.55, "triangle"); };
+  // [hill] up on the hill: a soft wind, crickets at night, a bird now and then by day
+  let hillSnd = null;
+  const sHillOn = () => {
+    if (hillSnd || !audio()) return;
+    const t = ac.currentTime, fade = ac.createGain();
+    fade.gain.setValueAtTime(0.0001, t); fade.gain.exponentialRampToValueAtTime(1, t + 2.5);
+    fade.connect(out);
+    const wind = ac.createBufferSource(); wind.buffer = noise(); wind.loop = true;
+    const bp = ac.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 430; bp.Q.value = 0.7;
+    const wg = ac.createGain(); wg.gain.value = 0.02;
+    const lfo = ac.createOscillator(); lfo.frequency.value = 0.09; const lg = ac.createGain(); lg.gain.value = 0.013; lfo.connect(lg).connect(wg.gain);
+    const lfo2 = ac.createOscillator(); lfo2.frequency.value = 0.13; const lg2 = ac.createGain(); lg2.gain.value = 170; lfo2.connect(lg2).connect(bp.frequency);
+    wind.connect(bp).connect(wg).connect(fade); wind.start(t, Math.random()); lfo.start(t); lfo2.start(t);
+    let next = t + 1.2;
+    const timer = setInterval(() => {
+      if (!ac) return;
+      while (next < ac.currentTime + 0.5) {
+        if (NIGHT > 0.5) { for (let i = 0; i < 3; i++) tone(fade, next + i * 0.06, 4200 + Math.random() * 320, 0.0055, 0.045, "sine", 0.004); next += 0.6 + Math.random() * 1.2; }
+        else { const f0 = 2500 + Math.random() * 1300; for (let i = 0; i < 3; i++) { const o = tone(fade, next + i * 0.12, f0, 0.009, 0.08); o.frequency.exponentialRampToValueAtTime(f0 * 1.32, next + i * 0.12 + 0.06); } next += 3 + Math.random() * 5; }
+      }
+    }, 200);
+    hillSnd = { fade, nodes: [wind, lfo, lfo2], timer };
+  };
+  const sHillOff = () => {
+    if (!hillSnd || !ac) { hillSnd = null; return; }
+    const { fade, nodes, timer } = hillSnd; hillSnd = null; clearInterval(timer);
+    const t = ac.currentTime; fade.gain.cancelScheduledValues(t); fade.gain.setValueAtTime(Math.max(0.0001, fade.gain.value), t); fade.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+    nodes.forEach((n) => { try { n.stop(t + 1.5); } catch (_) { /* stopped */ } });
+  };
 
   /* ---------- geometry: where things are on screen ---------- */
   let W = 0, H = 0, dpr = 1;
@@ -7937,6 +8055,7 @@ void main(){
     hero.classList.add("jr-away");
     mtnBtn.classList.remove("is-on"); setTimeout(() => { if (state !== "lake") mtnBtn.hidden = true; }, 900);
     fx.shoots.length = 0;
+    placeGirl(); // [balloon] the girl with the balloons will be walking into view when the boat arrives
     say("השיט התחיל. הסירה שטה אל ההרים.");
     sCall(0.8);
     if (CB.water) { const h = doc.getElementById("water-hint"); if (h) h.classList.remove("is-on"); }
@@ -7947,12 +8066,15 @@ void main(){
     ui.classList.remove("is-on"); setTimeout(() => { if (state !== "town") ui.hidden = true; }, 900);
     backBtn.classList.remove("is-on", "is-hint"); setTimeout(() => { if (state !== "town") backBtn.hidden = true; }, 600);
     closeTalk(); sadBtn.hidden = true;
+    townOff(); // [hill] the stairs' pill and the balloon's button step aside too
     sTownOff(); say("חוזרים לאגם.");
   }
   function arrive() {
     state = "town"; arrived = true;
-    ui.hidden = false; requestAnimationFrame(() => ui.classList.add("is-on"));
-    backBtn.hidden = false; requestAnimationFrame(() => backBtn.classList.add("is-on", "is-hint"));
+    townWords(); storyArm(); upAt = performance.now() / 1000 + 6.2; // [hill] [balloon]
+    // [hill] (only if still here a frame later: a quick touch on the chapel may already be on its way up)
+    ui.hidden = false; requestAnimationFrame(() => { if (state === "town") ui.classList.add("is-on"); });
+    backBtn.hidden = false; requestAnimationFrame(() => { if (state === "town") backBtn.classList.add("is-on", "is-hint"); });
     setTimeout(() => { if (state === "town") title.focus({ preventScroll: true }); }, 400);
     // the welcome and the button's name step aside, so the town is free to look at
     setTimeout(() => { backBtn.classList.remove("is-hint"); }, 4200);
@@ -7966,6 +8088,7 @@ void main(){
     ui.classList.remove("is-on"); ui.hidden = true; mtnBtn.classList.remove("is-on"); mtnBtn.hidden = true;
     backBtn.classList.remove("is-on", "is-hint"); backBtn.hidden = true;
     if (typeof closeTalk === "function") { closeTalk(); sadBtn.hidden = true; }
+    hillReset(); // [hill] [balloon]
     sTownOff();
   }
 
@@ -8005,10 +8128,12 @@ void main(){
   const landCol = (k) => { const dy = [86, 118, 104], ds = [84, 69, 115], nn = [9, 10, 26], c = ds.map((v, i) => mix(mix(v, dy[i], DAY), nn[i], NIGHT) * k); return `rgb(${(c[0] * mix(1, 1.16, WARM) + 12 * WARM) | 0},${c[1] | 0},${(c[2] * mix(1, 0.82, WARM)) | 0})`; };
 
   // A layer stands k*M beyond the shore; its scale and ground line follow from the boat's distance.
-  let cam = camAt(0), sx = 0, sU = 0;
+  // [hill] Climbing the stairs, the eye walks forward (climbFwd, in boat lengths), rises (climbLift, in town units) and
+  // moves over toward the chapel (climbShift): near things drop away fast, far ones slowly. Each layer has its own sx.
+  let cam = camAt(0), sx = 0, sU = 0, climbFwd = 0, climbLift = 0, climbShift = 0;
   const layer = (k) => {
-    const dist = cam.d + k * M;
-    return { u: sU * D0 / dist, gy: horizonY() + H * 0.15 / dist };
+    const dist = Math.max(0.35, cam.d + k * M - climbFwd), u = sU * D0 / dist;
+    return { u, gy: horizonY() + H * 0.15 / dist + climbLift * u, sx: sx - climbShift * u };
   };
 
   /* ---------- people: one skeleton, many looks, many little lives ---------- */
@@ -8218,7 +8343,7 @@ void main(){
 
     /* everyone strolling along the promenade */
     P0.walkers.forEach((w) => {
-      const x = wrap(w.x + w.v * t), f = Math.sign(w.v), [X, Y] = at(x, w.y);
+      const x = w.stop != null ? w.stop : wrap(w.x + w.v * t), f = Math.sign(w.v), [X, Y] = at(x, w.y); // [balloon] she may stand still
       const h = w.L.kid ? 31 : 46 * w.L.tall, ph = (Math.abs(w.v) * t) / (h * (w.type === "runner" ? 1.25 : 0.95)) * Math.PI * 2;
       const waving = t - w.L.jump < 1.2;
       const base = { mode: w.type === "runner" ? "run" : "walk", run: w.type === "runner", ph, face: f, mood: 0.6 };
@@ -8239,8 +8364,7 @@ void main(){
         const top = Y - 46 * w.L.tall * 1.02 * u - Math.abs(Math.cos(ph)) * 46 * 0.028 * u;
         fig(c, X, top, u, w.K, { sit: true, straddle: true, arms: "cheer", mood: 0.95, face: f }, t);
       } else if (w.type === "balloon") {
-        const r = fig(c, X, Y, u, w.L, { ...base, arms: "balloon", mood: 0.8 }, t);
-        extras.push(() => balloons(c, r.hands[1], u, t, w.cols));
+        balloonGirl(c, w, X, Y, u, t, base, extras); // [balloon]
       } else {
         fig(c, X, Y, u, w.L, { ...base, arms: waving ? "wave" : undefined, mood: w.type === "runner" ? 0.95 : 0.6 }, t);
       }
@@ -8287,11 +8411,15 @@ void main(){
       c.fillStyle = tint("#FF5D73"); c.beginPath(); c.arc(BX, BY, 5.5 * u, 0, Math.PI * 2); c.fill();
       c.strokeStyle = "rgba(255,255,255,.7)"; c.lineWidth = Math.max(1, 1.2 * u); c.beginPath(); c.arc(BX, BY, 5.5 * u, t * 9, t * 9 + 1.6); c.stroke();
     }
-    { // a kite over the roofs
+    { // a kite over the roofs ([balloon] and once, it flies off to bring a balloon back)
       const [kx, ky] = at(250, 26);
-      const r = fig(c, kx, ky, u, P0.kiter, { arms: "kite", face: 1, mood: 0.9 }, t);
-      const tx = kx + (110 + Math.sin(t * 0.8) * 18) * u, ty = ky - (210 + Math.sin(t * 1.1) * 14) * u;
-      extras.push(() => kite(c, r.hands[1], tx, ty, u, t));
+      const helping = kiteBusy(t);
+      const r = fig(c, kx, ky, u, P0.kiter, { arms: helping ? "steer" : "kite", face: 1, mood: 0.9 }, t);
+      let tx = kx + (110 + Math.sin(t * 0.8) * 18) * u, ty = ky - (210 + Math.sin(t * 1.1) * 14) * u;
+      if (helping) [tx, ty] = kiteAt(t, tx, ty);
+      const rot = Math.sin(t * 1.7) * 0.2 + (helping ? kiteBank : 0);
+      kiteTail = [tx - Math.sin(rot) * 62 * u, ty + Math.cos(rot) * 62 * u];
+      extras.push(() => kite(c, r.hands[1], tx, ty, u, t, rot));
     }
     { // a juggler
       const [X, Y] = at(-250, 25);
@@ -8315,6 +8443,7 @@ void main(){
       c.font = `${Math.max(9, 12 * u)}px serif`; c.textAlign = "center";
       for (let i = 0; i < 3; i++) { const q = (t * 0.45 + i / 3) % 1; c.fillStyle = `rgba(255,240,210,${0.9 * Math.sin(q * Math.PI)})`; c.fillText(i % 2 ? "♫" : "♪", X + (8 + Math.sin(q * 6 + i) * 8) * u, Y - (50 + q * 50) * u); }
     }
+    extras.push(() => storyDraw(c, t, near)); // [balloon] a balloon on its way, and whoever carries it
     extras.forEach((f) => f());
     drawSad(c, t, near, sx);
   }
@@ -8350,9 +8479,9 @@ void main(){
       c.fillStyle = "rgba(255,255,255,.45)"; c.beginPath(); c.ellipse(bx - 2 * u, by - 3 * u, 1.6 * u, 2.6 * u, -0.4, 0, Math.PI * 2); c.fill();
     });
   }
-  function kite(c, hand, tx, ty, u, t) {
+  function kite(c, hand, tx, ty, u, t, rot = Math.sin(t * 1.7) * 0.2) {
     c.strokeStyle = "rgba(255,255,255,.6)"; c.lineWidth = Math.max(0.8, 0.8 * u); c.beginPath(); c.moveTo(hand[0], hand[1]); c.quadraticCurveTo(hand[0] + 60 * u, hand[1] - 40 * u, tx, ty); c.stroke();
-    c.save(); c.translate(tx, ty); c.rotate(Math.sin(t * 1.7) * 0.2);
+    c.save(); c.translate(tx, ty); c.rotate(rot);
     c.fillStyle = tint("#FF9F1C"); c.beginPath(); c.moveTo(0, -22 * u); c.lineTo(14 * u, 0); c.lineTo(0, 26 * u); c.lineTo(-14 * u, 0); c.closePath(); c.fill();
     c.fillStyle = tint("#E85D75"); c.beginPath(); c.moveTo(0, -22 * u); c.lineTo(14 * u, 0); c.lineTo(0, 0); c.closePath(); c.fill();
     c.strokeStyle = tint("#3FA7D6"); c.lineWidth = 2 * u; c.beginPath(); c.moveTo(0, 26 * u); c.quadraticCurveTo(8 * u * Math.sin(t * 4), 44 * u, 0, 62 * u); c.stroke();
@@ -8652,10 +8781,60 @@ void main(){
     c.fill();
   }
 
-  function hill(c, f, gx, gy, u, col) {
-    c.fillStyle = col; c.beginPath(); c.moveTo(gx - 1700 * u, gy + 4);
+  // [hill] `bottom`: while climbing, a slope reaches down to the next nearer one, so no gap opens as they part
+  function hill(c, f, gx, gy, u, col, bottom = gy + 4) {
+    const b = Math.max(gy + 4, bottom);
+    c.fillStyle = col; c.beginPath(); c.moveTo(gx - 1700 * u, b);
     for (let x = -1700; x <= 1700; x += 40) c.lineTo(gx + x * u, gy - f(x) * u);
-    c.lineTo(gx + 1700 * u, gy + 4); c.closePath(); c.fill();
+    c.lineTo(gx + 1700 * u, b); c.closePath(); c.fill();
+  }
+
+  /* ---------- [hill] the old stairs up to the chapel, winding between the houses, with a lantern at every turn ---------- */
+  const STAIR_FAR = [[150, 284], [114, 240], [180, 200], [104, 158], [162, 116], [98, 74], [138, 30]];
+  const STAIR_MID = [[116, -4], [148, 34], [104, 70], [134, 106]];
+  let stairPts = [];
+  function stairs(c, L, pts, t) {
+    const u = L.u, P = pts.map(([x, y]) => [L.sx + x * u, L.gy - y * u]);
+    c.lineCap = "round"; c.lineJoin = "round";
+    c.strokeStyle = shade("#8E6E5A", 0.9); c.lineWidth = 13 * u; c.beginPath(); P.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.stroke();
+    c.strokeStyle = shade("#E9DCC9"); c.lineWidth = 10 * u; c.stroke();
+    // the steps: short shadows across the path
+    c.strokeStyle = "rgba(90,60,40,.32)"; c.lineWidth = Math.max(0.8, 1.1 * u);
+    for (let i = 1; i < P.length; i++) {
+      const [x0, y0] = P[i - 1], [x1, y1] = P[i], len = Math.hypot(x1 - x0, y1 - y0), n = Math.floor(len / (5.5 * u));
+      const nx = -(y1 - y0) / len, ny = (x1 - x0) / len;
+      for (let k = 1; k < n; k++) { const x = mix(x0, x1, k / n), y = mix(y0, y1, k / n); c.beginPath(); c.moveTo(x - nx * 4.4 * u, y - ny * 4.4 * u); c.lineTo(x + nx * 4.4 * u, y + ny * 4.4 * u); c.stroke(); }
+    }
+    // lanterns at the turns: a chain of small lights up the hill, brighter at night
+    P.slice(1).forEach(([x, y]) => {
+      c.fillStyle = shade("#3B2F4A"); c.fillRect(x + 5 * u, y - 15 * u, 1.6 * u, 15 * u);
+      c.fillStyle = `rgba(255,214,140,${mix(0.65, 1, NIGHT)})`; c.beginPath(); c.arc(x + 5.8 * u, y - 16 * u, 2.4 * u, 0, Math.PI * 2); c.fill();
+    });
+    if (NIGHT > 0.05 || WARM > 0.3) {
+      c.save(); c.globalCompositeOperation = "lighter";
+      P.slice(1).forEach(([x, y], i) => { const r = 14 * u, tw = 0.85 + 0.15 * Math.sin(t * 2.3 + i * 1.7); const gl = c.createRadialGradient(x + 5.8 * u, y - 16 * u, 0, x + 5.8 * u, y - 16 * u, r); gl.addColorStop(0, `rgba(255,190,110,${0.5 * tw * Math.max(NIGHT, 0.35 * WARM)})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(x + 5.8 * u - r, y - 16 * u - r, r * 2, r * 2); });
+      c.restore();
+    }
+    stairPts.push(P);
+  }
+
+  /* ---------- the chapel at the top of the hill ([hill] doves on its roof; [balloon] and sometimes a balloon on its cross) ---------- */
+  let chapelAt = null;
+  function chapel(c, far, t) {
+    const u = far.u, x = far.sx + 160 * u, y = far.gy - (hillFar(160) - 4) * u;
+    c.fillStyle = shade("#F4E9D8"); c.fillRect(x - 24 * u, y - 120 * u, 48 * u, 120 * u);
+    c.fillStyle = shade("#3E6E73"); c.beginPath(); c.arc(x, y - 120 * u, 24 * u, Math.PI, 0); c.fill();
+    c.fillStyle = shade("#D9A441"); c.fillRect(x - 1.5 * u, y - 168 * u, 3 * u, 26 * u); c.fillRect(x - 8 * u, y - 160 * u, 16 * u, 3 * u);
+    c.fillStyle = `rgba(255,214,130,${mix(0.6, 1, NIGHT)})`; c.beginPath(); c.arc(x, y - 88 * u, 9 * u, Math.PI, 0); c.rect(x - 9 * u, y - 88 * u, 18 * u, 18 * u); c.fill();
+    const onDome = (dx) => y - (120 + Math.sqrt(576 - dx * dx)) * u - 1.2 * u;
+    chapelAt = { x, y, u, cross: [x, y - 158.5 * u], dome: [x + 15 * u, onDome(15)] };
+    // three doves on the dome (one is away while it carries a balloon)
+    [[-16, 0.2], [-6, 1.4], [15, 2.6]].forEach(([dx, ph], i) => {
+      if (i === 2 && doveAway(t)) return;
+      const peck = !still() && Math.sin(t * 1.1 + ph * 3) > 0.93;
+      dove(c, x + dx * u, onDome(dx), u * 0.42, dx < 0 ? -1 : 1, t + ph, 0, true, peck);
+    });
+    if (BL.st === "stuck" || (BL.st === "rescue" && !balloonTaken(t))) stuckBalloon(c, t, stuckPos(t));
   }
 
   function stall(c, s, gx, gy, u, t) {
@@ -8675,25 +8854,21 @@ void main(){
 
   function drawTown(c, t) {
     const far = layer(0.32), mid = layer(0.14), near = layer(0);
-    hits = [];
+    hits = []; stairPts = [];
     c.clearRect(0, 0, W, H);
-    // the far slope, with houses climbing it, a chapel and trees
-    hill(c, hillFar, sx, far.gy, far.u, landCol(1.25));
-    T.trees.forEach((o) => tree(c, o, sx, far.gy, far.u));
-    T.far.forEach((o) => house(c, o, sx, far.gy, far.u));
-    { // the chapel at the top
-      const u = far.u, x = sx + 160 * u, y = far.gy - (hillFar(160) - 4) * u;
-      c.fillStyle = shade("#F4E9D8"); c.fillRect(x - 24 * u, y - 120 * u, 48 * u, 120 * u);
-      c.fillStyle = shade("#3E6E73"); c.beginPath(); c.arc(x, y - 120 * u, 24 * u, Math.PI, 0); c.fill();
-      c.fillStyle = shade("#D9A441"); c.fillRect(x - 1.5 * u, y - 168 * u, 3 * u, 26 * u); c.fillRect(x - 8 * u, y - 160 * u, 16 * u, 3 * u);
-      c.fillStyle = `rgba(255,214,130,${mix(0.6, 1, NIGHT)})`; c.beginPath(); c.arc(x, y - 88 * u, 9 * u, Math.PI, 0); c.rect(x - 9 * u, y - 88 * u, 18 * u, 18 * u); c.fill();
-    }
+    // the far slope, with houses climbing it, a chapel and trees ([hill] and the stairs up to it)
+    hill(c, hillFar, far.sx, far.gy, far.u, landCol(1.25), mid.gy);
+    stairs(c, far, STAIR_FAR, t);
+    T.trees.forEach((o) => tree(c, o, far.sx, far.gy, far.u));
+    T.far.forEach((o) => house(c, o, far.sx, far.gy, far.u));
+    chapel(c, far, t);
     // the nearer slope
-    hill(c, hillMid, sx, mid.gy, mid.u, landCol(1.6));
-    T.mid.forEach((o) => house(c, o, sx, mid.gy, mid.u));
+    hill(c, hillMid, mid.sx, mid.gy, mid.u, landCol(1.6), near.gy - 44 * near.u);
+    stairs(c, mid, STAIR_MID, t);
+    T.mid.forEach((o) => house(c, o, mid.sx, mid.gy, mid.u));
 
     // the quay: a stone wall at the water, a promenade on top
-    const u = near.u, gy = near.gy;
+    const u = near.u, gy = near.gy, sx = near.sx;
     c.fillStyle = shade("#C9A27E"); c.fillRect(0, gy - 44 * u, W, 26 * u);
     c.fillStyle = shade("#8E6E5A"); c.fillRect(0, gy - 18 * u, W, 18 * u);
     c.strokeStyle = "rgba(0,0,0,.18)"; c.lineWidth = Math.max(1, u);
@@ -8797,11 +8972,16 @@ void main(){
   const puff = (() => { const c = doc.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d"), r = x.createRadialGradient(64, 64, 0, 64, 64, 64); r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(0.5, "rgba(255,255,255,.45)"); r.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = r; x.fillRect(0, 0, 128, 128); return c; })();
   const tinted = doc.createElement("canvas"); tinted.width = tinted.height = 128; const tg = tinted.getContext("2d");
   let tintKey = "";
-  function drawFog(t, amt) {
-    if (amt < 0.004) return;
+  // [hill] the mist's color for the hour (shared by the ride's mist and the climb's)
+  const mistKey = () => {
     const col = NIGHT > 0.5 ? [196, 194, 232] : DAY > 0.5 ? [240, 246, 252] : [255, 232, 226];
     const c = [mix(col[0], 255, WARM * 0.3) | 0, mix(col[1], 214, WARM * 0.3) | 0, mix(col[2], 180, WARM * 0.3) | 0], key = c.join();
     if (key !== tintKey) { tintKey = key; tg.clearRect(0, 0, 128, 128); tg.drawImage(puff, 0, 0); tg.globalCompositeOperation = "source-in"; tg.fillStyle = `rgb(${key})`; tg.fillRect(0, 0, 128, 128); tg.globalCompositeOperation = "source-over"; }
+    return key;
+  };
+  function drawFog(t, amt) {
+    if (amt < 0.004) return;
+    const key = mistKey();
     // a haze across the coast, under the puffs
     const hy = horizonY(), hz = g.createLinearGradient(0, hy - H * 0.38, 0, hy + H * 0.22);
     hz.addColorStop(0, `rgba(${key},0)`); hz.addColorStop(0.55, `rgba(${key},${0.72 * amt})`); hz.addColorStop(1, `rgba(${key},0)`);
@@ -8814,6 +8994,22 @@ void main(){
       const x = sx + ((f.x + f.v * t) * part) * L.u, y = L.gy - f.y * L.u;
       g.globalAlpha = clamp(f.a * amt * (1 - smooth(W * 1.2, W * 2.2, s)));
       g.drawImage(tinted, x - s, y - s * 0.55, s * 2, s * 1.1);
+    }
+    g.globalAlpha = 1;
+  }
+
+  // [hill] the climb's own mist: soft and close; it sinks past the eye on the way up (and rises past it on the way down)
+  const VR = rng(53), VP = Array.from({ length: 16 }, () => ({ x: VR(), y: VR(), s: 0.35 + VR() * 0.45, v: 0.5 + VR() * 0.8, a: 0.4 + VR() * 0.5 }));
+  function drawVeil(t, amt) {
+    if (amt < 0.004) return;
+    const key = mistKey(), M2 = Math.max(W, H);
+    // at night the mist is the night's own: a dim violet with the town's glow in it, not a pale flash
+    const [r0, g0, b0] = key.split(",").map(Number), n = 0.62 * NIGHT;
+    g.fillStyle = `rgba(${mix(r0, 52, n) | 0},${mix(g0, 46, n) | 0},${mix(b0, 92, n) | 0},${0.74 * amt})`; g.fillRect(0, 0, W, H);
+    g.globalAlpha = 1;
+    for (const f of VP) {
+      const s = f.s * M2, x = (f.x * 1.2 - 0.1) * W + Math.sin(t * 0.2 + f.v * 5) * W * 0.02, y = ((((f.y + q * f.v * 1.6) % 1.3) + 1.3) % 1.3 - 0.15) * H;
+      g.globalAlpha = clamp(f.a * amt * (1 - 0.45 * NIGHT)); g.drawImage(tinted, x - s, y - s * 0.6, s * 2, s * 1.2);
     }
     g.globalAlpha = 1;
   }
@@ -8888,6 +9084,793 @@ void main(){
     hero.style.setProperty("--jr-tail", (clamp(s.x - clamp(s.x, bw / 2 + 12, W - bw / 2 - 12), -bw / 2 + 24, bw / 2 - 24)).toFixed(1) + "px");
   }
 
+  /* ---------- [balloon] a balloon gets away from the girl, and someone brings it back ---------- */
+  // She walks into view as the boat arrives. A little later her highest balloon slips away, rises, and its string catches
+  // on the chapel's cross. A touch on it (or its button) sends a dove from the dome, and the next time the kite, to bring
+  // it down to her hand. From the hill, one of the bell's doves takes it all the way down to her.
+  ARMS.reach = (t) => [-0.28, 0.15, 2.95 + Math.sin(t * 4.5) * 0.07, 0.04];
+  ARMS.steer = (t) => [-0.62, 0.95, 2.05 + Math.sin(t * 3.8) * 0.22, 0.45];
+  const GIRL = P0.walkers.find((w) => w.type === "balloon");
+  const ESC = 4.8, DOVE_GIVE = 4.4, DOVE_END = 6.4, KITE_GIVE = 5.2, KITE_END = 7.4, FETCH = 4.6, FETCH_END = 6.8;
+  const BL = { st: "free", t0: -99, by: "dove", armS: 0, lastS: -99, homeS: 0, hintS: -99, count: 0, slips: 0, hand: null, at: null, seen: false };
+  const balloonBtn = doc.getElementById("jr-balloon");
+  const nowS = () => performance.now() / 1000;
+  const wrapX = (x) => ((((x + 700) % 1400) + 1400) % 1400) - 700;
+  const qb = (a, b, c3, k) => (1 - k) * (1 - k) * a + 2 * (1 - k) * k * b + k * k * c3; // a point along a quadratic curve
+  let kiteTail = null, kiteBank = 0;
+
+  // when the boat arrives she is walking into view (a little before the middle, toward it)
+  function placeGirl() {
+    if (!GIRL || BL.st !== "free") return;
+    const mob = W / H < 0.9, uA = H * 0.00026 * Math.min(1, Math.sqrt(Math.max(0.35, W / H) / 1.2)) * (mob ? 1.5 : 1) * D0 / D1;
+    const x0 = -Math.sign(GIRL.v) * Math.min((0.4 * W) / 2 / uA, 240); // well inside the view (with still motion she stays there)
+    GIRL.x = x0 - GIRL.v * (clock + (still() ? 0 : RIDE)); GIRL.stop = null; // (with still motion the clock stands still too)
+  }
+  function storyArm() { BL.armS = nowS(); BL.seen = false; }
+  function storyTick() {
+    const s = nowS(), a = clock - BL.t0;
+    // (it happens at most three times a visit to the water, a while apart: the second time the kite helps, when it can)
+    if (BL.st === "free") { if (state === "town" && q === 0 && cam.town > 0.95 && BL.seen && BL.slips < 3 && s - BL.armS > 5.5 && s - BL.lastS > 80) slip(); }
+    else if (BL.st === "escaping") { if (still() || a >= ESC) caught(); }
+    else if (BL.st === "rescue") { if (still() || a >= (BL.by === "kite" ? KITE_GIVE : DOVE_GIVE)) given(); }
+    else if (BL.st === "fetched") { if (still() || a >= FETCH) given(); }
+    else if (BL.st === "home" && s - BL.homeS > 2.8) walkOn();
+  }
+  function slip() {
+    if (!GIRL) return;
+    GIRL.stop = wrapX(GIRL.x + GIRL.v * clock); GIRL.L.jump = clock;
+    BL.st = "escaping"; BL.t0 = clock; BL.lastS = nowS(); BL.slips++;
+    sSlip(BL.hand ? BL.hand[0] : W / 2);
+    say("אוי! אחד הבלונים של הילדה ברח לה.");
+    if (still()) caught();
+  }
+  function caught() { BL.st = "stuck"; BL.hintS = nowS(); say("הבלון נתקע על הצלב של הכנסייה. אפשר לעזור לה להחזיר אותו."); }
+  // the kite goes only where it can fetch it and stay under the top bar
+  const kiteFits = () => { if (!chapelAt || !BL.at) return false; const S = stuckPos(clock); return S[1] + 8.6 * S[2] - Math.cos(BANK) * 62 * BL.at[2] - 44 > 84; };
+  function rescue() {
+    if (BL.st !== "stuck") return;
+    if (state === "hill") { fetch(); return; }
+    if (state !== "town") return;
+    BL.by = BL.count % 2 && kiteFits() ? "kite" : "dove"; BL.st = "rescue"; BL.t0 = clock; BL.hintS = -99;
+    const x = chapelAt ? chapelAt.dome[0] : W / 2;
+    if (BL.by === "dove") { sFlap(x, 6, 0.8); setTimeout(() => sCoo(x), 700); say("יונה לבנה עפה מכיפת הכנסייה אל הבלון."); }
+    else { if (audio()) { const t = ac.currentTime + 0.01, d = bus(0.4, 0.8, 0.3); swish(d, t, 700, 2200, 0.05, 1.1, 0.8); } say("העפיפון יוצא לעזור: הוא עף אל המגדל להביא את הבלון."); }
+    if (still()) given();
+  }
+  // from the hill: one of the doves takes it down to her
+  function fetch(quiet) {
+    if (BL.st !== "stuck") return;
+    BL.by = "hill"; BL.st = "fetched"; BL.t0 = clock; BL.hintS = -99;
+    sFlap(hillGeo ? hillGeo.tx : W * 0.8, 6, 0.9);
+    if (!quiet) say("אחת היונים לקחה את הבלון ועפה איתו למטה, אל הילדה.");
+    if (still()) given();
+  }
+  function given() {
+    BL.st = "home"; BL.homeS = nowS() + (BL.by === "hill" ? 1.2 : 0); BL.count++;
+    if (GIRL) GIRL.L.jump = clock;
+    sCheer(BL.hand ? BL.hand[0] : W / 2); setTimeout(sWarm, 180);
+    say(BL.by === "hill" ? "למטה על המזח, הבלון חזר לילדה." : "הבלון חזר לילדה, והיא קופצת משמחה.");
+  }
+  function walkOn() {
+    BL.st = "free";
+    if (GIRL && GIRL.stop != null) { GIRL.x = GIRL.stop - GIRL.v * clock; GIRL.stop = null; }
+  }
+
+  // one balloon: its string either hangs loose or runs to `tie`
+  function oneBalloon(c, bx, by, s, col, t, tie) {
+    const ky = by + 8.6 * s;
+    c.strokeStyle = "rgba(255,255,255,.65)"; c.lineWidth = Math.max(0.7, 0.55 * s); c.beginPath(); c.moveTo(bx, ky);
+    if (tie) c.quadraticCurveTo((bx + tie[0]) / 2 + Math.sin(t * 2.2) * 2 * s, (ky + tie[1]) / 2 + 3 * s, tie[0], tie[1]);
+    else c.bezierCurveTo(bx + Math.sin(t * 3) * 4 * s, ky + 10 * s, bx - Math.sin(t * 3 + 1) * 4 * s, ky + 18 * s, bx + Math.sin(t * 2.4) * 3 * s, ky + 26 * s);
+    c.stroke();
+    c.fillStyle = tint(col); c.beginPath(); c.ellipse(bx, by, 6.5 * s, 8 * s, 0, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(bx - 1.3 * s, ky); c.lineTo(bx + 1.3 * s, ky); c.lineTo(bx, ky - 1.6 * s); c.closePath(); c.fill();
+    c.fillStyle = "rgba(255,255,255,.45)"; c.beginPath(); c.ellipse(bx - 2 * s, by - 3 * s, 1.6 * s, 2.6 * s, -0.4, 0, Math.PI * 2); c.fill();
+  }
+  // a white dove: perched (a peck now and then) or flying (wings beating); its beak is at (8.7, -2.5) in its own units
+  function dove(c, x, y, s, f, t, flap, perched, peck) {
+    c.save(); c.translate(x, y); c.scale(s * f, s);
+    c.fillStyle = tint("#BDB6AD"); c.beginPath(); c.moveTo(-3.6, -0.4); c.lineTo(-10, perched ? 1.6 : -1.2); c.lineTo(-9.4, perched ? 3.4 : 1.8); c.closePath(); c.fill();
+    c.fillStyle = tint("#F7F4EE"); c.beginPath(); c.ellipse(0, 0, 5.6, 3.3, perched ? -0.12 : 0, 0, Math.PI * 2); c.fill();
+    const hx = peck ? 6.2 : 5, hy = peck ? -0.4 : -2.8;
+    c.beginPath(); c.arc(hx, hy, 2.3, 0, Math.PI * 2); c.fill();
+    c.fillStyle = tint("#E8A17A"); c.beginPath(); c.moveTo(hx + 1.9, hy - 0.4); c.lineTo(hx + 3.7, hy + 0.3); c.lineTo(hx + 1.9, hy + 0.8); c.closePath(); c.fill();
+    c.fillStyle = "#1B1B26"; c.beginPath(); c.arc(hx + 0.7, hy - 0.5, 0.48, 0, Math.PI * 2); c.fill();
+    c.fillStyle = tint("#E4DED5"); c.beginPath();
+    if (perched) c.ellipse(-0.9, -0.5, 4.3, 2.3, -0.16, 0, Math.PI * 2);
+    else { const w = still() ? 0.6 : Math.sin(t * 21) * (flap || 1); c.moveTo(-2.6, -0.6); c.quadraticCurveTo(-1.2, -6.5 * w - 1, 3.2, -9.5 * w); c.quadraticCurveTo(2.2, -1.6 * w, 2.6, -0.6); c.closePath(); }
+    c.fill();
+    if (perched) { c.strokeStyle = tint("#C97B6A"); c.lineWidth = 0.7; c.beginPath(); c.moveTo(-0.6, 3); c.lineTo(-0.6, 4.3); c.moveTo(1, 3); c.lineTo(1, 4.3); c.stroke(); }
+    c.restore();
+  }
+
+  // where the caught balloon floats: tied to the left arm of the cross, blown a little aside, a bit larger than life
+  function stuckPos(t) {
+    const [cx, cy] = chapelAt.cross, uf = chapelAt.u, s = uf * 1.45, tipX = cx - 7.5 * uf;
+    const wob = still() ? 0 : Math.sin(t * 1.6) * 1.4 * uf, bob = still() ? 0 : Math.sin(t * 1.25) * 0.8 * uf;
+    return [tipX - 13 * s + wob, cy - 5 * s + bob, s, tipX, cy];
+  }
+  function stuckBalloon(c, t, S) {
+    const [bx, by, s, tx2, ty2] = S;
+    // a soft glow that breathes, so it is easy to find
+    if (BL.st === "stuck") {
+      const a = still() ? 0.3 : 0.22 + 0.16 * Math.sin(t * 2.6);
+      c.save(); c.globalCompositeOperation = "lighter";
+      const gl = c.createRadialGradient(bx, by, 0, bx, by, 18 * s); gl.addColorStop(0, `rgba(255,236,190,${a})`); gl.addColorStop(1, "rgba(255,236,190,0)");
+      c.fillStyle = gl; c.fillRect(bx - 18 * s, by - 18 * s, 36 * s, 36 * s); c.restore();
+    }
+    oneBalloon(c, bx, by, s, GIRL.cols[2], t, [tx2, ty2]);
+    c.strokeStyle = "rgba(255,255,255,.75)"; c.lineWidth = Math.max(0.7, 0.5 * s); c.beginPath(); c.ellipse(tx2 + 1.2 * s, ty2, 1.4 * s, 1.8 * s, 0, 0, Math.PI * 2); c.stroke();
+  }
+  const doveAway = (t) => BL.by === "dove" && (BL.st === "rescue" || (BL.st === "home" && t - BL.t0 < DOVE_END));
+  const balloonTaken = (t) => t - BL.t0 >= (BL.by === "kite" ? 2.2 : 1.35);
+
+  // she stands still while one is away, looking up at the tower and reaching for it; then she cheers
+  function balloonGirl(c, w, X, Y, u, t, base, extras) {
+    const st = BL.st, a = t - BL.t0;
+    const waiting = st === "escaping" || st === "stuck" || st === "rescue" || st === "fetched";
+    let P, hold = 1, cols = w.cols;
+    if (waiting) {
+      const cx = chapelAt ? chapelAt.cross[0] : X + 100;
+      const glad = st === "rescue" && a > (BL.by === "kite" ? KITE_GIVE : DOVE_GIVE) - 1.5;
+      if (st === "stuck" && !still() && t - w.L.jump > 3.2 && Math.sin(t * 1.7) > 0.97) w.L.jump = t; // a hop toward it now and then
+      P = { face: cx >= X ? 1 : -1, arms: glad ? "cheer" : "reach", mood: glad ? 0.9 : -0.35, headDown: -0.55, tilt: -0.1 };
+      cols = w.cols.slice(0, 2); hold = glad ? 1 : 0;
+    } else if (st === "home") P = { face: base.face, arms: "cheer", mood: 0.98 };
+    else P = { ...base, arms: "balloon", mood: 0.8 };
+    const r = fig(c, X, Y, u, w.L, P, t);
+    BL.hand = r.hands[1]; BL.at = [X, Y, u];
+    if (st === "free") BL.seen = X > W * 0.2 && X < W * 0.8;
+    extras.push(() => balloons(c, r.hands[hold], u, t, cols));
+  }
+
+  // the dove's errand: out to the knot, a tug, then down to her hand with the string in its beak, then home to the dome
+  function doveErrand(c, t, a, u) {
+    const S = stuckPos(t), D = chapelAt.dome, uf = chapelAt.u, K = [S[0], S[1] + 8.6 * S[2]];
+    const sF = uf * 0.42 * 1.35, sN = u * 0.42 * 1.15, give = [BL.hand[0] + 9 * u, BL.hand[1] - 18 * u];
+    let x, y, s, f, flap = 1, beak = null;
+    if (a < 0.9) { const k = ease(a / 0.9); f = K[0] < D[0] ? -1 : 1; s = sF; x = mix(D[0], K[0] - f * 8.7 * s, k); y = mix(D[1], K[1] + 2.5 * s, k) - Math.sin(k * Math.PI) * 16 * uf; }
+    else if (a < 1.35) { f = K[0] < D[0] ? -1 : 1; s = sF; flap = 0.6; x = K[0] - f * 8.7 * s + Math.sin(a * 17) * 1.4 * uf; y = K[1] + 2.5 * s + Math.cos(a * 17) * 0.9 * uf; }
+    else if (a < DOVE_GIVE) {
+      const k = ease((a - 1.35) / (DOVE_GIVE - 1.35));
+      beak = [qb(K[0], mix(K[0], give[0], 0.85), give[0], k), qb(K[1], mix(K[1], give[1], 0.15), give[1], k)];
+      s = mix(sF, sN, k); f = give[0] < K[0] ? -1 : 1; x = beak[0] - f * 8.7 * s; y = beak[1] + 2.5 * s;
+      const bs = mix(S[2], u, k);
+      oneBalloon(c, beak[0] - f * 4 * bs, beak[1] - 30 * bs, bs, GIRL.cols[2], t, beak);
+    } else {
+      const k = ease(clamp((a - DOVE_GIVE) / (DOVE_END - DOVE_GIVE)));
+      f = D[0] < give[0] ? -1 : 1; s = mix(sN, uf * 0.42, k); x = mix(give[0], D[0], k); y = mix(give[1], D[1], k) - Math.sin(k * Math.PI) * 50 * u;
+    }
+    dove(c, x, y, s, f, t, flap, false);
+  }
+  // the kite banks hard so its tail sweeps the knot, swoops down to her with the balloon on its tail, and goes back up
+  const BANK = 1.25;
+  const kiteBusy = (t) => BL.by === "kite" && (BL.st === "rescue" || (BL.st === "home" && t - BL.t0 < KITE_END));
+  function kiteAt(t, tx0, ty0) {
+    const a = t - BL.t0, S = stuckPos(t), u = BL.at ? BL.at[2] : 1, ox = Math.sin(BANK) * 62 * u, oy = Math.cos(BANK) * 62 * u;
+    const hook = [S[0] + ox, S[1] + 8.6 * S[2] - oy];
+    const give = BL.hand ? [BL.hand[0] + 9 * u + ox, BL.hand[1] - 22 * u - oy] : hook;
+    let x, y;
+    if (a < 1.8) { const k = ease(a / 1.8); x = mix(tx0, hook[0], k); y = mix(ty0, hook[1], k) - Math.sin(k * Math.PI) * 30 * u; kiteBank = BANK * k; }
+    else if (a < 2.2) { x = hook[0] + Math.sin(a * 14) * 2 * u; y = hook[1]; kiteBank = BANK; }
+    else if (a < KITE_GIVE) { const k = ease((a - 2.2) / (KITE_GIVE - 2.2)); x = qb(hook[0], mix(hook[0], give[0], 0.7), give[0], k); y = qb(hook[1], mix(hook[1], give[1], 0.2) - 40 * u, give[1], k); kiteBank = BANK; }
+    else { const k = ease(clamp((a - KITE_GIVE) / (KITE_END - KITE_GIVE))); x = mix(give[0], tx0, k); y = mix(give[1], ty0, k); kiteBank = BANK * (1 - k); }
+    return [x, y];
+  }
+  // drawn over everyone: the balloon on its way up, and whoever brings it back
+  function storyDraw(c, t, near) {
+    if (!GIRL || !chapelAt || !BL.hand) return;
+    const a = t - BL.t0, u = near.u;
+    if (BL.st === "escaping") {
+      const S = stuckPos(t), k = ease(clamp(a / ESC)), [hx, hy] = BL.hand;
+      const x0 = hx + 9 * u, y0 = hy - 48 * u, cxp = mix(x0, S[0], 0.1), cyp = mix(S[1], y0, 0.25);
+      oneBalloon(c, qb(x0, cxp, S[0], k) + (still() ? 0 : Math.sin(t * 3.1) * 5 * u * (1 - k)), qb(y0, cyp, S[1], k), mix(u, S[2], k), GIRL.cols[2], t, null);
+    } else if (BL.by === "dove" && (BL.st === "rescue" || (BL.st === "home" && a < DOVE_END))) doveErrand(c, t, a, u);
+    else if (BL.by === "kite" && BL.st === "rescue" && a >= 2.2 && kiteTail) {
+      const S = stuckPos(t), bs = mix(S[2], u, clamp((a - 2.2) / (KITE_GIVE - 2.2)));
+      oneBalloon(c, kiteTail[0] - 4 * bs, kiteTail[1] - 30 * bs, bs, GIRL.cols[2], t, kiteTail);
+    }
+  }
+
+  /* ---------- [hill] the climb: up the old stairs to the chapel on the hill, and down again ---------- */
+  // The eye walks up between the houses toward the chapel (the town drops away below), passes through a soft mist at the
+  // top, and comes out on the terrace beside the bell tower, looking out over the roofs and the lake. Down is the same
+  // way back, ending in the boat again.
+  const CLIMB = 7, DESCEND = 5.5;
+  let q = 0, qDir = 0, hv = 0, sitK = 0, sitting = false, lastStep = 0, stepN = 0, upAt = Infinity;
+  const upBtn = doc.getElementById("jr-up"), bellBtn = doc.getElementById("jr-bell"), benchBtn = doc.getElementById("jr-bench");
+  const muse = doc.getElementById("jr-muse"), subEl = doc.getElementById("jr-sub"), benchLbl = benchBtn.querySelector(".jr-spot__label");
+  const TOWN_TXT = [title.textContent, subEl ? subEl.textContent : ""];
+  const HILL_TXT = ["על גבעת הכנסייה", "פעמון ישן, יונים לבנות, וספסל אחד מול האגם."];
+  const setBack = (label) => { backBtn.setAttribute("aria-label", label); backBtn.title = label; const s = backBtn.querySelector(".jr-home__label"); if (s) s.textContent = label; };
+  function townWords() { title.textContent = TOWN_TXT[0]; if (subEl) subEl.textContent = TOWN_TXT[1]; setBack("חזרה לאגם"); ui.classList.remove("is-light"); hero.classList.remove("jr-hill"); }
+  function townOff() { upBtn.classList.remove("is-on"); upBtn.hidden = true; balloonBtn.hidden = true; balloonBtn.classList.remove("is-hint"); }
+  function climb() {
+    if (state !== "town") return;
+    state = "climbing"; qDir = 1;
+    closeTalk(); sadBtn.hidden = true; townOff();
+    ui.classList.remove("is-on"); setTimeout(() => { if (!ui.classList.contains("is-on")) ui.hidden = true; }, 900);
+    backBtn.classList.remove("is-on", "is-hint"); setTimeout(() => { if (state === "climbing") backBtn.hidden = true; }, 600);
+    townVol(0.28, 3);
+    say("עולים במדרגות אל הכנסייה שבראש הגבעה.");
+  }
+  function arriveHill() {
+    state = "hill"; q = 1; qDir = 0;
+    title.textContent = HILL_TXT[0]; if (subEl) subEl.textContent = HILL_TXT[1];
+    hero.classList.add("jr-hill"); ui.classList.toggle("is-light", NIGHT < 0.4); // over a bright sky, dark ink on light glass
+    ui.hidden = false; requestAnimationFrame(() => { if (state === "hill") ui.classList.add("is-on"); });
+    setBack("חזרה לעיירה");
+    backBtn.hidden = false; requestAnimationFrame(() => { if (state === "hill") backBtn.classList.add("is-on", "is-hint"); });
+    setTimeout(() => { if (state === "hill") title.focus({ preventScroll: true }); }, 400);
+    setTimeout(() => backBtn.classList.remove("is-hint"), 4200);
+    setTimeout(() => { if (state === "hill") { ui.classList.remove("is-on"); setTimeout(() => { if (!ui.classList.contains("is-on")) ui.hidden = true; }, 900); } }, 5200);
+    // then, for a moment, the names of the things to touch
+    setTimeout(() => {
+      if (state !== "hill" || sitting) return;
+      bellBtn.classList.add("is-hint"); benchBtn.classList.add("is-hint"); if (BL.st === "stuck") BL.hintS = nowS();
+      setTimeout(() => { bellBtn.classList.remove("is-hint"); benchBtn.classList.remove("is-hint"); }, 4600);
+    }, 5600);
+    sHillOn(); nextCoo = clock + 4;
+    say("הגעתם לגבעת הכנסייה. אפשר לצלצל בפעמון, או לשבת על הספסל מול האגם.");
+  }
+  function descend() {
+    if (state !== "hill") return;
+    standUp(true);
+    state = "descending"; qDir = -1; hero.classList.remove("jr-hill");
+    ui.classList.remove("is-on"); setTimeout(() => { if (!ui.classList.contains("is-on")) ui.hidden = true; }, 900);
+    bellBtn.hidden = true; benchBtn.hidden = true; bellBtn.classList.remove("is-hint"); benchBtn.classList.remove("is-hint"); balloonBtn.hidden = true;
+    backBtn.classList.remove("is-on", "is-hint"); setTimeout(() => { if (state === "descending") backBtn.hidden = true; }, 600);
+    townVol(1, 3);
+    say("יורדים במדרגות, חזרה לעיירה.");
+  }
+  function backInTown() {
+    state = "town"; q = 0; qDir = 0;
+    townWords(); storyArm(); upAt = nowS();
+    backBtn.hidden = false; requestAnimationFrame(() => { if (state === "town") backBtn.classList.add("is-on"); });
+    say("חזרתם לעיירה.");
+    // the keyboard lands where it left: on the way up
+    setTimeout(() => { const a = doc.activeElement; if (state === "town" && (!a || a === doc.body || a.hidden || !hero.contains(a))) upBtn.focus({ preventScroll: true }); }, 350);
+  }
+  const SLOW = (window.__CB_TEST && window.__CB_TEST.climbSlow) || 1; // tests may watch the climb in slow motion
+  function climbTick(now, dt) {
+    const dur = (still() ? 1.6 : state === "climbing" ? CLIMB : DESCEND) * SLOW;
+    q = clamp(q + (qDir * dt) / dur);
+    if (state === "climbing" && q > 0.55) sHillOn();
+    if (state === "descending" && q < 0.6) sHillOff();
+    if (q > 0.02 && q < 0.48 && !still() && now - lastStep > (state === "climbing" ? 0.46 : 0.38)) { lastStep = now; sStep(stepN++); }
+    if (state === "climbing" && q >= 1) arriveHill();
+    else if (state === "descending" && q <= 0) backInTown();
+  }
+  function hillReset() {
+    q = 0; qDir = 0; hv = 0; climbFwd = climbLift = climbShift = 0;
+    standUp(true); sitK = 0; muse.classList.remove("is-on");
+    townOff(); bellBtn.hidden = true; benchBtn.hidden = true; bellBtn.classList.remove("is-hint"); benchBtn.classList.remove("is-hint");
+    townWords(); sHillOff();
+    BELL.t0 = -99; DV.forEach((d) => { d.fly = -99; d.hop = -99; });
+    // the girl's story starts over the next time
+    BL.st = "free"; BL.lastS = -99; BL.slips = 0; BL.seen = false; if (GIRL) GIRL.stop = null;
+  }
+
+  /* ---------- [hill] the view from the chapel: the lake, the town below, the bell tower, the doves and a bench ---------- */
+  const hillCam = () => (W / H < 0.9 ? { pan: 0, dip: -0.03 } : { pan: 0.06, dip: -0.06 });
+  const h3 = (a, b, s) => { let n = (Math.imul(a | 0, 374761393) + Math.imul(b | 0, 668265263) + Math.imul(s | 0, 1274126177)) | 0; n = Math.imul(n ^ (n >>> 13), 1103515245); n ^= n >>> 16; return (n >>> 0) / 4294967296; };
+  let HAZE = [200, 205, 225], hillGeo = null, bellAt = null, benchAt = null, crossAt = null, girlTiny = null, towerAt = null;
+  const shadeA = (h, k = 1) => { const [r, gg, b] = hex2(h), n = mix(1, 0.58, NIGHT) * k; return [clamp(r * n * mix(1, 1.12, WARM) + 10 * WARM, 0, 255), clamp(gg * n, 0, 255), clamp(b * n * mix(1, 0.86, WARM), 0, 255)]; };
+  // the same grade as everything else, and a little haze for what is far below
+  const hz = (h, a, k = 1) => { const c1 = shadeA(h, k); return `rgb(${mix(c1[0], HAZE[0], a) | 0},${mix(c1[1], HAZE[1], a) | 0},${mix(c1[2], HAZE[2], a) | 0})`; };
+  function hillLay() {
+    const port = W / H < 0.9, hy = horizonY(), arr = 1 - hv, sit = ease(sitK);
+    const yP0 = H * (port ? 0.745 : 0.84);
+    const yP = yP0 + arr * H * 0.3 - sit * H * 0.035;                                   // the low wall at the terrace's edge
+    const yS = hy + (yP0 - hy) * (port ? 0.3 : 0.36) + arr * H * 0.05 - sit * H * 0.01;   // the shore far below
+    const TW = port ? W * 0.27 : clamp(W * 0.17, 190, 290), tx = W - TW * (port ? 0.34 : 0.42);
+    const tTop = H * (port ? 0.255 : 0.36) + arr * H * 0.32 - sit * H * 0.025;
+    const bw = port ? W * 0.52 : clamp(W * 0.22, 260, 380), bx = port ? Math.min(W * 0.46, tx - TW / 2 - bw / 2 - 8) : W * 0.44;
+    const bTop = H * (port ? 0.735 : 0.82) + arr * H * 0.34 + sit * H * 0.42;           // sitting, the bench drops out of view
+    return { port, hy, arr, sit, yP, yS, TW, tx, tTop, bw, bx, bTop };
+  }
+  function drawHill(c, t) {
+    const L = hillLay(); hillGeo = L;
+    HAZE = [mix(mix(234, 200, DAY), 54, NIGHT), mix(mix(198, 216, DAY), 56, NIGHT), mix(mix(192, 236, DAY), 100, NIGHT)];
+    hits = [];
+    c.clearRect(0, 0, W, H);
+    farBoat(c, L, t);
+    townBelow(c, L, t);
+    breathRing(c, t);
+    if (!L.port) cypress(c, L);
+    parapet(c, L, t);
+    perchDoves(c, L, t, true);
+    tower(c, L, t);
+    perchDoves(c, L, t, false);
+    lamp(c, L, t);
+    bench(c, L);
+    flyDoves(c, L, t);
+    hillErrand(c, L, t);
+  }
+
+  // the fishing boat, far out on the lake, its lantern lit at night
+  function farBoat(c, L, t) {
+    const k = 0.5 + 0.5 * Math.sin(t * 0.016 + 2), x = W * (0.14 + 0.62 * k), y = L.hy + (L.yS - L.hy) * 0.32, bl = H * 0.026, bh = H * 0.006;
+    c.fillStyle = hz("#2F6FA3", 0.4); c.beginPath(); c.moveTo(x - bl / 2, y - bh); c.lineTo(x + bl / 2, y - bh * 1.4); c.lineTo(x + bl * 0.4, y); c.lineTo(x - bl * 0.42, y); c.closePath(); c.fill();
+    c.fillStyle = hz("#F4F1EA", 0.4); c.fillRect(x - bl * 0.44, y - bh * 1.2, bl * 0.88, bh * 0.32);
+    c.fillStyle = hz("#3B2F2A", 0.4); c.fillRect(x - bl * 0.22, y - bh * 2.7, bh * 0.75, bh * 1.6); c.fillRect(x + bl * 0.06, y - bh * 2.2, bh * 0.75, bh * 1.1);
+    c.fillStyle = `rgba(255,214,140,${0.45 + 0.55 * NIGHT})`; c.fillRect(x + bl * 0.3, y - bh * 3.6, bh * 0.55, bh * 0.75);
+    if (NIGHT > 0.05) { c.save(); c.globalCompositeOperation = "lighter"; const gl = c.createRadialGradient(x + bl * 0.32, y - bh * 3.2, 0, x + bl * 0.32, y - bh * 3.2, bl * 0.7); gl.addColorStop(0, `rgba(255,190,110,${0.45 * NIGHT})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(x - bl, y - bl * 1.4, bl * 2.4, bl * 2); c.restore(); }
+  }
+
+  // the town far below: the promenade at the water with its people, and the roofs stepping up the slope toward you
+  function townBelow(c, L, t) {
+    const { yS, yP, port } = L, rs0 = H * 0.00044, rsN = H * (port ? 0.00105 : 0.00095), fs = rs0 * 1.15;
+    const px = Math.max(rs0, (W * 0.42) / 700), X = (x) => W / 2 - x * px; // seen from up here, the promenade runs the other way
+    const shore = (x) => yS + H * 0.005 * Math.sin((x / W) * 6.3 + 0.6), prom = H * 0.013;
+    // the slope under the houses
+    const gr = c.createLinearGradient(0, yS, 0, yP + H * 0.05), slope = (k, a) => { const m2 = landCol(k).match(/\d+/g).map(Number); return `rgb(${mix(m2[0], HAZE[0], a) | 0},${mix(m2[1], HAZE[1], a) | 0},${mix(m2[2], HAZE[2], a) | 0})`; };
+    gr.addColorStop(0, slope(1.15, 0.12 + 0.3 * NIGHT)); gr.addColorStop(1, slope(0.95, 0.12 * NIGHT));
+    c.fillStyle = gr; c.beginPath(); c.moveTo(-2, shore(0)); for (let x = 0; x <= W + 40; x += 40) c.lineTo(x, shore(x)); c.lineTo(W + 2, H + 2); c.lineTo(-2, H + 2); c.closePath(); c.fill();
+    // the pier, the boats at their moorings, and the boat that brought you, tied at the end of the pier
+    const pX = X(-435), py0 = shore(pX), plen = H * 0.05, pw = 26 * rs0;
+    c.fillStyle = hz("#7A5640", 0.3); c.beginPath(); c.moveTo(pX - pw * 1.4, py0 + 2); c.lineTo(pX + pw * 1.4, py0 + 2); c.lineTo(pX + pw, py0 - plen); c.lineTo(pX - pw, py0 - plen); c.closePath(); c.fill();
+    c.strokeStyle = "rgba(40,25,20,.28)"; c.lineWidth = 1;
+    for (let i = 1; i < 7; i++) { const yy = py0 - (plen * i) / 7, hw = mix(pw * 1.4, pw, i / 7); c.beginPath(); c.moveTo(pX - hw, yy); c.lineTo(pX + hw, yy); c.stroke(); }
+    T.boats.forEach((b, i) => {
+      const bx2 = X(b.x), by2 = shore(bx2) - H * 0.016 + (still() ? 0 : Math.sin(t * 1.4 + i) * 0.7), s = rs0 * 1.3;
+      c.fillStyle = hz(b.c, 0.3); c.beginPath(); c.moveTo(bx2 - 40 * s, by2 - 6 * s); c.lineTo(bx2 + 40 * s, by2 - 6 * s); c.lineTo(bx2 + 28 * s, by2 + 6 * s); c.lineTo(bx2 - 28 * s, by2 + 6 * s); c.closePath(); c.fill();
+      c.fillStyle = hz("#5B3A2E", 0.3); c.fillRect(bx2 - 1.2 * s, by2 - 70 * s, 2.4 * s, 64 * s);
+      c.fillStyle = hz("#FFF4E0", 0.3); c.beginPath(); c.moveTo(bx2 + 2 * s, by2 - 66 * s); c.lineTo(bx2 + 28 * s, by2 - 12 * s); c.lineTo(bx2 + 2 * s, by2 - 12 * s); c.closePath(); c.fill();
+    });
+    { const ox = pX + pw * 1.9, oy = py0 - plen - H * 0.004, s = rs0 * 1.5;
+      c.fillStyle = hz("#6B4636", 0.25); c.beginPath(); c.moveTo(ox - 30 * s, oy - 5 * s); c.quadraticCurveTo(ox, oy + 9 * s, ox + 30 * s, oy - 7 * s); c.lineTo(ox + 24 * s, oy - 9 * s); c.quadraticCurveTo(ox, oy - 2 * s, ox - 26 * s, oy - 8 * s); c.closePath(); c.fill();
+      c.fillStyle = hz("#3A241B", 0.25); c.fillRect(ox + 22 * s, oy - 24 * s, 2 * s, 16 * s);
+      c.fillStyle = `rgba(255,214,140,${0.6 + 0.4 * NIGHT})`; c.fillRect(ox + 20.5 * s, oy - 29 * s, 5 * s, 6 * s);
+      if (NIGHT > 0.05) { c.save(); c.globalCompositeOperation = "lighter"; const gl = c.createRadialGradient(ox + 23 * s, oy - 26 * s, 0, ox + 23 * s, oy - 26 * s, 34 * s); gl.addColorStop(0, `rgba(255,190,110,${0.5 * NIGHT})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(ox - 12 * s, oy - 60 * s, 70 * s, 70 * s); c.restore(); } }
+    // the promenade, its lamps, and the string of lights between them
+    c.fillStyle = hz("#C9A27E", 0.25); c.beginPath(); c.moveTo(-2, shore(0)); for (let x = 0; x <= W + 40; x += 40) c.lineTo(x, shore(x));
+    for (let x = W + 40; x >= -40; x -= 40) c.lineTo(x, shore(x) + prom); c.closePath(); c.fill();
+    c.strokeStyle = hz("#8E6E5A", 0.25); c.lineWidth = Math.max(1, H * 0.0018); c.beginPath(); c.moveTo(-2, shore(0)); for (let x = 0; x <= W + 40; x += 40) c.lineTo(x, shore(x)); c.stroke();
+    const LAMPS = [-660, -420, -240, -60, 60, 240, 420, 660], lh = 70 * rs0;
+    const lampXY = LAMPS.map((lx) => { const x = X(lx); return [x, shore(x) + 1 - lh]; });
+    c.strokeStyle = hz("#3B2F4A", 0.25); c.lineWidth = Math.max(1, rs0 * 2.4);
+    lampXY.forEach(([x, y]) => { c.beginPath(); c.moveTo(x, y); c.lineTo(x, y + lh); c.stroke(); });
+    for (let i = 0; i < lampXY.length - 1; i++) {
+      const [x0, y0] = lampXY[i], [x1] = lampXY[i + 1], sag = 12 * rs0;
+      c.strokeStyle = hz("#3B2F4A", 0.3); c.lineWidth = 1; c.beginPath(); c.moveTo(x0, y0); c.quadraticCurveTo((x0 + x1) / 2, y0 + sag * 2, x1, y0); c.stroke();
+      for (let j = 1; j < 8; j++) { const f = j / 8, x = mix(x0, x1, f), y = y0 + 4 * f * (1 - f) * sag; const tw = still() ? 1 : 0.75 + 0.25 * Math.sin(t * 3 + i * 3 + j); c.fillStyle = `rgba(255,${200 + 40 * tw | 0},120,${0.55 + 0.4 * NIGHT})`; c.beginPath(); c.arc(x, y + 1.5 * rs0, Math.max(0.9, 2.6 * rs0), 0, Math.PI * 2); c.fill(); }
+    }
+    c.save(); c.globalCompositeOperation = "lighter";
+    lampXY.forEach(([x, y]) => { const r = 40 * rs0; const gl = c.createRadialGradient(x, y, 0, x, y, r); gl.addColorStop(0, `rgba(255,190,110,${0.3 + 0.4 * NIGHT})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(x - r, y - r, r * 2, r * 2); });
+    c.restore();
+    lampXY.forEach(([x, y]) => { c.fillStyle = "#FFD58A"; c.beginPath(); c.arc(x, y, Math.max(1.2, 3.2 * rs0), 0, Math.PI * 2); c.fill(); });
+    // the market's awnings
+    T.stalls.forEach((s0) => {
+      const x = X(s0.x), y = shore(x) + prom * 0.55, w = 92 * rs0, n = 6;
+      for (let i = 0; i < n; i++) { c.fillStyle = hz(i % 2 ? "#FFF4E0" : s0.c, 0.2); c.fillRect(x - w / 2 + (i * w) / n, y - 34 * rs0, w / n + 0.5, 12 * rs0); }
+      c.fillStyle = hz("#8A5A3C", 0.2); c.fillRect(x - w / 2, y - 12 * rs0, w, 10 * rs0);
+    });
+    // everyone there, small and busy
+    const foot = (x) => shore(x) + prom * 0.75, mood = 0.6;
+    P0.vendors.forEach((v) => { const x = X(v.x); fig(c, x, foot(x) - 4 * rs0, fs, v.L, { arms: "idle", mood }, t); });
+    P0.walkers.forEach((w) => {
+      const xw = w.stop != null ? w.stop : wrapX(w.x + w.v * t), x = X(xw), y = foot(x), f = -Math.sign(w.v);
+      const h = w.L.kid ? 31 : 46 * w.L.tall, ph = (Math.abs(w.v) * t) / (h * 0.95) * Math.PI * 2;
+      const base = { mode: w.type === "runner" ? "run" : "walk", run: w.type === "runner", ph, face: f, mood };
+      if (w.type === "balloon") {
+        const waiting = BL.st === "escaping" || BL.st === "stuck" || BL.st === "rescue" || BL.st === "fetched";
+        const glad = BL.st === "fetched" && t - BL.t0 > FETCH - 1.4;
+        const P = waiting ? { arms: glad ? "cheer" : "reach", mood: glad ? 0.9 : -0.35, headDown: -0.55 } : BL.st === "home" ? { arms: "cheer", mood: 0.98 } : { ...base, arms: "balloon", mood: 0.8 };
+        const r = fig(c, x, y, fs, w.L, P, t);
+        girlTiny = r.hands[1];
+        balloons(c, r.hands[waiting && !glad ? 0 : 1], fs, t, waiting ? w.cols.slice(0, 2) : w.cols);
+      } else if (w.type === "couple") { fig(c, x - f * 20 * px, y, fs, w.L, base, t); fig(c, x + f * 20 * px, y, fs, w.L2, { ...base, ph: ph + 0.4 }, t); }
+      else if (w.type === "dog") { const r = fig(c, x, y, fs, w.L, { ...base, arms: "leash" }, t); dog(c, x + f * 30 * fs, y, fs, f, w.dogC, t, ph, r.hands[1]); }
+      else fig(c, x, y, fs, w.L, base, t);
+    });
+    // the ring of children (and him, if he joined them), and the one who sits at the edge of the quay if he still does
+    const dancers = [...P0.ring]; if (S.phase === "dancing") dancers.push(S.L);
+    dancers.forEach((L2, i) => { const a = t * 1.35 + (i * Math.PI * 2) / dancers.length, x = X(20 + Math.cos(a) * ringR); fig(c, x, foot(x) - Math.sin(a) * 3 * rs0, fs, L2, { mode: "hop", ph: t * 7 + i * 1.3, arms: "hands", mood: 0.95, lift: still() ? 0 : Math.abs(Math.sin(t * 3.5 + i)) * 3 }, t); });
+    if (S.phase !== "dancing" && S.phase !== "joining") { const x = X(S.x); fig(c, x, shore(x) + prom * 0.2, fs, S.L, { sit: true, mood: S.mood, gray: S.gray, headDown: S.hd, hunch: S.hunch, arms: S.hd > 0.55 ? "chin" : "knees" }, t);
+      if (S.rain > 0.1) { c.fillStyle = tint("#8E96A8"); c.globalAlpha = S.rain; [[-5, 0, 5], [0, -3, 6], [5, 0, 5]].forEach(([dx, dy, rr]) => { c.beginPath(); c.arc(x + dx * fs, shore(x) - 52 * fs + dy * fs, rr * fs, 0, Math.PI * 2); c.fill(); }); c.globalAlpha = 1; } }
+    // the kite, now below you
+    { const kx = X(250), r = fig(c, kx, foot(kx), fs, P0.kiter, { arms: "kite", face: -1, mood: 0.9 }, t); kite(c, r.hands[1], X(360) + Math.sin(t * 0.8) * 8 * fs, foot(kx) - (150 + Math.sin(t * 1.1) * 8) * fs, fs, t); }
+    // the gardens and the rows of roofs hold still: drawn once into their own canvas, and again only when the
+    // view moves (arriving, sitting down) or the light changes
+    const key = [W, H, dpr, yS | 0, yP | 0, (NIGHT * 40) | 0, (DAY * 40) | 0, (WARM * 40) | 0].join();
+    if (key !== rowsKey) {
+      rowsKey = key;
+      if (rowsCv.width !== off2.width || rowsCv.height !== off2.height) { rowsCv.width = off2.width; rowsCv.height = off2.height; }
+      rg.setTransform(dpr, 0, 0, dpr, 0, 0); rg.clearRect(0, 0, W, H);
+      roofRows(rg, L, rs0, rsN, shore, prom);
+    }
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(rowsCv, 0, 0); c.restore();
+  }
+  const rowsCv = doc.createElement("canvas"), rg = rowsCv.getContext("2d");
+  let rowsKey = "";
+  function roofRows(c, L, rs0, rsN, shore, prom) {
+    const { yS, yP, port } = L;
+    // gardens behind the promenade: trees of all sizes and greens, in clumps, with a gap here and there
+    const GREENS = ["#5E9A5A", "#4E7F52", "#6FA36A", "#3F6E4E"];
+    for (let j = -60; j <= 60; j++) {
+      const x = W / 2 + j * 26 * rs0 * 1.6 + (h3(9, j, 1) - 0.5) * 30 * rs0, k = 0.5 + h3(9, j, 4) * 0.7, y = shore(x) + prom + 30 * rs0 + 40 * k * rs0 * 0.5 + h3(9, j, 2) * 12 * rs0;
+      if (x < -30 || x > W + 30 || h3(9, j, 3) < 0.3) continue;
+      treeTop(c, x, y, rs0 * k, h3(9, j, 5) < 0.12 && k < 0.8, 0.3 + 0.12 * NIGHT, GREENS[(h3(9, j, 6) * GREENS.length) | 0]);
+    }
+    // the rows of roofs, from the water up toward the terrace, with the stairs climbing through them
+    const ROWS = 6, rowY = (i) => mix(yS + H * 0.056, yP + H * 0.012, Math.pow((i + 1) / ROWS, 1.08)), rowS = (i) => mix(rs0 * 1.08, rsN, (i + 1) / ROWS);
+    const sX = (i) => W * (port ? 0.6 : 0.69) + (i & 1 ? 1 : -1) * W * (port ? 0.045 : 0.022);
+    let prev = [sX(-1), shore(sX(-1)) + prom];
+    for (let i = 0; i < ROWS; i++) {
+      const y = rowY(i), rs = rowS(i), haze = 0.34 * (1 - (i + 1) / ROWS), cur = [sX(i), y - 3 * rs];
+      stairSeg(c, prev, cur, rs, haze); prev = cur;
+      const span = 76 * rs, off3 = (i & 1) * 0.5, j0 = Math.floor((-W / 2 - 160) / span) - 1, j1 = Math.ceil((W / 2 + 160) / span) + 1;
+      for (let j = j0; j <= j1; j++) {
+        const r0 = h3(i, j, 1), x = W / 2 + (j + off3) * span + (h3(i, j, 2) - 0.5) * span * 0.45, w = (44 + h3(i, j, 4) * 38) * rs;
+        if (Math.abs(x - cur[0]) < w / 2 + 14 * rs || r0 < 0.08) continue; // the stairs pass here, or a gap
+        if (r0 < 0.22) { treeTop(c, x, y, rs, h3(i, j, 3) < 0.45, haze); continue; }
+        roofHouse(c, x, y, w, (28 + h3(i, j, 5) * 26) * rs, WALLS[(h3(i, j, 6) * WALLS.length) | 0], ROOFS[(h3(i, j, 7) * ROOFS.length) | 0], h3(i, j, 8) < 0.22, h3(i, j, 9), 1 + ((h3(i, j, 3) * 3) | 0), haze, rs);
+      }
+    }
+    stairSeg(c, prev, [sX(ROWS), yP + 4], rowS(ROWS - 1) * 1.1, 0);
+  }
+  function roofHouse(c, x, y, w, h, wall, roof, flat, lit, win, haze, rs) {
+    c.fillStyle = hz(wall, haze); c.fillRect(x - w / 2, y - h, w, h);
+    c.fillStyle = "rgba(20,10,30,.13)"; c.fillRect(x + w * 0.22, y - h, w * 0.28, h);
+    const d = w * 0.36;
+    if (flat) {
+      c.fillStyle = hz("#E9DCC9", haze, 0.92); c.fillRect(x - w * 0.52, y - h - d * 0.5, w * 1.04, d * 0.5 + 1);
+      c.fillStyle = hz(roof, haze, 0.85); c.fillRect(x - w * 0.52, y - h - d * 0.5, w * 1.04, Math.max(1, 2.2 * rs));
+      if (lit > 0.6) { c.fillStyle = hz("#5E9A5A", haze); c.beginPath(); c.arc(x + w * 0.3, y - h - d * 0.25, 4 * rs, 0, Math.PI * 2); c.fill(); }
+    } else {
+      c.fillStyle = hz(roof, haze); c.beginPath(); c.moveTo(x - w * 0.56, y - h + 0.5); c.lineTo(x + w * 0.56, y - h + 0.5); c.lineTo(x + w * 0.45, y - h - d); c.lineTo(x - w * 0.45, y - h - d); c.closePath(); c.fill();
+      c.fillStyle = "rgba(255,255,255,.13)"; c.beginPath(); c.moveTo(x - w * 0.5, y - h - d * 0.5); c.lineTo(x + w * 0.5, y - h - d * 0.5); c.lineTo(x + w * 0.45, y - h - d); c.lineTo(x - w * 0.45, y - h - d); c.closePath(); c.fill();
+    }
+    for (let k = 0; k < win; k++) {
+      const wx = x - w * 0.32 + (k + 0.5) * ((w * 0.64) / win) - w * 0.06, wy = y - h * 0.7;
+      c.fillStyle = lit > 0.3 ? `rgba(255,${200 + 30 * WARM | 0},120,${mix(0.45, 1, NIGHT) * (1 - haze * 0.6)})` : hz("#4B3B5A", haze);
+      c.fillRect(wx, wy, w * 0.12, h * 0.3);
+    }
+  }
+  function treeTop(c, x, y, rs, cyp, haze, green = "#5E9A5A") {
+    if (cyp) { c.fillStyle = hz("#2F6B4F", haze); c.beginPath(); c.ellipse(x, y - 34 * rs, 9 * rs, 34 * rs, 0, 0, Math.PI * 2); c.fill(); return; }
+    c.fillStyle = hz(green, haze); c.beginPath(); c.arc(x, y - 18 * rs, 22 * rs, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "rgba(255,255,255,.1)"; c.beginPath(); c.arc(x - 6 * rs, y - 24 * rs, 11 * rs, 0, Math.PI * 2); c.fill();
+  }
+  function stairSeg(c, a, b, rs, haze) {
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, nx = -(b[1] - a[1]) / len, ny = (b[0] - a[0]) / len;
+    c.lineCap = "round"; c.strokeStyle = hz("#8E6E5A", haze, 0.9); c.lineWidth = 16 * rs; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+    c.strokeStyle = hz("#E9DCC9", haze); c.lineWidth = 12 * rs; c.stroke();
+    c.strokeStyle = "rgba(90,60,40,.3)"; c.lineWidth = Math.max(0.8, rs * 1.2);
+    for (let k = 1, n = Math.floor(len / (6 * rs)); k < n; k++) { const x = mix(a[0], b[0], k / n), y = mix(a[1], b[1], k / n); c.beginPath(); c.moveTo(x - nx * 5 * rs, y - ny * 5 * rs); c.lineTo(x + nx * 5 * rs, y + ny * 5 * rs); c.stroke(); }
+    // a lantern at the turn
+    c.fillStyle = hz("#3B2F4A", haze); c.fillRect(b[0] + 8.2 * rs, b[1] - 13 * rs, 1.6 * rs, 13 * rs);
+    c.fillStyle = `rgba(255,214,140,${mix(0.6, 1, NIGHT)})`; c.beginPath(); c.arc(b[0] + 9 * rs, b[1] - 14 * rs, 2.8 * rs, 0, Math.PI * 2); c.fill();
+    if (NIGHT > 0.05) { c.save(); c.globalCompositeOperation = "lighter"; const r = 16 * rs, gl = c.createRadialGradient(b[0] + 9 * rs, b[1] - 14 * rs, 0, b[0] + 9 * rs, b[1] - 14 * rs, r); gl.addColorStop(0, `rgba(255,190,110,${0.45 * NIGHT})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(b[0] + 9 * rs - r, b[1] - 14 * rs - r, r * 2, r * 2); c.restore(); }
+  }
+
+  // while sitting, a soft ring around the moon (or the sun) grows with the breath in and shrinks with the breath out
+  let breathT = -99;
+  function breathRing(c, t) {
+    const a = t - breathT;
+    if (a < 0 || a > 8.6) return;
+    const br = a < 4 ? ease(a / 4) : 1 - ease((a - 4) / 4), fade = Math.min(1, a / 0.6) * (1 - smooth(8, 8.6, a));
+    const m = moonAt(), r = m.r * (1.25 + 0.75 * br);
+    c.save(); c.globalCompositeOperation = "lighter";
+    const gl = c.createRadialGradient(m.x, m.y, r * 0.7, m.x, m.y, r);
+    gl.addColorStop(0, "rgba(255,240,220,0)"); gl.addColorStop(0.8, `rgba(255,240,220,${0.3 * fade})`); gl.addColorStop(1, "rgba(255,240,220,0)");
+    c.fillStyle = gl; c.beginPath(); c.arc(m.x, m.y, r, 0, Math.PI * 2); c.fill(); c.restore();
+  }
+  function cypress(c, L) {
+    const x = W * 0.035, base = H + 4, top = H * 0.1 + L.arr * H * 0.32 - L.sit * H * 0.02, w = W * 0.034, mid = top + (base - top) * 0.32;
+    c.fillStyle = shade("#24493A"); c.beginPath(); c.moveTo(x, top); c.quadraticCurveTo(x + w * 1.25, mid, x + w * 0.9, base); c.lineTo(x - w * 0.9, base); c.quadraticCurveTo(x - w * 1.25, mid, x, top); c.fill();
+    c.fillStyle = "rgba(255,255,255,.07)"; c.beginPath(); c.moveTo(x, top + 6); c.quadraticCurveTo(x - w * 1.1, mid, x - w * 0.8, base); c.lineTo(x - w * 0.2, base); c.quadraticCurveTo(x - w * 0.4, mid, x, top + 6); c.fill();
+  }
+  function parapet(c, L, t) {
+    const { yP, port } = L, ph = H * (port ? 0.045 : 0.05), cop = H * 0.012, fy = yP + ph;
+    // the terrace's stones, from the wall to your feet
+    const fg = c.createLinearGradient(0, fy, 0, H); fg.addColorStop(0, shade("#C8B08A")); fg.addColorStop(1, shade("#A48D6C"));
+    c.fillStyle = fg; c.fillRect(0, fy, W, Math.max(0, H - fy) + 4);
+    c.strokeStyle = "rgba(80,55,40,.16)"; c.lineWidth = 1;
+    for (let k = -8; k <= 8; k++) { c.beginPath(); c.moveTo(W / 2 + k * W * 0.05, fy); c.lineTo(W / 2 + k * W * 0.2, H + 4); c.stroke(); }
+    for (let k = 1; k < 5; k++) { const y = fy + (H - fy) * (k / 5) ** 1.6; c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+    // the low wall, its stones and its coping
+    c.fillStyle = shade("#D3BC97"); c.fillRect(0, yP, W, ph);
+    c.strokeStyle = "rgba(90,60,40,.2)"; c.lineWidth = Math.max(1, H * 0.0012);
+    const sw = Math.max(34, W * 0.045), rh = (ph - cop * 0.6) / 2;
+    for (let r = 0; r < 2; r++) { const yy = yP + cop * 0.6 + rh * r; c.beginPath(); c.moveTo(0, yy); c.lineTo(W, yy); c.stroke(); for (let x = r ? sw / 2 : 0; x < W; x += sw) { c.beginPath(); c.moveTo(x, yy); c.lineTo(x, yy + rh); c.stroke(); } }
+    c.fillStyle = shade("#E9DCC4"); c.fillRect(0, yP - cop * 0.4, W, cop);
+    c.fillStyle = "rgba(0,0,0,.12)"; c.fillRect(0, yP + cop * 0.6, W, Math.max(1, cop * 0.25));
+    // geraniums in pots on the wall
+    (port ? [0.075] : [0.2, 0.585]).forEach((f, i) => pot(c, W * f, yP - cop * 0.4, H * (port ? 0.022 : 0.026), i));
+  }
+  function pot(c, x, y, s, i) {
+    c.fillStyle = shade("#B5523B"); c.beginPath(); c.moveTo(x - s * 0.55, y - s * 0.8); c.lineTo(x + s * 0.55, y - s * 0.8); c.lineTo(x + s * 0.4, y); c.lineTo(x - s * 0.4, y); c.closePath(); c.fill();
+    c.fillStyle = shade("#3E7A4A"); for (let k = 0; k < 5; k++) { c.beginPath(); c.ellipse(x + (k - 2) * s * 0.28, y - s * 0.98, s * 0.3, s * 0.2, (k - 2) * 0.4, 0, Math.PI * 2); c.fill(); }
+    c.fillStyle = shade(i ? "#E85D75" : "#E63946"); for (let k = 0; k < 4; k++) { c.beginPath(); c.arc(x + (k - 1.5) * s * 0.3, y - s * 1.25 - (k % 2) * s * 0.18, s * 0.16, 0, Math.PI * 2); c.fill(); }
+  }
+  // the bell tower beside the terrace: whitewashed, a teal dome with a gold cross, and the bell in its arch
+  const BELL = { t0: -99, n: 0 };
+  function tower(c, L, t) {
+    const { TW, tx, tTop } = L, x0 = tx - TW / 2;
+    c.fillStyle = shade("#F4E9D8"); c.fillRect(x0, tTop, TW, H - tTop + 4);
+    c.fillStyle = "rgba(60,40,70,.11)"; c.fillRect(x0, tTop, TW * 0.2, H - tTop + 4);
+    const cy = tTop - TW * 0.02;
+    c.fillStyle = shade("#E2D2B8"); c.fillRect(x0 - TW * 0.07, cy - TW * 0.05, TW * 1.14, TW * 0.07);
+    // the belfry: an arch, dark inside, a beam across, and the bell
+    const aw = TW * 0.5, ah = TW * 0.74, ax = tx, ay = tTop + TW * 0.2;
+    c.fillStyle = shade("#2B2238"); c.beginPath(); c.moveTo(ax - aw / 2, ay + ah); c.lineTo(ax - aw / 2, ay + aw / 2); c.arc(ax, ay + aw / 2, aw / 2, Math.PI, 0); c.lineTo(ax + aw / 2, ay + ah); c.closePath(); c.fill();
+    if (NIGHT > 0.05) { c.save(); c.globalCompositeOperation = "lighter"; const gl = c.createRadialGradient(ax, ay + ah * 0.7, 0, ax, ay + ah * 0.7, aw * 0.8); gl.addColorStop(0, `rgba(255,190,110,${0.28 * NIGHT})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(ax - aw, ay, aw * 2, ah); c.restore(); }
+    c.fillStyle = shade("#5B3A2E"); c.fillRect(ax - aw * 0.47, ay + aw * 0.36, aw * 0.94, aw * 0.07);
+    const a = clock - BELL.t0, sw = still() || a > 7 ? 0 : 0.4 * Math.sin((a * Math.PI) / 0.8) * Math.exp(-a / 2.4) * smooth(0, 0.12, a);
+    bellShape(c, ax, ay + aw * 0.43, aw * 0.62, sw);
+    c.fillStyle = shade("#E2D2B8"); c.fillRect(ax - aw / 2 - TW * 0.05, ay + ah, aw + TW * 0.1, TW * 0.045);
+    // a small window lower down, warm at night
+    const wy = ay + ah + TW * 0.42, ww = TW * 0.16;
+    c.fillStyle = `rgba(255,214,130,${mix(0.5, 1, NIGHT)})`; c.beginPath(); c.arc(tx, wy, ww / 2, Math.PI, 0); c.rect(tx - ww / 2, wy, ww, ww * 1.2); c.fill();
+    // the dome and its cross
+    const dr = TW * 0.48, dy = cy - TW * 0.05;
+    c.fillStyle = shade("#3E6E73"); c.beginPath(); c.arc(tx, dy, dr, Math.PI, 0); c.fill();
+    c.fillStyle = "rgba(255,255,255,.13)"; c.beginPath(); c.moveTo(tx - dr * 0.2, dy); c.arc(tx - dr * 0.2, dy, dr * 0.66, Math.PI * 1.08, Math.PI * 1.5); c.closePath(); c.fill();
+    c.strokeStyle = "rgba(0,0,0,.12)"; c.lineWidth = Math.max(1, TW * 0.006);
+    [-0.5, 0, 0.5].forEach((k) => { c.beginPath(); c.moveTo(tx + k * dr, dy); c.quadraticCurveTo(tx + k * dr * 0.6, dy - dr * 0.75, tx, dy - dr); c.stroke(); });
+    const cw = TW * 0.062, ch = dr * 1.08, cTop = dy - dr - ch * 0.9, armY = cTop + ch * 0.3;
+    c.fillStyle = shade("#D9A441"); c.fillRect(tx - cw / 2, cTop, cw, ch); c.fillRect(tx - dr * 0.33, armY - cw / 2, dr * 0.66, cw);
+    crossAt = { tip: [tx - dr * 0.33, armY], s: (TW / 48) * 0.72 };
+    bellAt = { x: ax, y: ay + ah * 0.5, w: aw, h: ah };
+    towerAt = { cy, dy, dr, ax, aw, sill: ay + ah };
+    if (BL.st === "stuck" || (BL.st === "fetched" && t - BL.t0 < 1.2)) stuckBalloon(c, t, stuckHill(t));
+    // after each stroke, a ring of sound goes out from the bell
+    if (a < 4.2 && !still()) [0.25, 1.05, 1.85, 2.65].forEach((s0, i) => {
+      const k = (a - s0) / 1.4;
+      if (k <= 0 || k >= 1) return;
+      c.strokeStyle = NIGHT > 0.5 ? `rgba(255,236,200,${0.42 * (1 - k) * (1 - i * 0.18)})` : `rgba(120,80,50,${0.3 * (1 - k) * (1 - i * 0.18)})`;
+      c.lineWidth = Math.max(1.5, TW * 0.01); c.beginPath(); c.arc(ax, ay + aw * 0.75, aw * (0.55 + k * 1.7), Math.PI * 0.62, Math.PI * 1.38); c.stroke();
+    });
+  }
+  function bellShape(c, x, y, bw, sw) {
+    const R = bw / 2, bh = bw * 0.95;
+    c.save(); c.translate(x, y); c.rotate(sw);
+    c.fillStyle = shade("#5B3A2E"); c.fillRect(-R * 0.3, -bh * 0.1, R * 0.6, bh * 0.12);
+    const gr = c.createLinearGradient(-R, 0, R, 0); gr.addColorStop(0, shade("#E2B45C")); gr.addColorStop(0.35, shade("#C9973F")); gr.addColorStop(1, shade("#8A6224"));
+    c.fillStyle = gr; c.beginPath();
+    c.moveTo(-R * 0.42, 0); c.bezierCurveTo(-R * 0.52, bh * 0.38, -R * 0.68, bh * 0.72, -R * 0.98, bh * 0.88);
+    c.lineTo(-R * 1.06, bh * 0.98); c.quadraticCurveTo(0, bh * 1.06, R * 1.06, bh * 0.98); c.lineTo(R * 0.98, bh * 0.88);
+    c.bezierCurveTo(R * 0.68, bh * 0.72, R * 0.52, bh * 0.38, R * 0.42, 0); c.quadraticCurveTo(0, -bh * 0.14, -R * 0.42, 0); c.closePath(); c.fill();
+    c.strokeStyle = "rgba(255,240,200,.35)"; c.lineWidth = Math.max(1, R * 0.05); c.beginPath(); c.moveTo(-R * 0.9, bh * 0.86); c.quadraticCurveTo(0, bh * 0.92, R * 0.9, bh * 0.86); c.stroke();
+    c.fillStyle = shade("#4A3A2A"); c.beginPath(); c.arc(-Math.sin(sw * 1.6) * R * 0.5, bh * 1.02, R * 0.13, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+  function stuckHill(t) {
+    const [tx2, ty2] = crossAt.tip, s = crossAt.s;
+    const wob = still() ? 0 : Math.sin(t * 1.6) * 1.2 * s, bob = still() ? 0 : Math.sin(t * 1.25) * 0.7 * s;
+    return [tx2 - 13 * s + wob, ty2 - 5 * s + bob, s, tx2, ty2];
+  }
+  function lamp(c, L) {
+    const x = L.port ? W * 0.1 : L.bx - L.bw / 2 - W * 0.04, foot = H + 4, top = L.yP - H * (L.port ? 0.17 : 0.26) + L.arr * H * 0.04;
+    const pw = Math.max(3, H * 0.005), hw = H * (L.port ? 0.019 : 0.023);
+    c.fillStyle = shade("#3B2F4A"); c.fillRect(x - pw / 2, top, pw, foot - top);
+    c.beginPath(); c.moveTo(x - hw * 0.8, top - hw * 0.05); c.lineTo(x, top - hw * 0.75); c.lineTo(x + hw * 0.8, top - hw * 0.05); c.closePath(); c.fill();
+    const lit = Math.max(NIGHT, 0.35 * WARM);
+    c.fillStyle = `rgba(255,214,140,${mix(0.55, 1, lit)})`; c.fillRect(x - hw * 0.5, top - hw * 0.05, hw, hw * 1.15);
+    c.strokeStyle = shade("#3B2F4A"); c.lineWidth = Math.max(1, pw * 0.45); c.strokeRect(x - hw * 0.5, top - hw * 0.05, hw, hw * 1.15);
+    c.beginPath(); c.moveTo(x, top - hw * 0.05); c.lineTo(x, top + hw * 1.1); c.stroke();
+    if (lit > 0.05) { c.save(); c.globalCompositeOperation = "lighter"; const r = H * 0.13, gl = c.createRadialGradient(x, top + hw * 0.5, 0, x, top + hw * 0.5, r); gl.addColorStop(0, `rgba(255,190,110,${0.45 * lit})`); gl.addColorStop(1, "rgba(255,190,110,0)"); c.fillStyle = gl; c.fillRect(x - r, top - r, r * 2, r * 2); c.restore(); }
+  }
+  // the bench, seen from behind: three slats on an iron frame; sitting down, it drops out of view
+  function bench(c, L) {
+    const { bx: x, bTop: y } = L, w = L.bw * (1 + L.sit * 0.6);
+    if (y > H + 4) { benchAt = null; return; }
+    const bh = w * 0.2, legs = w * 0.36;
+    c.fillStyle = "rgba(30,20,20,.18)"; c.beginPath(); c.ellipse(x, y + legs, w * 0.56, w * 0.05, 0, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = shade("#2F2A3A"); c.lineCap = "round"; c.lineWidth = Math.max(2, w * 0.016);
+    [-1, 1].forEach((s) => {
+      const ex = x + s * w * 0.46;
+      c.beginPath(); c.moveTo(ex, y - w * 0.01); c.lineTo(ex, y + legs); c.stroke();
+      c.beginPath(); c.moveTo(ex, y + bh * 0.2); c.quadraticCurveTo(ex + s * w * 0.06, y + bh * 0.4, ex + s * w * 0.03, y + bh * 1.25); c.stroke();
+      c.beginPath(); c.moveTo(x + s * w * 0.4, y + bh * 1.2); c.lineTo(x + s * w * 0.39, y + legs * 0.92); c.stroke();
+    });
+    c.fillStyle = shade("#8A5C40"); c.fillRect(x - w * 0.47, y + bh * 1.12, w * 0.94, w * 0.035);
+    for (let k = 0; k < 3; k++) { const sy = y + k * bh * 0.36; c.fillStyle = shade("#9A6A4C"); c.fillRect(x - w * 0.47, sy, w * 0.94, bh * 0.26); c.fillStyle = shade("#B5835E"); c.fillRect(x - w * 0.47, sy, w * 0.94, bh * 0.07); }
+    benchAt = { x, y: y + legs * 0.5, w: w * 1.02, h: legs * 1.1 };
+  }
+
+  // the doves: four on the wall, two on the bell's sill, one on the cornice, one on the dome (that one fetches balloons)
+  const DV = [["par", 0], ["par", 1], ["par", 2], ["par", 3], ["sill", -0.32], ["sill", 0.3], ["corn", -0.53], ["dome", 0.4]]
+    .map(([at, f], i) => ({ at, f, face: i % 2 ? -1 : 1, fly: -99, hop: -99, ph: i * 1.37, dir: i % 2 ? 1 : -1, x: -99, y: -99 }));
+  const HERO_DOVE = 7, PAR = [[0.625, 0.66, 0.705, 0.755], [0.035, 0.15, 0.73, 0.758]];
+  let nextCoo = 0;
+  const doveS = (L) => H * (L.port ? 0.0021 : 0.0024);
+  const heroDoveOut = (t) => BL.by === "hill" && (BL.st === "fetched" || (BL.st === "home" && t - BL.t0 < FETCH_END));
+  function perch(d, L) {
+    const s = doveS(L);
+    if (d.at === "par") return [W * PAR[L.port ? 1 : 0][d.f], L.yP - H * 0.005 - 3.2 * s];
+    if (!towerAt) return [-99, -99];
+    if (d.at === "sill") return [towerAt.ax + d.f * towerAt.aw, towerAt.sill - 3.2 * s];
+    if (d.at === "corn") return [L.tx + d.f * L.TW, towerAt.cy - L.TW * 0.05 - 3.2 * s];
+    const dx = d.f * towerAt.dr;
+    return [L.tx + dx, towerAt.dy - Math.sqrt(towerAt.dr * towerAt.dr - dx * dx) - 3 * s];
+  }
+  // a dove's place now: perched, hopping, or out on the bell's loop over the town and the lake and back
+  function doveAt(d, L, t) {
+    const P = perch(d, L), s = doveS(L), a = t - d.fly, hp = t - d.hop;
+    if (a >= 0 && a < 9.6) {
+      const k = smooth(0.15, 1.4, a) * (1 - smooth(7.4, 9.6, a)), th = d.ph + d.dir * a * 0.92;
+      const lx = W * 0.5 + W * (L.port ? 0.42 : 0.34) * Math.sin(th), ly = L.hy - H * (L.port ? 0.05 : 0.08) + H * 0.05 * Math.cos(th) + Math.sin(a * 1.6 + d.ph) * H * 0.01;
+      const up = Math.sin(Math.PI * clamp(a / 1.4)) * H * 0.07 * (1 - k), depth = 0.62 + 0.3 * (0.5 + 0.5 * Math.cos(th));
+      return { x: mix(P[0], lx, k), y: mix(P[1], ly, k) - up, s: s * mix(1, depth, k), f: k > 0.5 ? (Math.cos(th) * d.dir >= 0 ? 1 : -1) : lx >= P[0] ? 1 : -1, fly: true };
+    }
+    if (hp >= 0 && hp < 1.5) { const k = Math.sin((Math.PI * hp) / 1.5); return { x: P[0] + k * s * 4 * d.face, y: P[1] - k * H * 0.035, s, f: d.face, fly: true }; }
+    return { x: P[0], y: P[1], s, f: d.face, fly: false };
+  }
+  function perchDoves(c, L, t, onWall) {
+    DV.forEach((d, i) => {
+      if ((d.at === "par") !== onWall || (i === HERO_DOVE && heroDoveOut(t))) return;
+      const st = doveAt(d, L, t); d.x = st.x; d.y = st.y;
+      if (st.fly) return;
+      const peck = !still() && Math.sin(t * 0.9 + d.ph * 2.3) > 0.94;
+      dove(c, st.x, st.y + (peck ? st.s * 0.6 : 0), st.s, st.f, t + d.ph, 0, true, peck);
+    });
+  }
+  function flyDoves(c, L, t) {
+    DV.forEach((d, i) => { if (i === HERO_DOVE && heroDoveOut(t)) return; const st = doveAt(d, L, t); if (st.fly) { d.x = st.x; d.y = st.y; dove(c, st.x, st.y, st.s, st.f, t + d.ph * 3, 1, false); } });
+  }
+  // from the hill: the dome's dove takes the balloon off the cross and carries it all the way down to her, small below
+  function hillErrand(c, L, t) {
+    if (BL.by !== "hill" || !crossAt || !GIRL) return;
+    const a = t - BL.t0;
+    if (!(BL.st === "fetched" || (BL.st === "home" && a < FETCH_END))) return;
+    const P = perch(DV[HERO_DOVE], L), s0 = doveS(L), S = stuckHill(t), K = [S[0], S[1] + 8.6 * S[2]];
+    const fs = H * 0.00044 * 1.15, G = girlTiny || [W / 2, L.yS], give = [G[0] + 9 * fs, G[1] - 18 * fs], sT = fs * 2.2;
+    let x, y, s, f, flap = 1;
+    if (a < 0.8) { const k = ease(a / 0.8); f = -1; s = s0; x = mix(P[0], K[0] + 8.7 * s, k); y = mix(P[1], K[1] + 2.5 * s, k) - Math.sin(k * Math.PI) * H * 0.03; }
+    else if (a < 1.2) { f = -1; s = s0; flap = 0.6; x = K[0] + 8.7 * s + Math.sin(a * 17) * 2; y = K[1] + 2.5 * s; }
+    else if (a < FETCH) {
+      const k = ease((a - 1.2) / (FETCH - 1.2)), beak = [qb(K[0], mix(K[0], give[0], 0.25), give[0], k), qb(K[1], mix(K[1], give[1], 0.85), give[1], k)];
+      s = mix(s0, sT, k); f = give[0] < K[0] ? -1 : 1; x = beak[0] - f * 8.7 * s; y = beak[1] + 2.5 * s;
+      const bs = mix(S[2], fs, k);
+      if (BL.st === "fetched") oneBalloon(c, beak[0] - f * 4 * bs, beak[1] - 30 * bs, bs, GIRL.cols[2], t, beak);
+    } else { const k = ease(clamp((a - FETCH) / (FETCH_END - FETCH))); f = P[0] > give[0] ? 1 : -1; s = mix(sT, s0, k); x = mix(give[0], P[0], k); y = mix(give[1], P[1], k) - Math.sin(k * Math.PI) * H * 0.1; }
+    dove(c, x, y, s, f, t, flap, false);
+  }
+
+  /* ---------- [hill] the bell, the bench, and a few quiet words ---------- */
+  function ringBell() {
+    if (state !== "hill" || (clock - BELL.t0 < 1.4 && !still())) return;
+    BELL.t0 = clock; BELL.n++;
+    [1, 0.78, 0.6, 0.44].forEach((k, i) => sBell(k, 0.25 + i * 0.8));
+    const fetching = BL.st === "stuck";
+    DV.forEach((d, i) => { if (i !== HERO_DOVE || !fetching) { d.fly = clock + 0.3 + (i % 4) * 0.07 + h3(i, BELL.n, 5) * 0.25; d.hop = -99; } });
+    setTimeout(() => sFlap(hillGeo ? hillGeo.tx : W * 0.8, 9, 1.1), 320);
+    bellBtn.classList.remove("is-hint");
+    if (fetching) { setTimeout(() => fetch(true), 600); say("הפעמון מצלצל, והיונים מתעופפות. אחת מהן עפה אל הבלון ולוקחת אותו למטה, אל הילדה."); }
+    else say("הפעמון מצלצל, והיונים מתעופפות מעל העיירה והאגם.");
+  }
+  const MUSE = {
+    night: ["שקט. רק את, האגם והכוכבים.", "כוכב נופל. מה היית מבקשת?"],
+    sunset: ["השמש יורדת לאט. אין לאן למהר.", "עוד רגע היא נוגעת במים."],
+    day: ["רוח קלה ואגם כחול. רגע רק בשבילך.", "לפעמים זה כל מה שצריך."],
+  };
+  let sitTimers = [], nextWish = 0;
+  const museSay = (s) => { muse.classList.remove("is-on"); sitTimers.push(setTimeout(() => { muse.textContent = s; muse.classList.add("is-on"); }, 500)); };
+  const wish = () => tapSky(W * (0.56 + Math.random() * 0.22), H * (0.08 + Math.random() * 0.1));
+  function sitDown() {
+    if (state !== "hill" || sitting) return;
+    sitting = true;
+    benchBtn.classList.add("is-sit"); benchBtn.classList.remove("is-hint"); bellBtn.classList.remove("is-hint");
+    benchBtn.setAttribute("aria-label", "לקום מהספסל"); benchLbl.textContent = "לקום מהספסל";
+    ui.classList.remove("is-on");
+    const kind = NIGHT > 0.5 ? "night" : DAY > 0.5 ? "day" : "sunset", words = MUSE[kind];
+    const at = (ms, f) => sitTimers.push(setTimeout(f, ms));
+    at(1400, () => museSay(words[0]));
+    at(6600, () => { museSay("שאיפה ארוכה..."); breathT = clock; sBreath(true); });
+    at(10600, () => { museSay("ונשיפה..."); sBreath(false); });
+    at(15000, () => { if (kind === "night") wish(); else { const m = moonAt(); tapBirds(m.x + W * 0.08, m.y + H * 0.06); } museSay(words[1]); });
+    at(21500, () => muse.classList.remove("is-on"));
+    nextWish = clock + 36;
+    say("ישבת על הספסל מול האגם.");
+  }
+  function standUp(quiet) {
+    if (!sitting) return;
+    sitting = false; sitTimers.forEach(clearTimeout); sitTimers = []; muse.classList.remove("is-on"); breathT = -99;
+    benchBtn.classList.remove("is-sit"); benchBtn.setAttribute("aria-label", "לשבת על הספסל מול האגם"); benchLbl.textContent = "לשבת על הספסל";
+    if (!quiet) say("קמת מהספסל.");
+  }
+  // the sound button quiets the town's and the hill's own sounds as well, and brings them back
+  function soundTick() {
+    if (!soundOn()) { if (townSnd) sTownOff(); if (hillSnd) sHillOff(); return; }
+    if (!townSnd && (state === "town" || state === "climbing" || state === "descending" || state === "hill")) { sTownOn(); if (townSnd && q > 0.3) townVol(0.28, 0.5); }
+    if (!hillSnd && state === "hill") sHillOn();
+  }
+  // now and then, by itself: a dove coos; sitting at night, another star falls
+  function hillTick() {
+    if (state !== "hill" || still()) return;
+    if (clock > nextCoo) { nextCoo = clock + 9 + Math.random() * 8; const d = DV[(Math.random() * DV.length) | 0]; if (clock - d.fly > 9.6) sCoo(d.x); }
+    if (sitting && NIGHT > 0.5 && clock > nextWish) { nextWish = clock + 18 + Math.random() * 9; wish(); }
+  }
+
+  /* ---------- [hill] [balloon] the buttons that ride on the drawing ---------- */
+  const spotK = new Map();
+  const setSpot = (el, x, y, w, h) => {
+    const k = `${x | 0},${y | 0},${w | 0},${h | 0}`;
+    if (spotK.get(el) === k) return;
+    spotK.set(el, k);
+    el.style.setProperty("--x", x.toFixed(0) + "px"); el.style.setProperty("--y", y.toFixed(0) + "px");
+    if (w != null) el.style.setProperty("--w", w.toFixed(0) + "px");
+    if (h != null) el.style.setProperty("--h", h.toFixed(0) + "px");
+    // a name that would run off the edge of the screen slides back in (its width is measured once per wording)
+    const lb = el.querySelector(".jr-spot__label");
+    if (lb && !el.classList.contains("is-sit")) {
+      let lw = labelW.get(lb);
+      if (!lw || lw[0] !== lb.textContent) { lw = [lb.textContent, lb.offsetWidth]; if (lw[1]) labelW.set(lb, lw); }
+      const half = lw[1] / 2 + 8;
+      el.style.setProperty("--lx", (Math.min(0, W - (x + half)) + Math.max(0, half - x)).toFixed(0) + "px");
+    }
+  };
+  const labelW = new Map();
+  function placeTown() {
+    const s = nowS(), inTown = state === "town" && q === 0 && cam.town > 0.95 && chapelAt;
+    if (inTown && s >= upAt) {
+      if (upBtn.hidden) { upBtn.hidden = false; requestAnimationFrame(() => upBtn.classList.add("is-on")); }
+      const w = upBtn.offsetWidth || 170;
+      setSpot(upBtn, clamp(chapelAt.x, w / 2 + 12, W - w / 2 - 12), chapelAt.y + 14);
+    } else if (!inTown && !upBtn.hidden) { upBtn.classList.remove("is-on"); upBtn.hidden = true; }
+    let bp = null;
+    if (BL.st === "stuck") { if (inTown) bp = stuckPos(clock); else if (state === "hill" && crossAt && hv > 0.98) bp = stuckHill(clock); }
+    if (bp) {
+      if (balloonBtn.hidden) balloonBtn.hidden = false;
+      const r = Math.max(44, 20 * bp[2]);
+      setSpot(balloonBtn, bp[0], bp[1], r, r * 1.15);
+      balloonBtn.classList.toggle("is-below", bp[1] < 150);
+      balloonBtn.classList.toggle("is-hint", s - BL.hintS < 5);
+    } else if (!balloonBtn.hidden) { balloonBtn.hidden = true; balloonBtn.classList.remove("is-hint"); }
+  }
+  function placeHill() {
+    if (state !== "hill" || !hillGeo || !bellAt) { if (!bellBtn.hidden) bellBtn.hidden = true; if (!benchBtn.hidden) benchBtn.hidden = true; return; }
+    if (bellBtn.hidden) bellBtn.hidden = false;
+    if (benchBtn.hidden) benchBtn.hidden = false;
+    setSpot(bellBtn, bellAt.x, bellAt.y, bellAt.w * 1.15, bellAt.h * 0.95);
+    if (!sitting && benchAt) setSpot(benchBtn, benchAt.x, benchAt.y, benchAt.w, benchAt.h);
+    // the quiet words: under the moon on a phone (clear of the tower), beside it on a wide screen;
+    // dark ink while the sky behind them is light (day, sunset), light ink at night
+    // (a setting sun sits on the horizon: then the words go above it, or to the top of the sky)
+    const m = moonAt(), L = hillGeo;
+    if (L.port) {
+      const r = L.tx - L.TW / 2 - 12, th = 66, below = m.y + m.r + 12, above = m.y - m.r - 12 - th;
+      setSpot(muse, (16 + r) / 2, below + th < L.hy - 6 || above < 78 ? below : above, r - 16, null);
+    } else setSpot(muse, W * 0.64, H * 0.16, Math.min(520, W * 0.4), null);
+    const light = NIGHT < 0.4;
+    if (muse.classList.contains("is-light") !== light) muse.classList.toggle("is-light", light);
+  }
+
+  /* ---------- [hill] [balloon] what a touch finds ---------- */
+  const segDist = (x, y, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy || 1, k = clamp(((x - a[0]) * dx + (y - a[1]) * dy) / l2); return Math.hypot(x - a[0] - k * dx, y - a[1] - k * dy); };
+  const chapelHit = (x, y) => {
+    if (!chapelAt) return false;
+    if (Math.abs(x - chapelAt.x) < 30 * chapelAt.u && y > chapelAt.y - 172 * chapelAt.u && y < chapelAt.y + 8 * chapelAt.u) return true;
+    const P = stairPts[0]; // the lanterned path up to it
+    return !!P && P.some((pt, i) => i > 0 && segDist(x, y, P[i - 1], pt) < 12);
+  };
+  const balloonHitTown = (x, y) => { if (!chapelAt) return false; const S = stuckPos(clock); return Math.hypot(x - S[0], y - S[1]) < Math.max(26, 14 * S[2]); };
+  const balloonHitHill = (x, y) => { if (!crossAt) return false; const S = stuckHill(clock); return Math.hypot(x - S[0], y - S[1]) < Math.max(26, 12 * S[2]); };
+  const doveNear = (x, y) => { let best = null, bd = Math.max(22, H * 0.03); DV.forEach((d) => { const dd = Math.hypot(d.x - x, d.y - y); if (dd < bd) { bd = dd; best = d; } }); return best; };
+  const skyHill = (x, y) => !!hillGeo && y < hillGeo.hy - H * 0.01 && x < hillGeo.tx - hillGeo.TW * 0.62;
+  function tapHill(e) {
+    const [x, y] = local(e);
+    if (BL.st === "stuck" && balloonHitHill(x, y)) { fetch(); return; }
+    const d = doveNear(x, y);
+    if (d && clock - d.fly > 9.6) { d.hop = clock; sFlap(x, 4, 0.7); if (Math.random() < 0.5) setTimeout(() => sCoo(x), 900); return; }
+    if (skyHill(x, y)) { if (DAY > 0.5) tapBirds(x, y); else tapSky(x, y); } // the sky answers here too
+  }
+  function hoverAt(e) {
+    const [x, y] = local(e);
+    let on = false;
+    if (state === "town") on = (BL.st === "stuck" && balloonHitTown(x, y)) || !!(sadScreen && Math.hypot(x - sadScreen.x, y - sadScreen.y) < sadScreen.r * 1.2) || chapelHit(x, y);
+    else if (state === "hill") on = (BL.st === "stuck" && balloonHitHill(x, y)) || !!doveNear(x, y) || skyHill(x, y);
+    hero.classList.toggle("jr-point", on);
+  }
+  upBtn.addEventListener("click", climb);
+  balloonBtn.addEventListener("click", (e) => { e.stopPropagation(); rescue(); });
+  bellBtn.addEventListener("click", ringBell);
+  benchBtn.addEventListener("click", () => (sitting ? standUp() : sitDown()));
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape" && sitting) { e.stopPropagation(); standUp(); benchBtn.focus({ preventScroll: true }); } }, true);
+
   /* ---------- the loop ---------- */
   let raf = 0, last = 0, clock = 0, drew = false, frameDt = 0.016;
   function frame(nowMs) {
@@ -8912,22 +9895,33 @@ void main(){
       if (state === "sailing" && p > 0.6) sTownOn();
       if (cam.speed > 0.35 && now - lastStroke > 1.7 && !still()) { lastStroke = now; sStroke(); }
     }
+    // [hill] up the stairs and down again; sitting down; the girl's balloon; a coo and a falling star now and then
+    if (state === "climbing" || state === "descending") climbTick(now, dt);
+    sitK = still() ? (sitting ? 1 : 0) : mix(sitK, sitting ? 1 : 0, 1 - Math.exp(-dt * 1.7));
+    storyTick(); hillTick(); if (on) soundTick();
     cam = camAt(p);
-    WARM = cam.warm;
-    fx.zoom = cam.zoom; fx.pan = cam.pan; fx.dip = cam.dip; fx.warm = cam.warm;
+    // [hill] the climb: up toward the chapel (ap); under the mist the view turns from the town to the lake below (sw)
+    const ap = ease(clamp(q / 0.56)), sw = smooth(0.48, 0.64, q), hc = hillCam();
+    hv = smooth(0.56, 1, q);
+    climbFwd = 0.9 * ap; climbShift = 160 * ap;
+    climbLift = 260 * ap + (still() ? 0 : Math.sin(q * 52) * 2.4 * smooth(0, 0.06, q) * (1 - smooth(0.36, 0.5, q)));
+    WARM = mix(cam.warm, 0.3, sw);
+    fx.zoom = mix(cam.zoom * (1 + 0.3 * ap), 1, sw); fx.pan = mix(cam.pan, hc.pan, sw); fx.dip = mix(cam.dip, hc.dip, sw); fx.warm = WARM;
     fx.travel += still() ? 0 : dt * cam.speed * 3.2 * Math.abs(dir || 0);
-    fx.roll = still() || p === 0 ? 0 : Math.sin(clock * 1.25) * 0.011 * (0.4 + cam.speed) + Math.sin(clock * 0.53) * 0.005;
+    fx.roll = still() || p === 0 ? 0 : (Math.sin(clock * 1.25) * 0.011 * (0.4 + cam.speed) + Math.sin(clock * 0.53) * 0.005) * (1 - smooth(0, 0.2, q));
     if (state !== "lake" && fx.halo > 0) fx.halo = Math.max(0, fx.halo - dt * 1.4);
     if (CB.seaKick) CB.seaKick();
 
     // draw: the fishing boat and birds on the lake, the town (whole, then faded in), the mist, our boat
-    const rise = state === "lake" ? 0 : ease(clamp(p / 0.08));
+    // [hill] and the view from the hill, faded in the same way under the climb's own mist
+    const rise = state === "lake" ? 0 : ease(clamp(p / 0.08)) * (1 - smooth(0, 0.24, q));
     const lakeA = state === "lake" ? 1 : 1 - smooth(0, 0.12, p);
-    const drawing = heroSeen && (lakeA > 0.01 || cam.town > 0.003 || cam.fog > 0.004 || rise > 0.001);
+    const townA = cam.town * (1 - sw), hillA = sw, veil = smooth(0.34, 0.5, q) * (1 - smooth(0.62, 0.8, q));
+    const drawing = heroSeen && (lakeA > 0.01 || townA > 0.003 || cam.fog > 0.004 || rise > 0.001 || hillA > 0.003 || veil > 0.003);
     const again = () => { if (on || heroSeen) raf = requestAnimationFrame(frame); };
     if (!drawing) {
       if (drew) { cv.width = cv.width; drew = false; } // a hard reset, so no last frame of the boat can linger
-      placeTalk();
+      placeTalk(); placeTown(); placeHill();
       again();
       return;
     }
@@ -8940,15 +9934,24 @@ void main(){
     const wf = CB.whoFloat ? CB.whoFloat.update(still() ? 0 : dt, state === "lake" && waterOn(), { W, H, hzY: (1 - (lay().hz - fx.dip)) * H }) : 0;
     if (lakeA > 0.01) { drawFishing(g, clock, still() ? 0 : dt, lakeA * (1 - wf)); drawBirds(g, clock); if (wf > 0.002) CB.whoFloat.draw(g, clock, lakeA * wf, { night: NIGHT, day: DAY, dpr }); }
     else if (fbBtn) fbBtn.hidden = true;
-    if (cam.town > 0.003) {
+    if (townA > 0.003) {
       og.setTransform(dpr, 0, 0, dpr, 0, 0);
       drawTown(og, clock);
-      g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = cam.town; g.drawImage(off, 0, 0); g.restore();
+      g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = townA; g.drawImage(off, 0, 0); g.restore();
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+    if (hillA > 0.003) { // [hill] its canvas is sized only once someone goes up
+      if (off2.width !== cv.width || off2.height !== cv.height) { off2.width = cv.width; off2.height = cv.height; }
+      hg.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawHill(hg, clock);
+      g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = hillA; g.drawImage(off2, 0, 0); g.restore();
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (hillA > 0.5) drawBirds(g, clock);
+    }
     drawFog(clock, cam.fog);
+    drawVeil(clock, veil);
     if (rise > 0.001) drawBoat(clock, state === "returning" ? ease(clamp(p / 0.12)) : rise);
-    placeTalk();
+    placeTalk(); placeTown(); placeHill();
 
     again();
   }
@@ -8958,7 +9961,14 @@ void main(){
   const local = (e) => { const r = hero.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   const interactive = (e) => !!e.target.closest("a, button, input, select, textarea, .water-ui__bar");
   // While the boat is out, the lake's own ripples and pointer sheen pause: the water is moving under the boat.
-  const guard = (e) => { if (state !== "lake" && waterOn() && hero.contains(e.target) && !interactive(e)) { e.stopPropagation(); if (e.type === "pointerdown" && state === "town") tapTown(e); } };
+  // [hill] on the hill a touch goes to the hill; with a mouse, things that answer a touch show a pointer
+  const guard = (e) => {
+    if (state !== "lake" && waterOn() && hero.contains(e.target) && !interactive(e)) {
+      e.stopPropagation();
+      if (e.type === "pointerdown") { if (state === "town") tapTown(e); else if (state === "hill") tapHill(e); }
+      else if (e.pointerType === "mouse") hoverAt(e);
+    }
+  };
   window.addEventListener("pointerdown", guard, true);
   window.addEventListener("pointermove", guard, true);
 
@@ -8984,15 +9994,19 @@ void main(){
   mtnBtn.addEventListener("click", sail);
   mtnBtn.addEventListener("mouseenter", () => hoverHills(true));
   mtnBtn.addEventListener("mouseleave", () => hoverHills(false));
-  backBtn.addEventListener("click", sailBack);
+  backBtn.addEventListener("click", () => (state === "hill" ? descend() : sailBack())); // [hill] from the hill, the arrow goes down to the town
 
   // In the town: whoever is nearest the touch jumps and waves; a touch on the one alone opens the talk.
+  // [balloon] a touch on the caught balloon sends help; [hill] a touch on the chapel or its lit stairs goes up.
   function tapTown(e) {
     const [x, y] = local(e);
+    if (BL.st === "stuck" && balloonHitTown(x, y)) { rescue(); return; }
     if (sadScreen && Math.hypot(x - sadScreen.x, y - sadScreen.y) < sadScreen.r * 1.2) { openTalk(); return; }
     if (!talk.hidden) closeTalk();
     let best = null, bd = 70;
     for (const hh of hits) { const d = Math.hypot(hh.x - x, hh.y - y) - hh.r * 0.5; if (d < bd) { bd = d; best = hh; } }
+    if (best && bd < 18 && best.L !== S.L) { best.L.jump = clock; sHi(x); return; }
+    if (chapelHit(x, y)) { climb(); return; }
     if (best && best.L !== S.L) { best.L.jump = clock; sHi(x); }
   }
 
@@ -9011,7 +10025,11 @@ void main(){
   start();
   resize();
 
-  CB.journey = { sail, sailBack, openTalk, sad: () => ({ phase: S.phase, mood: S.mood, at: sadScreen }), boat: () => ({ x: FB.x, dir: FB.dir, act: FB.act, geo: fbGeo() }), state: () => ({ state, p, phase: fx.phase, step, shoots: fx.shoots.length, halo: fx.halo }) };
+  CB.journey = { sail, sailBack, openTalk, sad: () => ({ phase: S.phase, mood: S.mood, at: sadScreen }), boat: () => ({ x: FB.x, dir: FB.dir, act: FB.act, geo: fbGeo() }), state: () => ({ state, p, phase: fx.phase, step, shoots: fx.shoots.length, halo: fx.halo }),
+    // [hill] [balloon]
+    climb, descend, ring: ringBell, sit: sitDown, stand: standUp, rescue, slip: () => { if (BL.st === "free" && state === "town") slip(); },
+    balloon: () => ({ st: BL.st, by: BL.by, count: BL.count, stop: GIRL ? GIRL.stop : null }),
+    hill: () => ({ q, sitting, sitK, bell: BELL.t0 > -99 ? clock - BELL.t0 : null, flying: DV.filter((d) => clock - d.fly >= 0 && clock - d.fly < 9.6).length, doves: DV.length }) };
 })();
 
 </script>
