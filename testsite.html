@@ -2100,18 +2100,16 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
 }
 
 /* ---------- The film "לא לבד": under the sea on the first page, a painted page that goes round on its own;
-   a finger, a mouse or a trackpad moves it through its time, right to left as the page reads (src/film.js) ---------- */
-.film-sec { padding-block: clamp(96px, 10vw, 150px) clamp(84px, 9vw, 130px); }
+   a finger, a mouse or a trackpad moves it through its time, right to left as the page reads (src/film.js).
+   Only the film: no title or words around it on the page (its name and story are there for screen readers). ---------- */
+.film-sec { padding-block: clamp(64px, 7vw, 110px); }
 .film {
-  /* the picture stays whole on the screen, with its thread under it */
+  /* the picture stays whole on the screen */
   --film-w: clamp(250px, calc((100vh - 210px) * 9 / 16), 380px);
-  display: grid; grid-template-columns: minmax(0, 460px) var(--film-w); grid-template-rows: 1fr 1fr;
-  grid-template-areas: "head reel" "txt reel"; justify-content: center; column-gap: clamp(36px, 7vw, 120px);
+  display: grid; justify-items: center;
 }
 @supports (height: 100svh) { .film { --film-w: clamp(250px, calc((100svh - 210px) * 9 / 16), 380px); } }
-.film__head { grid-area: head; align-self: end; margin: 0 0 26px; }
-.film__reel { grid-area: reel; width: var(--film-w); }
-.film__txt { grid-area: txt; align-self: start; display: grid; gap: 18px; justify-items: start; }
+.film__reel { width: var(--film-w); }
 .film__frame {
   /* the film keeps its own watercolour palette, whatever the site's theme */
   --ground: #FBF6EE; --main: #9A3A63; --second: #2B2343; --accent: #B8955A;
@@ -2145,19 +2143,10 @@ html:not(.motion) .motes, .a11y-still .motes, .a11y-contrast .motes { display: n
   content: ""; position: absolute; inset: 0; border-radius: 50%;
   background: #9A3A63; box-shadow: 0 0 0 3px #FBF6EE, 0 3px 10px -2px rgb(43 35 67 / .5);
 }
-.film__hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px 0 0; font-size: .88rem; line-height: 1.45; color: var(--ink-2); text-align: center; text-wrap: balance; }
-.film__hint svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
-.film__lead { margin: 0; max-width: 40ch; color: var(--ink-2); font-size: var(--lead); line-height: 1.65; text-wrap: pretty; }
-.film__story { max-width: 46ch; color: var(--ink-2); }
-.film__story summary { width: fit-content; padding-block: 6px; cursor: pointer; color: var(--ink); font-weight: 700; }
-.film__story p { margin: 8px 0 0; line-height: 1.75; }
 @media (max-width: 760px) {
-  /* a short phone gets a smaller picture, so the picture and its thread fit under the bar together */
-  .film { --film-w: min(100%, 330px, max(220px, calc((100vh - 172px) * 9 / 16))); grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "head" "reel" "txt"; }
+  /* a short phone gets a smaller picture, so the whole picture fits under the bar */
+  .film { --film-w: min(100%, 330px, max(220px, calc((100vh - 172px) * 9 / 16))); }
   @supports (height: 100svh) { .film { --film-w: min(100%, 330px, max(220px, calc((100svh - 172px) * 9 / 16))); } }
-  .film__head { margin-bottom: 28px; }
-  .film__reel { justify-self: center; }
-  .film__txt { margin-top: 30px; }
 }
 
 /* ==========================================================================================================
@@ -2606,12 +2595,10 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
       </div>
     </div>
   </section>
-  <section class="section film-sec" id="film" aria-labelledby="film-title" data-flourish="on">
+  <section class="section film-sec" id="film" aria-labelledby="film-title">
     <div class="wrap film">
-      <header class="head film__head">
-        <p class="eyebrow">סרט קצר · בלי מילים</p>
-        <h2 class="h2" id="film-title">לא לבד</h2>
-      </header>
+      <!-- the film alone: its name and its story stay for screen readers only -->
+      <h2 class="sr-only" id="film-title">לא לבד</h2>
       <div class="film__reel">
         <div class="film__frame">
           <canvas class="film__canvas" role="img" aria-label="סרט אנימציה קצר בלי מילים: לא לבד" aria-describedby="film-story"></canvas>
@@ -2619,15 +2606,8 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
             <span class="film__track"><i class="film__fill"></i></span><span class="film__knob"></span>
           </div>
         </div>
-        <p class="film__hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8L4 12l4 4M16 8l4 4-4 4M4 12h16"/></svg>גררי על הסרט: מימין לשמאל קדימה, משמאל לימין אחורה</p>
       </div>
-      <div class="film__txt">
-        <p class="film__lead">ארבעים וחמש שניות על משא שגדל בשקט, ועל הרגע שבו מישהי עוצרת ומושיטה יד. בשביל זה יש מעגל.</p>
-        <details class="film__story">
-          <summary>מה קורה בסרט, במילים</summary>
-          <p id="film-story">אישה הולכת בשביל עם אבן קטנה וכהה על הגב. טיפות דיו נוחתות עליה מכל הכיוונים, והמשא גדל עד שהוא גדול ממנה, והיא מתכופפת תחתיו. אנשים עוברים לידה ולא רואים. היא נעצרת וכורעת על הברכיים בגשם. אישה אחרת עוברת, נעצרת, חוזרת אליה, כורעת לידה ומושיטה יד. הידיים נפגשות באור זהב והגשם נעצר. יחד הן קמות ומורידות את המשא מהגב, והיא מזדקפת והצבע חוזר לעולם. המשא נסדק ומתפרק ללהקת ציפורים, ובמקום שבו הוא היה פורח פרח. השתיים ממשיכות יד ביד אל השמש.</p>
-        </details>
-      </div>
+      <p class="sr-only" id="film-story">אישה הולכת בשביל עם אבן קטנה וכהה על הגב. טיפות דיו נוחתות עליה מכל הכיוונים, והמשא גדל עד שהוא גדול ממנה, והיא מתכופפת תחתיו. אנשים עוברים לידה ולא רואים. היא נעצרת וכורעת על הברכיים בגשם. אישה אחרת עוברת, נעצרת, חוזרת אליה, כורעת לידה ומושיטה יד. הידיים נפגשות באור זהב והגשם נעצר. יחד הן קמות ומורידות את המשא מהגב, והיא מזדקפת והצבע חוזר לעולם. המשא נסדק ומתפרק ללהקת ציפורים, ובמקום שבו הוא היה פורח פרח. השתיים ממשיכות יד ביד אל השמש.</p>
     </div>
   </section>
 </div>
