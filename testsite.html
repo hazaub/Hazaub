@@ -1473,6 +1473,10 @@ button.join { width: 100%; border: 0; font: inherit; color: inherit; text-align:
 .veil.is-plain[data-world="retreats"] { background: radial-gradient(120% 90% at 50% 62%, #FFF1DE 0%, #F6C9A8 38%, #D9A8B8 70%, #6B6FA0 100%); }
 .veil.is-plain[data-world="sound"] { background: radial-gradient(110% 90% at 50% 50%, #F4EEE3 0%, #E7DAC5 55%, #CDBB9C 100%); }
 .veil.is-plain[data-world="magic"] { background: radial-gradient(110% 90% at 50% 26%, #3B3270 0%, #15123A 48%, #05071A 100%); }
+/* "גלי מי את": she stands where her painting is (to the left on a wide screen, above on a narrow one), the title beside her */
+.veil[data-world="who"] .veil__title { color: #FAF5FF; padding-left: 44vw; text-shadow: 0 0 26px rgb(24 18 56 / .9), 0 0 8px rgb(24 18 56 / .75); }
+@media (max-width: 760px) { .veil[data-world="who"] .veil__title { padding-left: 24px; padding-top: 62vh; } }
+.veil.is-plain[data-world="who"] { background: radial-gradient(100% 80% at 30% 45%, #F7E6EC 0%, #B9A0D0 34%, #4A3F7E 70%, #17142F 100%); }
 
 /* ---------- Sand mandala (src/mandala.js) ---------- */
 .mandala-sec { background: linear-gradient(180deg, #F3EADB 0%, #EADDC8 100%); }
@@ -5322,12 +5326,13 @@ window.ART = (() => {
     if (target) scrollToEl(target, true);
   };
   // Entering a world from outside it plays that world's veil (veil.js): the view changes once the veil covers the page.
-  const WORLDS = ["retreats", "sound", "magic"];
+  // "גלי מי את" has a veil of its own too.
+  const VEILED = ["retreats", "sound", "magic", "who"];
   function go(hash, { push = true } = {}) {
     if (CB.veil && CB.veil.busy()) CB.veil.skip(); // a new step ends a veil still playing
     const id = String(hash || "").replace(/^#/, "");
     const { view, target } = whereIs(id);
-    if (push && view !== curView && WORLDS.includes(view.dataset.view) && CB.veil && CB.veil.wants()) {
+    if (push && view !== curView && VEILED.includes(view.dataset.view) && CB.veil && CB.veil.wants()) {
       CB.veil.play(view.dataset.view, () => route(id, view, target, push));
       return;
     }
@@ -6531,6 +6536,9 @@ window.ART = (() => {
    - retreats: women in long dresses walk in from both sides, softly blurred, and gather into a warm light;
    - sound: fine sand on a singing plate gathers into the figure its tone draws (a Chladni pattern), with rings of sound;
    - moon: night falls, tonight's moon rises in its real phase, and the stars light up one by one.
+   "גלי מי את" has one too: the star of the button that was pressed opens into mist, sixteen lights gather around a woman
+   who condenses out of it, the star becomes the light between her hands, and the mist opens from that light onto the
+   painting of her at the top of the page, where she stands in the same place and at the same size.
    Each scene is one small shader, drawn by code: no images, no video, nothing extra to download.
    The shaders compile a little after the page settles; the first visit to a world in a session plays the full scene,
    later visits a short one, a tap or a key skips it, and with reduced motion (or no WebGL) it is a plain fade or nothing. */
@@ -6543,8 +6551,11 @@ window.ART = (() => {
   const SITE = window.SITE || {};
   const FULL = 1500, SHORT = 760;
   const SWITCH = 0.22; // the page under the veil changes here, once the veil covers it
-  const LATIN = { retreats: "RETREATS", sound: "SILENCE & SOUND", magic: "MOON & MAGIC" };
-  const nameOf = (w) => ((SITE.worlds || []).find((x) => x.id === w) || {}).name || "";
+  const LATIN = { retreats: "RETREATS", sound: "SILENCE & SOUND", magic: "MOON & MAGIC", who: "WHO YOU ARE" };
+  const nameOf = (w) => ((SITE.worlds || []).find((x) => x.id === w) || {}).name || ((doc.querySelector(`.view[data-view="${w}"]`) || { dataset: {} }).dataset.title || "");
+  // "גלי מי את" tells a little more, so it takes a little longer: [the first time in a visit, again]
+  const DUR = { who: [2600, 1000] };
+  const durOf = (w, full) => (DUR[w] ? DUR[w][full ? 0 : 1] : full ? FULL : SHORT);
 
   /* ---------- The scenes ---------- */
   const VERT = "attribute vec2 aPos; void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }";
@@ -6554,6 +6565,7 @@ uniform float uP;
 uniform float uT;
 uniform float uK;
 uniform vec4 uX;
+uniform vec4 uY;
 const float PI = 3.14159265;
 float hash12(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -6756,6 +6768,201 @@ void main(){
   col += vec3(0.82, 0.8, 1.0) * rim(d, maxD) * 0.5;
   gl_FragColor = outCol(col, cover(d, maxD));
 }`,
+
+    // "גלי מי את": the woman still to be discovered (who-art.js, "?"), her figure in the painting's own units (film.js).
+    // The star and the lights are light: they are drawn over the mist and over the page alike.
+    // uX: where the star starts (xy), the painting's two clocks for the ring of lights (zw)
+    // uY: her feet (xy), one unit of her figure (z), the star's size at the start (w, negative for the short scene)
+    who: `
+float sdTrap(vec2 p, float r1, float r2, float he){
+  vec2 k1 = vec2(r2, he), k2 = vec2(r2 - r1, 2.0 * he);
+  p.x = abs(p.x);
+  vec2 ca = vec2(p.x - min(p.x, (p.y < 0.0) ? r1 : r2), abs(p.y) - he);
+  vec2 cb = p - k1 + k2 * clamp(dot(k1 - p, k2) / dot(k2, k2), 0.0, 1.0);
+  float s = (cb.x < 0.0 && ca.y < 0.0) ? -1.0 : 1.0;
+  return s * sqrt(min(dot(ca, ca), dot(cb, cb)));
+}
+float sdCap(vec2 p, vec2 a, vec2 b, float r){ vec2 pa = p - a, ba = b - a; float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0); return length(pa - ba * h) - r; }
+float smin(float a, float b, float k){ float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }
+float sdBox(vec2 p, vec2 b){ vec2 d = abs(p) - b; return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0); }
+// standing, feet at the origin, y up, facing +x, about 518 tall: the long dress, the bodice, the head with its bun,
+// and both arms reaching forward, elbows low, the hands holding the light at shoulder height.
+// Worked out in hundreds of units, so no number grows too large at medium precision.
+float woman(vec2 p){
+  p *= 0.01;
+  float d = sdTrap(p - vec2(0.0, 1.54), 0.92, 0.30, 1.38) - 0.02;
+  d = smin(d, sdBox(p - vec2(0.01, 3.6), vec2(0.08, 0.56)) - 0.22, 0.14);
+  d = smin(d, sdCap(p, vec2(0.04, 4.28), vec2(0.09, 4.48), 0.085), 0.08);
+  float h = min(length(p - vec2(0.07, 4.8)) - 0.33, length(p - vec2(0.18, 4.72)) - 0.26);
+  d = smin(d, smin(h, length(p - vec2(-0.13, 5.04)) - 0.16, 0.08), 0.06);
+  d = smin(d, sdCap(p, vec2(0.06, 4.18), vec2(0.86, 3.77), 0.12), 0.1);
+  d = smin(d, min(sdCap(p, vec2(0.86, 3.77), vec2(1.38, 4.24), 0.1), length(p - vec2(1.47, 4.32)) - 0.105), 0.06);
+  d = smin(d, min(sdCap(p, vec2(0.82, 3.69), vec2(1.33, 4.17), 0.1), length(p - vec2(1.42, 4.25)) - 0.105), 0.06);
+  return d * 100.0;
+}
+float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * noise(p); p = p * 2.03 + vec2(17.1, 9.3); a *= 0.5; } return s; }
+float farthest(vec2 c){ return length(abs(c) + vec2(0.5 * uRes.x / uRes.y, 0.5)); }
+// the four-pointed star of the button, its sides curving in: 1 at the tips
+float starF(vec2 u){ u = abs(u); float k = sqrt(u.x) + sqrt(u.y); return k * k; }
+mat2 rot(float a){ float c = cos(a), s = sin(a); return mat2(c, s, -s, c); }
+// the painting's colours for the sixteen lights
+vec3 sparkCol(float i){
+  float m = mod(i, 8.0);
+  if (m < 0.5) return vec3(0.91, 0.66, 0.74);
+  if (m < 1.5) return vec3(0.73, 0.65, 0.89);
+  if (m < 2.5) return vec3(0.84, 0.70, 0.45);
+  if (m < 3.5) return vec3(0.66, 0.80, 0.71);
+  if (m < 4.5) return vec3(0.95, 0.75, 0.61);
+  if (m < 5.5) return vec3(0.66, 0.77, 0.90);
+  if (m < 6.5) return vec3(0.79, 0.64, 0.84);
+  return vec3(1.0, 0.96, 0.89);
+}
+void main(){
+  vec2 q = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+  vec2 uv = gl_FragCoord.xy / uRes;
+  float A = uRes.x / uRes.y, px = 1.0 / uRes.y;
+  bool full = uY.w > 0.0;
+  vec2 O = uX.xy, F = uY.xy;
+  float s = uY.z;
+  vec2 L = F + s * vec2(-144.5, 446.4);   // the light between her hands: she faces it, to her left
+  vec2 C = F + s * vec2(0.0, 290.2);      // the middle of the ring of lights around her
+  float fly0 = full ? 0.24 : 0.23, fly1 = full ? 0.47 : 0.42, open0 = full ? 0.64 : 0.58;
+
+  // the mist: indigo above, lilac and rose below, clouds drifting, a few faint stars
+  vec3 col = mix(vec3(0.60, 0.48, 0.68), vec3(0.31, 0.26, 0.51), smoothstep(0.0, 0.55, uv.y));
+  col = mix(col, vec3(0.10, 0.09, 0.23), smoothstep(0.5, 1.08, uv.y));
+  col = mix(col, vec3(0.80, 0.71, 0.89), smoothstep(0.45, 0.85, fbm(q * 2.2 + vec2(uT * 0.05, 0.0))) * 0.32);
+  if (uv.y < 0.75) col = mix(col, vec3(0.90, 0.68, 0.78), smoothstep(0.5, 0.9, fbm(q * vec2(1.6, 3.4) + vec2(5.0 - uT * 0.08, 2.0))) * 0.2 * smoothstep(0.75, 0.2, uv.y));
+  vec2 cell = floor(q / 0.03);
+  float hs = hash12(cell + 21.0);
+  if (hs > 0.885) {
+    vec2 sp = (cell + 0.2 + 0.6 * vec2(hash12(cell + 2.0), hash12(cell + 6.0))) * 0.03;
+    float ds = length(q - sp) / 0.03;
+    col += vec3(0.92, 0.9, 1.0) * exp(-ds * ds * 90.0) * (0.2 + 0.5 * fract(hs * 9.1)) * smoothstep(0.45, 0.9, uv.y) * (0.6 + 0.4 * sin(uT * 3.0 + hs * 50.0));
+  }
+
+  // the star: it swells where it was pressed, then flies to her hands along a soft arc and becomes the light there
+  float kf = ease((uP - fly0) / (fly1 - fly0));
+  vec2 dv = L - O, nv = normalize(vec2(-dv.y, dv.x) + vec2(0.0, 0.001));
+  if (nv.y < 0.0) nv = -nv;
+  vec2 ctl = mix(O, L, 0.5) + nv * 0.22 * length(dv);
+  vec2 SP = mix(mix(O, ctl, kf), mix(ctl, L, kf), kf);
+  float orb = smoothstep(fly1 - 0.03, fly1 + 0.08, uP);
+  float zs = mix(abs(uY.w), 0.032, ease(uP / 0.12));
+  zs = mix(zs, 0.022, smoothstep(fly0, fly0 + 0.08, uP)) * (1.0 - 0.85 * smoothstep(fly1 - 0.06, fly1 + 0.02, uP));
+  col += vec3(1.0, 0.88, 0.76) * exp(-length(q - SP) / 0.16) * mix(0.3, 0.14, smoothstep(0.12, 0.3, uP)) * smoothstep(0.02, 0.1, uP) * (1.0 - orb);
+  float dl = length(q - L);
+  col += vec3(1.0, 0.86, 0.76) * exp(-dl / 0.2) * 0.22 * orb;
+
+  // banks of mist drifting below her, as in her painting
+  for (int i = 0; i < 3; i++) {
+    float fi = float(i);
+    float yy = (q.y - F.y + 0.05 + 0.11 * fi) / (0.035 + 0.012 * fi);
+    if (abs(yy) > 3.0) continue;
+    float x = q.x * (1.3 - 0.25 * fi) + uT * (0.05 + 0.03 * fi) + fi * 7.0;
+    float drift = 0.62 * noise(vec2(x, fi * 3.1)) + 0.38 * noise(vec2(x * 2.03, fi * 5.3 + 1.0));
+    col = mix(col, vec3(0.82, 0.76, 0.92), exp(-yy * yy) * smoothstep(0.3, 0.75, drift) * (0.3 - 0.06 * fi));
+  }
+
+  // she condenses out of the mist: a soft cloud of shadow that gathers and tightens into her, her arms last
+  vec2 b = (q - F) / s;
+  b.x = -b.x;
+  float kw = full ? smoothstep(0.3, 0.6, uP) : smoothstep(0.22, 0.45, uP);
+  float fillW = 0.0;
+  if (kw > 0.0 && b.x > -260.0 && b.x < 330.0 && b.y > -170.0 && b.y < 700.0) {
+    float dW = woman(b);
+    float n = fbm(b * 0.012 + vec2(uT * 0.25, 3.0));
+    float dd = dW + (1.0 - kw) * ((n - 0.5) * 110.0 - 40.0);
+    float blur = max(1.2 * px / s, mix(110.0, 2.0, kw));
+    fillW = (1.0 - smoothstep(-blur, blur, dd)) * smoothstep(0.0, 0.5, kw);
+    vec3 wc = mix(vec3(0.33, 0.27, 0.47), vec3(0.19, 0.14, 0.30), smoothstep(40.0, 330.0, b.y));
+    wc = mix(vec3(0.42, 0.36, 0.58), wc, kw);
+    wc += vec3(0.5, 0.38, 0.42) * exp(-dl / max(130.0 * s, 0.02)) * orb;
+    col = mix(col, wc, fillW * 0.93);
+    col += vec3(0.9, 0.82, 0.98) * exp(-abs(dd) / (2.5 * px / s + 2.0)) * kw * kw * (0.05 + 0.55 * exp(-dl / max(160.0 * s, 0.03)) * orb);
+  }
+  // a low mist across her hem
+  float yb = (b.y - 90.0) / 80.0, xb = b.x / 650.0;
+  if (kw > 0.0 && abs(yb) < 3.0 && abs(xb) < 3.0)
+    col = mix(col, vec3(0.78, 0.71, 0.88), exp(-yb * yb - xb * xb) * (0.55 + 0.45 * fbm(q * vec2(2.0, 9.0) + vec2(uT * 0.12, 1.0))) * 0.4 * kw);
+
+  vec3 e = vec3(0.0);
+  // the sixteen lights: from all around they swirl in, and keep turning around her as they do in the painting
+  for (int i = 0; i < 16; i++) {
+    float fi = float(i);
+    float h1 = hash12(vec2(fi, 2.3)), h2 = hash12(vec2(fi, 8.1)), h3 = hash12(vec2(fi, 4.7));
+    float ang = fi * (2.0 * PI / 16.0) + uX.z;
+    vec2 end = F + s * vec2(cos(ang) * 294.6, 290.2 - sin(ang) * 98.2 - 26.8 * sin(uX.w + fi));
+    float t0 = full ? 0.25 + 0.12 * h3 : 0.22, t1 = t0 + 0.2 + 0.06 * h2;
+    float k = full ? ease((uP - t0) / (t1 - t0)) : 1.0;
+    float a0 = h1 * 2.0 * PI;
+    vec2 st = vec2(cos(a0) * max(0.62 * A, 0.45), sin(a0) * 0.62) * (0.75 + 0.35 * h2);
+    vec2 pos = C + rot(2.6 * (1.0 - k) * (1.0 - k)) * mix(st, end - C, k);
+    float vis = full ? smoothstep(t0 - 0.05, t0 + 0.03, uP) : smoothstep(0.22, 0.4, uP);
+    float r = mix(0.011, max(30.0 * s, 0.0045), k);
+    vec2 dd = (q - pos) / r;   // in units of its own size, so the numbers stay sound at medium precision
+    if (abs(dd.x) > 7.0 || abs(dd.y) > 7.0) continue;
+    float d2 = dot(dd, dd);
+    vec2 su = rot(fi + uT * 0.4) * dd;
+    float g = exp(-d2 / 0.12) + 0.45 * exp(-sqrt(d2) / 0.9)
+            + 0.3 * (exp(-abs(su.y) * 14.0 - abs(su.x) * 1.6) + exp(-abs(su.x) * 14.0 - abs(su.y) * 1.6));
+    float tw = 0.78 + 0.22 * sin(uT * (3.0 + 2.0 * h1) + fi * 1.7);
+    float hide = (sin(ang) < 0.0 && k > 0.8) ? 1.0 - 0.85 * fillW : 1.0;
+    e += mix(sparkCol(fi), vec3(1.0), 0.5 * exp(-d2 / 0.05)) * g * tw * vis * hide * 0.85;
+  }
+
+  // the star itself, and its trail on the way
+  float starA = smoothstep(0.0, 0.03, uP) * (1.0 - smoothstep(fly1 - 0.02, fly1 + 0.05, uP));
+  if (starA > 0.0) {
+    vec2 su = rot(0.785 * kf + 0.15 * sin(uT * 2.0)) * (q - SP) / zs;
+    float f = starF(su), aa = 1.5 * px / zs;
+    float body = 1.0 - smoothstep(1.0 - aa, 1.0 + aa, f);
+    float glow = exp(-length(su) * 1.6) * 0.5 + 0.35 * (exp(-abs(su.y) * 22.0 - abs(su.x) * 0.5) + exp(-abs(su.x) * 22.0 - abs(su.y) * 0.5));
+    e += vec3(1.0, 0.93, 0.8) * (body + glow * (0.85 + 0.15 * sin(uT * 9.0))) * starA;
+    // the tail: three short pieces of the path behind it, thinning and fading
+    float tail = smoothstep(0.0, 0.08, kf) * (1.0 - smoothstep(0.8, 1.0, kf)) * starA;
+    vec2 pa = SP;
+    for (int j = 1; j < 4; j++) {
+      float kj = ease((uP - float(j) * 0.018 - fly0) / (fly1 - fly0));
+      vec2 pb = mix(mix(O, ctl, kj), mix(ctl, L, kj), kj);
+      vec2 ba = (pb - pa) / 0.004, qa = (q - pa) / 0.004;   // in units of the tail's width
+      float h = clamp(dot(qa, ba) / max(dot(ba, ba), 0.001), 0.0, 1.0);
+      vec2 dv2 = qa - ba * h;
+      float fade = 1.0 - (float(j - 1) + h) / 3.0;
+      e += vec3(1.0, 0.9, 0.82) * exp(-dot(dv2, dv2) / (0.5 + 1.9 * fade)) * fade * fade * 0.6 * tail;
+      pa = pb;
+    }
+  }
+  // the light between her hands
+  float orbR = max(19.6 * s, 0.004), fl = (uP - fly1) / 0.035;
+  fl = exp(-fl * fl);
+  e += vec3(1.0, 0.95, 0.86) * ((1.0 - smoothstep(orbR - 1.5 * px, orbR + 1.5 * px, dl)) * 0.95
+       + exp(-dl / max(55.0 * s, 0.012)) * (0.55 + 0.5 * fl) + exp(-dl / max(160.0 * s, 0.035)) * 0.22 * (1.0 + fl)) * orb;
+
+  // the mist pours out of the star
+  float aIn = 1.0;
+  if (uP < 0.21) {
+    float x = length(q - O) + (fbm(q * 4.5 + vec2(0.0, uT * 0.4)) - 0.5) * 0.22 - ease(uP / 0.2) * (farthest(O) + 0.4);
+    aIn = (1.0 - smoothstep(-0.16, 0.02, x)) * smoothstep(0.0, 0.04, uP);
+    col = mix(col, vec3(0.86, 0.78, 0.95), smoothstep(-0.2, 0.0, x) * 0.55);   // its front is thin, light mist
+    float fr = (x + 0.02) / 0.04;
+    col += vec3(0.95, 0.9, 1.0) * exp(-fr * fr) * 0.3;
+  }
+  // and opens from the light, onto the page
+  float o = ease((uP - open0) / (1.0 - open0)), hole = 1.0;
+  if (o > 0.0) {
+    float soft = 0.05 + 0.24 * o;
+    float dn = dl + (fbm(q * 3.5 + vec2(uT * 0.3, 7.0)) - 0.5) * 0.16 * o;
+    float R = o * (farthest(L) + soft + 0.1);
+    hole = smoothstep(R - soft, R, dn);
+    float x = (dn - (R - soft * 0.55)) / (soft * 0.5);
+    col += vec3(0.96, 0.9, 1.0) * exp(-x * x) * (1.0 - 0.7 * o) * 0.45;
+  }
+  e = min(e * hole * (1.0 - smoothstep(0.9, 1.0, uP)), vec3(1.0));
+  float am = aIn * hole, ae = max(e.r, max(e.g, e.b));
+  col += (hash12(gl_FragCoord.xy + fract(uT * 7.13) * 97.0) - 0.5) / 160.0;
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0) * am * (1.0 - ae) + e, am + (1.0 - am) * ae);
+}`,
   };
 
   /* ---------- The overlay and the GL context, made when first needed ---------- */
@@ -6781,31 +6988,37 @@ void main(){
     buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    cv.addEventListener("webglcontextlost", (e) => { e.preventDefault(); gl = null; glFailed = true; Object.keys(progs).forEach((k) => delete progs[k]); }, false);
+    cv.addEventListener("webglcontextlost", (e) => { e.preventDefault(); gl = null; glFailed = true; Object.keys(progs).forEach((k) => delete progs[k]); Object.keys(pending).forEach((k) => delete pending[k]); }, false);
     return gl;
   }
-  function compile(type, src) {
-    const sh = gl.createShader(type);
-    gl.shaderSource(sh, src);
-    gl.compileShader(sh);
-    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const log = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error(log || "compile"); }
-    return sh;
+  // A scene is compiled in two steps: start (the browser may compile it in the background, KHR_parallel_shader_compile)
+  // and finish (asking for the result waits until it is done).
+  const pending = {};
+  function startProgram(world) {
+    const hp = gl.getShaderPrecisionFormat && gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+    const head = hp && hp.precision > 0 ? "precision highp float;\n" : "precision mediump float;\n";
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    const vs = sh(gl.VERTEX_SHADER, VERT), fs = sh(gl.FRAGMENT_SHADER, head + COMMON + SCENES[world]);
+    const p = gl.createProgram();
+    gl.attachShader(p, vs);
+    gl.attachShader(p, fs);
+    gl.bindAttribLocation(p, 0, "aPos");
+    gl.linkProgram(p);
+    return { p, vs, fs };
   }
   function program(world) {
     if (progs[world]) return progs[world];
     if (!ensureGL()) return null;
     try {
-      const hp = gl.getShaderPrecisionFormat && gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
-      const head = hp && hp.precision > 0 ? "precision highp float;\n" : "precision mediump float;\n";
-      const p = gl.createProgram();
-      gl.attachShader(p, compile(gl.VERTEX_SHADER, VERT));
-      gl.attachShader(p, compile(gl.FRAGMENT_SHADER, head + COMMON + SCENES[world]));
-      gl.bindAttribLocation(p, 0, "aPos");
-      gl.linkProgram(p);
-      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || "link");
+      const s = pending[world] || startProgram(world);
+      delete pending[world];
+      if (!gl.getProgramParameter(s.p, gl.LINK_STATUS)) {
+        const log = (!gl.getShaderParameter(s.fs, gl.COMPILE_STATUS) && gl.getShaderInfoLog(s.fs)) || (!gl.getShaderParameter(s.vs, gl.COMPILE_STATUS) && gl.getShaderInfoLog(s.vs)) || gl.getProgramInfoLog(s.p);
+        throw new Error(log || "link");
+      }
       const u = {};
-      for (const n of ["uRes", "uP", "uT", "uK", "uX"]) u[n] = gl.getUniformLocation(p, n);
-      progs[world] = { p, u };
+      for (const n of ["uRes", "uP", "uT", "uK", "uX", "uY"]) u[n] = gl.getUniformLocation(s.p, n);
+      progs[world] = { p: s.p, u };
     } catch (err) {
       CB.glError = (CB.glError || "") + "veil " + world + ": " + String(err.message || err).slice(0, 200) + "; ";
       glFailed = true;
@@ -6814,7 +7027,7 @@ void main(){
     return progs[world];
   }
   // The retreat scene is all soft light and blur, so it is drawn at a lower resolution; sand and stars need the detail.
-  const RES = { retreats: 0.6, sound: 1, magic: 0.85 };
+  const RES = { retreats: 0.6, sound: 1, magic: 0.85, who: 0.75 };
   function size(world) {
     const w = innerWidth, h = innerHeight, dpr = devicePixelRatio || 1;
     let k = Math.min(dpr, 1.5, Math.sqrt(1.8e6 / (w * h))) * (RES[world] || 1);
@@ -6836,7 +7049,51 @@ void main(){
     }
     return [0, 0, 0, 0];
   }
-  function draw(P, world, p, t, X) {
+
+  /* ---------- "גלי מי את": where the star starts, where she stands, and the painting's clock ---------- */
+  // the star of the link that was pressed (a link without one: the link itself, at the size of a star);
+  // the star twinkles (turning and scaling), so its size is read from its style, not from the box it turns in
+  const starAt = (st, r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2, z: Math.min(14, 0.44 * (st ? parseFloat(getComputedStyle(st).width) || r.width : Math.min(r.width, r.height))) });
+  let pick = null;
+  doc.addEventListener("click", (e) => {
+    const a = e.target && e.target.closest && e.target.closest('a[href="#who"]');
+    if (!a) return;
+    const st = a.querySelector(".who-chip__star"), r = (st || a).getBoundingClientRect();
+    if (r.width) pick = Object.assign(starAt(st, r), { t: performance.now() });
+  }, true);
+  function origin() {
+    if (pick && performance.now() - pick.t < 2000) return pick;
+    const st = doc.querySelector("#who-nav .who-chip__star"), r = st && st.getBoundingClientRect();
+    if (r && r.width && r.bottom > 0 && r.top < innerHeight) return starAt(st, r);
+    return { x: innerWidth / 2, y: innerHeight * 0.42, z: 7 };
+  }
+  // her feet and the unit of her figure, in the scene's units (the height of the screen): the painting at the top of
+  // the page (1080 x 1350, her feet at 540, 1205, drawn at 1.12), and until the page is there, about where it will be
+  function figure(vr, W, H) {
+    const c = doc.querySelector(".who-intro canvas");
+    let r = c && c.getBoundingClientRect();
+    if (!r || r.width < 8) {
+      const wide = W > 760, h = Math.min(H * 0.6, (wide ? W * 0.3 : W * 0.78) * 1.25);
+      r = { left: vr.left + (wide ? W * 0.3 : W / 2) - h * 0.4, top: vr.top + (wide ? 0.5 : 0.4) * H - h / 2, width: h * 0.8, height: h };
+    }
+    const k = r.height / 1350;
+    return [(r.left + r.width / 2 - vr.left - W / 2) / H, (vr.top + H / 2 - (r.top + 1205 * k)) / H, (1.12 * k) / H];
+  }
+  // the painting's own clock (who.js), so the lights turn with hers when the mist opens
+  const TAU = Math.PI * 2;
+  const clock = () => (CB.who && CB.who.clock ? CB.who.clock() : 3);
+  function whoFrame(u, measure) {
+    const vr = el.getBoundingClientRect(), W = vr.width || innerWidth, H = vr.height || innerHeight;
+    const o = u.O, t = clock();
+    u.X[0] = (o.x - vr.left - W / 2) / H;
+    u.X[1] = (vr.top + H / 2 - o.y) / H;
+    u.X[2] = (t * 0.32) % TAU;
+    u.X[3] = (t * 0.7) % TAU;
+    if (measure || !u.Y[2]) { const f = figure(vr, W, H); u.Y[0] = f[0]; u.Y[1] = f[1]; u.Y[2] = f[2]; }
+    u.Y[3] = (Math.max(2, o.z) / H) * (u.full ? 1 : -1);
+  }
+
+  function draw(P, world, p, t, X, Y) {
     gl.viewport(0, 0, cv.width, cv.height);
     gl.useProgram(P.p);
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -6847,6 +7104,7 @@ void main(){
     gl.uniform1f(P.u.uT, t);
     gl.uniform1f(P.u.uK, K);
     gl.uniform4fv(P.u.uX, X);
+    gl.uniform4fv(P.u.uY, Y);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
   const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -6882,8 +7140,14 @@ void main(){
     const full = !seen[world];
     remember(world);
     const P = prepare(world, full);
-    const dur = full ? FULL : SHORT;
-    run = { world, P, full, dur, X: extras(world), t0: performance.now(), switched: false, doSwitch, raf: 0, guard: 0 };
+    const dur = durOf(world, full);
+    run = { world, P, full, dur, X: extras(world), Y: [0, 0, 0, 0], t0: performance.now(), switched: false, doSwitch, raf: 0, guard: 0 };
+    if (world === "who") {
+      run.O = origin();
+      whoFrame(run, false);
+      // her painting is prepared while the mist rises, so it is there when the mist opens
+      if (CB.whoArt && CB.whoArt.ready) CB.whoArt.ready().catch(() => {});
+    }
     el.classList.add("is-on");
     root.classList.add("is-veiled");
     run.raf = requestAnimationFrame(frame);
@@ -6895,8 +7159,9 @@ void main(){
     if (!r) return;
     const p = Math.min(1, Math.max(0, (now - r.t0) / r.dur));
     if (!r.switched && p >= SWITCH) switchNow(r);
+    if (r.world === "who" && run === r) whoFrame(r, r.switched);
     setTitle(r.world, p, r.full);
-    if (r.P && gl) draw(r.P, r.world, p, (now - r.t0) / 1000, r.X);
+    if (r.P && gl) draw(r.P, r.world, p, (now - r.t0) / 1000, r.X, r.Y);
     else el.style.opacity = plainAlpha(p).toFixed(3);
     if (p >= 1) { finish(false); return; }
     r.raf = requestAnimationFrame(frame);
@@ -6930,12 +7195,43 @@ void main(){
   }
   const skip = () => { if (run) finish(true); };
 
-  // Compile the scenes ahead of time, one at a time, once the page has settled.
+  // One tiny draw with a new scene, so a driver that finishes a shader on its first use does it now, not in a veil's first frame.
+  function prime(w) {
+    const P = progs[w];
+    if (!P || !gl || run) return;
+    gl.viewport(0, 0, 1, 1);
+    gl.useProgram(P.p);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(P.u.uRes, 1, 1);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  }
+  // Compile the scenes ahead of time, one at a time, once the page has settled, never while a veil plays;
+  // where the browser can compile in the background, the page does not wait for it at all.
   const warm = () => {
     if (!wants()) return;
     ensureDom();
-    const list = ["retreats", "sound", "magic"].filter((w) => !progs[w]);
-    const next = () => { const w = list.shift(); if (!w || glFailed) return; program(w); setTimeout(next, 300); };
+    if (!ensureGL()) return;
+    const par = gl.getExtension("KHR_parallel_shader_compile");
+    const list = ["retreats", "sound", "magic", "who"];
+    const next = () => {
+      if (glFailed || !gl) return;
+      if (run) { setTimeout(next, 500); return; }
+      const w = list.shift();
+      if (!w) return;
+      if (progs[w]) { next(); return; }
+      if (!par) { program(w); prime(w); setTimeout(next, 300); return; }
+      let s;
+      try { s = pending[w] = startProgram(w); } catch (_) { return; }
+      const poll = () => {
+        if (!gl || pending[w] !== s) { setTimeout(next, 100); return; } // a veil needed it first and finished it
+        if (gl.getProgramParameter(s.p, par.COMPLETION_STATUS_KHR)) { program(w); prime(w); setTimeout(next, 100); } else setTimeout(poll, 50);
+      };
+      poll();
+    };
     next();
   };
   const later = () => setTimeout(warm, 3500);
@@ -6947,14 +7243,16 @@ void main(){
     busy: () => !!run,
     skip,
     cancel: () => { if (run) finish(true, true); },
-    state: () => ({ on: !!run, world: run && run.world, full: run && run.full, plain: !!(run && !run.P), switched: !!(run && run.switched), compiled: Object.keys(progs), glFailed }),
-    // For tests: draw one frame of a scene at progress p, standing still.
-    preview(world, p, full = true) {
+    state: () => ({ on: !!run, world: run && run.world, full: run && run.full, dur: run && run.dur, p: run ? +Math.min(1, (performance.now() - run.t0) / run.dur).toFixed(3) : null, plain: !!(run && !run.P), switched: !!(run && run.switched), compiled: Object.keys(progs), glFailed, from: run && run.O ? { x: run.O.x, y: run.O.y, z: run.O.z } : null, y: run ? run.Y.slice() : null }),
+    // For tests: draw one frame of a scene at progress p, standing still ("גלי מי את" may be given where its star starts).
+    preview(world, p, full = true, from) {
       if (run) finish(false, true);
       const P = prepare(world, full);
       el.classList.add("is-on");
       setTitle(world, p, full);
-      if (P) draw(P, world, p, p * (full ? FULL : SHORT) / 1000, extras(world));
+      const u = { O: from || origin(), full, X: extras(world), Y: [0, 0, 0, 0] };
+      if (world === "who") whoFrame(u, true);
+      if (P) draw(P, world, p, (p * durOf(world, full)) / 1000, u.X, u.Y);
       else el.style.opacity = plainAlpha(p).toFixed(3);
       return !!P;
     },
@@ -11537,8 +11835,13 @@ void main(){
   }
   btn.addEventListener("click", (e) => { e.stopPropagation(); if (isOpen) close(); else open(); });
   no.addEventListener("click", (e) => { e.stopPropagation(); close(); });
-  // to the questionnaire: the water moment ends first, so the first page is whole again on the way back
-  go.addEventListener("click", () => { close(false); if (CB.water) CB.water.exit(false); });
+  // to the questionnaire: the water moment ends first, so the first page is whole again on the way back.
+  // The bubble keeps its clicks to itself, so the way there is taken here, through the router and its veil.
+  go.addEventListener("click", (e) => {
+    close(false);
+    if (CB.water) CB.water.exit(false);
+    if (CB.go) { e.preventDefault(); CB.go("#who"); }
+  });
   talk.addEventListener("click", (e) => e.stopPropagation());
   talk.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } });
   // a touch anywhere else on the water closes the bubble
@@ -17237,8 +17540,10 @@ void main(){
 
   /* ---------- the painted women: one alive at a time, the small ones painted once ---------- */
   const art = CB.whoArt;
-  const live = { cv: null, code: "", raf: 0, t0: 0, seen: false, q: 1, slow: 0, last: 0 };
+  const live = { cv: null, code: "", raf: 0, t0: 0, acc: 0, seen: false, q: 1, slow: 0, last: 0 };
   const T0 = 3;   // the moment a still picture shows
+  // her time: from T0, running while she is painted, and going on from where it stopped when she is painted again
+  const liveT = (now) => T0 + live.acc + (live.raf ? Math.max(0, now - live.t0) / 1000 : 0);
   function fit(cv, top = 0.75) {
     const w = cv.clientWidth || 360, dpr = Math.min(2, window.devicePixelRatio || 1);
     const q = Math.max(0.12, Math.min(top, (w * dpr) / 1080));
@@ -17250,7 +17555,7 @@ void main(){
     if (live.cv === cv) return;
     if (live.cv && liveIO) liveIO.unobserve(live.cv);
     cancelAnimationFrame(live.raf); live.raf = 0;
-    live.cv = cv; live.code = cv ? cv.dataset.whoLive : ""; live.seen = !liveIO; live.q = 0.75; live.slow = 0;
+    live.cv = cv; live.code = cv ? cv.dataset.whoLive : ""; live.seen = !liveIO; live.q = 0.75; live.slow = 0; live.acc = 0;
     if (!cv || !art) return;
     art.ready().then(() => {
       if (live.cv !== cv) return;
@@ -17259,20 +17564,21 @@ void main(){
       if (liveIO) liveIO.observe(cv); else runLive();
     }, () => {});
   }
+  const shouldRun = () => !!(live.cv && live.seen && !still() && !doc.hidden && open());
+  function stopLive(now) { if (!live.raf) return; cancelAnimationFrame(live.raf); live.acc = liveT(now) - T0; live.raf = 0; }
   function runLive() {
-    const go = live.cv && live.seen && !still() && !doc.hidden && open();
+    const go = shouldRun();
     if (go && !live.raf) { live.t0 = performance.now(); live.last = live.t0; live.raf = requestAnimationFrame(tickLive); }
-    if (!go && live.raf) { cancelAnimationFrame(live.raf); live.raf = 0; }
+    if (!go) stopLive(performance.now());
   }
   function tickLive(ts) {
-    live.raf = 0;
-    if (!live.cv) return;
+    if (!live.cv) { live.raf = 0; return; }
     const dt = ts - live.last; live.last = ts;
     // a slower device gets a smaller picture instead of a stuttering one
     if (!window.__CB_TEST) { live.slow = dt > 34 ? live.slow + 1 : Math.max(0, live.slow - 1); if (live.slow > 40 && live.q > 0.4) { live.q *= 0.8; live.slow = 0; fit(live.cv, live.q); } }
-    art.paint(live.cv.getContext("2d"), live.code, T0 + (ts - live.t0) / 1000);
-    runLive();
-    if (live.cv && live.seen && !live.raf && !still()) live.raf = requestAnimationFrame(tickLive);
+    art.paint(live.cv.getContext("2d"), live.code, liveT(ts));
+    if (shouldRun()) live.raf = requestAnimationFrame(tickLive);
+    else stopLive(ts);
   }
   doc.addEventListener("visibilitychange", runLive);
   CB.bus.addEventListener("a11y", runLive);
@@ -17490,7 +17796,8 @@ void main(){
   intro();
   if (open()) { setLive($("canvas[data-who-live]", steps[mode])); primeMinis(root); }
   // for the tests: the score, the state, and a quick way through
-  CB.who = { score, state: () => ({ mode, cur, answers: answers.slice(), saved: store.get(), live: live.code, running: !!live.raf }), order: ORDER, result };
+  // clock: the living picture's time now (the veil of this page turns its lights with hers)
+  CB.who = { score, state: () => ({ mode, cur, answers: answers.slice(), saved: store.get(), live: live.code, running: !!live.raf, t: +liveT(performance.now()).toFixed(3) }), order: ORDER, result, clock: () => liveT(performance.now()) };
 })();
 
 </script>
