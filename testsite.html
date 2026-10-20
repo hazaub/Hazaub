@@ -1135,6 +1135,12 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
 /* ---------- Shop ---------- */
 .shop { background: var(--bg); }
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+/* on a phone the shop's sections are one row that scrolls sideways inside itself */
+@media (max-width: 760px) {
+  #shop-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 16px)); padding: 2px var(--gutter, 16px); scroll-padding-inline: var(--gutter, 16px); }
+  #shop-tabs::-webkit-scrollbar { display: none; }
+  #shop-tabs button { flex: none; }
+}
 .tabs button { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer; font-weight: 700; transition: background-color .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out); }
 .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .products { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
@@ -1147,8 +1153,11 @@ html:not(.motion) .card__inner, .a11y-still .card__inner { transition-duration: 
 .product__cat { font: 700 .78rem/1 var(--font-body); color: var(--accent); }
 .product__name { font: 400 1.45rem/1.15 var(--font-display); }
 .product__desc { color: var(--ink-2); font-size: .98rem; line-height: 1.5; }
-.product__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 8px; }
-.product__foot select { min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); padding: 0 10px; }
+.product__buy { display: grid; gap: 10px; margin-top: auto; padding-top: 8px; }
+.product__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.product__foot select, .product__pick select { min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); padding: 0 10px; font: 600 .95rem/1.2 var(--font-body); }
+.product__pick select { width: 100%; }
+.cart-item__pick { display: block; }
 .flame { transform-origin: 50% 100%; animation: flame 1.6s ease-in-out infinite alternate; }
 @keyframes flame { 0% { transform: scale(1, 1) rotate(-2deg); } 50% { transform: scale(.94, 1.08) rotate(2deg); } 100% { transform: scale(1.04, .95) rotate(-1deg); } }
 @media (max-width: 1100px) { .products { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -3602,7 +3611,7 @@ html[data-view="who"] body { --wa: var(--w-plum); --wb: var(--w-rose); }
           <h2 class="h2" id="shop-title">להמשיך את התרגול בבית</h2>
         </div>
         <div class="stack">
-          <p class="lead">יומנים, קלפים וטקסים קטנים, הקלטות מודרכות, שוברי מתנה ופגישות אישיות.</p>
+          <p class="lead">כלים למדיטציה, ריחות ואווירה, יומנים וקלפים, קריסטלים, מדיטציות להורדה ומארזים. וגם שוברי מתנה ופגישות אישיות.</p>
           <p class="example">המוצרים והמחירים לדוגמה</p>
         </div>
       </header>
@@ -4046,18 +4055,64 @@ window.SITE = {
     ],
   },
 
-  categories: [["all", "הכול"], ["digital", "דיגיטלי"], ["goods", "מוצרים"], ["gift", "שוברי מתנה"], ["session", "פגישות"]],
+  // The shop (all products and prices are examples). A product: id, cat, art (its picture in art.js), name, desc, price;
+  // per: a word after the price ("לחודש"); pick: a choice made before adding it to the bag, { label, list: [[key, text, price]] }
+  // (a choice with a price of its own replaces the product's price; money: the choice is the sum itself, as on a voucher).
+  categories: [["all", "הכול"], ["practice", "מדיטציה ותרגול"], ["scent", "ריח ואווירה"], ["women", "העצמה נשית ותודעה"], ["crystals", "קריסטלים ואבנים"], ["digital", "דיגיטלי"], ["boxes", "מארזים ומנויים"], ["gift", "שוברים ופגישות"]],
   products: [
-    { id: "course21", cat: "digital", art: "course21", name: "21 ימים של בריאת מציאות", desc: "קורס הקלטות: מדיטציה יומית, כתיבה ומשימה קטנה.", price: 249 },
-    { id: "breathAudio", cat: "digital", art: "breathAudio", name: "נשימה לוויסות", desc: "הקלטה מודרכת של 12 דקות להרגעת מערכת העצבים.", price: 49 },
-    { id: "journal", cat: "goods", art: "journal", name: "יומן הכוונות", desc: "עמוד לכל יום: כוונה בבוקר, הכרת תודה בערב.", price: 119 },
-    { id: "cards", cat: "goods", art: "cards", name: "קלפי הכוונה של נטשה", desc: "חפיסת קלפים עם מסר ותרגול קטן בכל קלף.", price: 149 },
-    { id: "ritualKit", cat: "goods", art: "ritualKit", name: "ערכת טקס ירח", desc: "נר, מלח ים ודף כוונות, לטקס קטן בבית.", price: 129 },
-    { id: "visionBoard", cat: "goods", art: "visionBoard", name: "ערכת Vision Board", desc: "בסיס, גזירים מודפסים והדרכה צעד אחר צעד.", price: 89 },
+    // meditation and practice
+    { id: "zafu", cat: "practice", art: "zafu", name: "כרית זאפו ומזרן זאבוטון", desc: "ישיבה נוחה ויציבה למדיטציה, במילוי קליפות כוסמת ובכיסוי כותנה נשלף.", price: 249,
+      pick: { label: "מה לצרף", list: [["zafu", "כרית זאפו", 249], ["zabuton", "מזרן זאבוטון", 329], ["set", "הסט: זאפו וזאבוטון", 549]] } },
+    { id: "mala", cat: "practice", art: "mala", name: "מאלה של 108 חרוזים", desc: "שרשרת חרוזי אבן חן לספירת נשימות ומנטרות, עם גדיל משי.", price: 189,
+      pick: { label: "אבן", list: [["rose", "רוזקוורץ"], ["amethyst", "אמטיסט"], ["lapis", "לאפיס לזולי"]] } },
+    { id: "bowl", cat: "practice", art: "bowl", name: "קערות שירה ופעמוני טינגשה", desc: "צליל ארוך ונקי לפתיחה ולסגירה של תרגול.", price: 349,
+      pick: { label: "סוג", list: [["tibetan", "קערה טיבטית בעבודת יד", 349], ["crystal", "קערת קריסטל", 590], ["tingsha", "פעמוני טינגשה", 169]] } },
+    { id: "eyeMask", cat: "practice", art: "eyeMask", name: "מסכת עיניים משוקללת", desc: "משקל עדין וחושך מלא, למדיטציה בשכיבה ולשינה. מילוי זרעי פשתן ולבנדר.", price: 129 },
+    { id: "hourglass", cat: "practice", art: "hourglass", name: "שעון חול וטיימר למדיטציה", desc: "זמן תרגול בלי טלפון: חול שזורם, או טיימר שמסיים בצליל פעמון רך.", price: 89,
+      pick: { label: "סוג", list: [["sand10", "שעון חול, 10 דקות", 89], ["sand20", "שעון חול, 20 דקות", 99], ["timer", "טיימר עם פעמון", 139]] } },
+    // scent and atmosphere
+    { id: "candle", cat: "scent", art: "candle", name: "נר סויה עם כוונה", desc: "שעוות סויה, פתיל כותנה וכוונה כתובה על הצנצנת. כ-40 שעות בעירה.", price: 89,
+      pick: { label: "כוונה", list: [["love", "אהבה עצמית"], ["abundance", "שפע"], ["release", "שחרור"]] } },
+    { id: "smudge", cat: "scent", art: "smudge", name: "קטורת, פאלו סנטו ומרווה לבנה", desc: "צרור מרווה, שלושה מקלות פאלו סנטו וקטורת טבעית, בקופסת עץ.", price: 119 },
+    { id: "oils", cat: "scent", art: "oils", name: "מפיץ ריח ושמנים אתריים", desc: "מפיץ אדים ושמנים אתריים לבית, או רול־און מוכן לתיק.", price: 249,
+      pick: { label: "מה לצרף", list: [["diffuser", "מפיץ ושלושה שמנים", 249], ["calm", "רול־און ״רוגע״", 59], ["focus", "רול־און ״פוקוס״", 59]] } },
+    { id: "bathSalts", cat: "scent", art: "bathSalts", name: "מלחי אמבט עם פרחים מיובשים", desc: "מלח ים, מלח הימלאיה, עלי ורדים ולבנדר, לאמבט של ערב.", price: 69 },
+    // women's empowerment and awareness
+    { id: "journal", cat: "women", art: "journal", name: "יומן כתיבה מודרך", desc: "שאלה ותרגול קטן בכל עמוד, לבוקר ולערב.", price: 119,
+      pick: { label: "יומן", list: [["gratitude", "הכרת תודה"], ["cycle", "מעגל חודשי"], ["intentions", "הגשמת כוונות"]] } },
+    { id: "cards", cat: "women", art: "cards", name: "קלפי האפירמציות של נטשה", desc: "חפיסה בעיצוב שלנו: משפט מחזק ותרגול קטן בכל קלף.", price: 139,
+      pick: { label: "חפיסה", list: [["affirm", "קלפי אפירמציות", 139], ["inspire", "קלפי השראה", 149]] } },
+    { id: "cycle", cat: "women", art: "cycle", name: "לוח ויומן מחזוריות נשית", desc: "לוח מעקב חודשי לתלייה, ויומן שמלווה את ארבע העונות של המחזור.", price: 119,
+      pick: { label: "מה לצרף", list: [["board", "לוח מעקב", 69], ["journal", "יומן מחזוריות נשית", 119], ["set", "הלוח והיומן", 169]] } },
+    { id: "jewelry", cat: "women", art: "jewelry", name: "תכשיט עם משמעות", desc: "שרשרת עדינה עם תליון קטן, באריזת מתנה ועם כרטיס שמספר על הסמל.", price: 179,
+      pick: { label: "סמל", list: [["chakras", "צ׳אקרות"], ["moon", "ירח"], ["tree", "עץ החיים"], ["hamsa", "חמסה"]] } },
+    { id: "visionBoard", cat: "women", art: "visionBoard", name: "ערכה ליצירת לוח חזון", desc: "בסיס, גזירים מודפסים, מדבקות והדרכה צעד אחר צעד.", price: 89 },
+    // crystals and stones
+    { id: "stoneSet", cat: "crystals", art: "stoneSet", name: "סט אבנים לפי נושא", desc: "שלוש אבנים מלוטשות בשקית בד, עם כרטיס כוונה.", price: 119,
+      pick: { label: "נושא", list: [["love", "אהבה"], ["protection", "הגנה"], ["abundance", "שפע"]] } },
+    { id: "crystals", cat: "crystals", art: "crystals", name: "רוזקוורץ ואמטיסט", desc: "אבן אחת, גולמית או מלוטשת, בגודל של כף יד קטנה.", price: 59,
+      pick: { label: "אבן", list: [["roseRaw", "רוזקוורץ גולמי", 49], ["rosePolished", "רוזקוורץ מלוטש", 59], ["amethystRaw", "אמטיסט גולמי", 59], ["amethystPolished", "אמטיסט מלוטש", 69]] } },
+    { id: "guaSha", cat: "crystals", art: "guaSha", name: "גואשה ורולר אבן לפנים", desc: "רוזקוורץ קריר לעיסוי עדין של הפנים, כחלק מטקס הטיפוח.", price: 89,
+      pick: { label: "מה לצרף", list: [["guasha", "אבן גואשה", 89], ["roller", "רולר", 99], ["set", "גואשה ורולר", 159]] } },
+    // digital (no stock, delivered by link)
+    { id: "breathAudio", cat: "digital", art: "breathAudio", name: "מדיטציות מודרכות להורדה", desc: "קובצי שמע להורדה, לשמוע בבית, בדרך או לפני השינה.", price: 49,
+      pick: { label: "מדיטציה", list: [["breath", "נשימה לוויסות, 12 דקות", 49], ["sleep", "לפני השינה, 20 דקות", 49], ["pack", "חבילה של 5 מדיטציות", 179]] } },
+    { id: "course21", cat: "digital", art: "course21", name: "סדנאות מוקלטות ואתגרי 21 יום", desc: "שיעור קצר ומשימה קטנה בכל יום, בקצב שלך.", price: 249,
+      pick: { label: "מה לבחור", list: [["c21", "אתגר 21 יום: בריאת מציאות", 249], ["vagus", "סדנה מוקלטת: עצב הוואגוס", 149]] } },
+    { id: "printables", cat: "digital", art: "printables", name: "יומנים ופלאנרים להדפסה", desc: "קובץ PDF להורדה מיידית, להדפיס בבית כמה פעמים שתרצי.", price: 39,
+      pick: { label: "קובץ", list: [["weekly", "פלאנר שבועי", 39], ["gratitude", "30 ימים של הכרת תודה", 39], ["moon", "יומן מעגל הירח", 39], ["all", "שלושתם יחד", 89]] } },
+    // boxes and a subscription
+    { id: "ritualKit", cat: "boxes", art: "ritualBox", name: "קופסת ריטואל לירח", desc: "נר, קטורת, קלף ואבן, והדרכה לטקס קטן בבית.", price: 159,
+      pick: { label: "ירח", list: [["full", "ירח מלא"], ["new", "ירח חדש"]] } },
+    { id: "giftBox", cat: "boxes", art: "giftBox", name: "מארז מתנה", desc: "נר, אבן, קלף ומכתב, ארוזים ביד עם סרט.", price: 249,
+      pick: { label: "לאיזה רגע", list: [["birthday", "ליום הולדת"], ["birth", "ללידה"], ["parting", "לפרידה"]] } },
+    { id: "monthly", cat: "boxes", art: "monthly", name: "מנוי חודשי", desc: "קופסה שמגיעה בכל חודש עם מוצרים מתחלפים ותרגול לחודש. אפשר להפסיק מתי שרוצים.", price: 149, per: "לחודש" },
+    // gift vouchers and personal sessions
     { id: "giftRitual", cat: "gift", art: "giftRitual", name: "שובר לערב נשים", desc: "כרטיס ל-THE RITUAL הקרוב, באריזת מתנה.", price: 420 },
-    { id: "giftRetreat", cat: "gift", art: "giftRetreat", name: "שובר לריטריט", desc: "סכום לבחירה, למימוש בכל ריטריט.", price: 1000, options: [1000, 2500, 4600] },
-    { id: "session", cat: "session", art: "session", name: "פגישת אימון מנטלי", desc: "60 דקות עם נטע-לי, פנים מול פנים או בזום.", price: 380 },
-    { id: "pilates", cat: "session", art: "pilates", name: "פילאטיס אישי עם אירינה", desc: "50 דקות, מותאם לגוף שלך.", price: 220 },
+    { id: "giftRetreat", cat: "gift", art: "giftRetreat", name: "שובר לריטריט", desc: "סכום לבחירה, למימוש בכל ריטריט.", price: 1000,
+      pick: { label: "סכום השובר", money: true, list: [["1000", "₪1,000", 1000], ["2500", "₪2,500", 2500], ["4600", "₪4,600", 4600]] } },
+    { id: "session", cat: "gift", art: "session", name: "פגישת אימון מנטלי", desc: "60 דקות עם נטע-לי, פנים מול פנים או בזום.", price: 380 },
+    { id: "pilates", cat: "gift", art: "pilates", name: "פילאטיס אישי עם אירינה", desc: "50 דקות, מותאם לגוף שלך.", price: 220 },
   ],
 
   articles: [
@@ -4246,7 +4301,7 @@ window.SITE = {
       { k: ["ביטול", "החזר", "לבטל"], a: "ב-MANIFEST 2026 ביטול תוך 14 יום מההרשמה החזיר את מלוא הסכום, פחות דמי ביטול לפי החוק. אחר כך היה החזר של 50% עד תאריך מסוים, ומשם אין החזר. התנאים המדויקים מופיעים בעמוד ההרשמה של כל אירוע." },
       { k: ["חדר", "שותפה", "זוגי", "לינה"], a: "החדרים לשלוש משתתפות, עם מרפסת פרטית. אפשר לשדרג לחדר זוגי בתוספת תשלום, לפי זמינות." },
       { k: ["ערב", "ריטואל", "ritual", "טקס", "ירח", "נשים", "מכשפות"], a: "THE RITUAL הוא ערב נשים מיסטי: מעגל קלפים, טקס שחרור, ויזואליזציה, כוונות וארוחה מפנקת. הוא נפגש סביב הירח המלא.", act: ["event:ritual", "לערב הבא"] },
-      { k: ["חנות", "יומן", "קלפים", "נר", "שובר", "מתנה", "לקנות", "הזמנה"], a: "בחנות יש יומן כוונות, קלפי כוונה, ערכת טקס ירח, הקלטות מודרכות, שוברי מתנה ופגישות אישיות. מוסיפים לסל ושולחים את ההזמנה בוואטסאפ.", act: ["#shop", "לחנות"] },
+      { k: ["חנות", "יומן", "קלפים", "נר", "שובר", "מתנה", "לקנות", "הזמנה", "כרית", "מאלה", "קערה", "קטורת", "שמן", "מלח", "תכשיט", "קריסטל", "אבנים", "מארז", "מנוי"], a: "בחנות יש כלים למדיטציה (כריות, מאלות וקערות שירה), נרות וריחות, יומנים וקלפי אפירמציות, קריסטלים, מדיטציות להורדה, קופסאות ריטואל ומנוי חודשי, וגם שוברי מתנה ופגישות אישיות. מוסיפים לסל ושולחים את ההזמנה בוואטסאפ.", act: ["#shop", "לחנות"] },
       { k: ["פגישה", "אימון", "אישי", "אישית", "קליניקה", "פילאטיס", "אירינה"], a: "אפשר לקבוע פגישת אימון מנטלי עם נטע-לי (60 דקות, פנים מול פנים או בזום), או שיעור פילאטיס אישי עם אירינה.", act: ["#shop", "לפגישות"] },
       { k: ["צליל", "צלילים", "אמבט", "מוזיקה", "תדר", "תדרים", "סאונד", "להירדם", "שינה"], a: "באמבט הצלילים אפשר לשלב גלים, גשם, מדורה, צרצרים, קערה, פעמונים ותדר, לראות איך כל צליל מצייר על הבד, ולשמור את היצירה כתמונה. יש גם מצב ״לפני שינה״ עם טיימר.", act: ["#soundbath", "לאמבט הצלילים"] },
       { k: ["מנדל", "mandala", "לצייר", "ציור", "משחק", "חול צבעוני"], a: "במנדלת החול מציירים באצבע או בעכבר, והחול נשפך סביב המרכז ויוצר מנדלה. אפשר לבחור צבע וכיוונים, ללחוץ ״הפתעה״ למנדלה שנשפכת מעצמה, לשמור אותה כתמונה, או לשחרר את החול אל המרכז.", act: ["#mandala", "למנדלת החול"] },
@@ -4604,7 +4659,7 @@ window.SITE.who = {
       growth: "הצמיחה שלך היא לשים בול עץ גם באש שלך. מותר לך לבקש, לנוח ולהגיד לא, ומי שאוהבות אותך ישמחו לתת לך בחזרה.",
       practice: "השבוע, בכל יום, עשי דבר אחד קטן רק בשבילך, וקראי לו בשמו.",
       mantra: "גם האש שלי צריכה עצים.",
-      event: "ritual", product: "ritualKit",
+      event: "ritual", product: "candle",
     },
     MECR: {
       id: "root-keeper", family: "keepers", name: "שומרת השורשים", latin: "THE ROOT KEEPER",
@@ -4619,7 +4674,7 @@ window.SITE.who = {
       growth: "הצמיחה שלך היא לתת לשורשים לשתות גם מים חדשים. נסי פעם דרך אחרת, שתפי רגש לפני שהוא נעשה כבד, וזכרי שגם עץ חזק מתכופף ברוח.",
       practice: "השבוע, נסי דבר קטן אחד חדש לגמרי, שאין לך דרך לדעת איך ייצא.",
       mantra: "אני יציבה מספיק כדי להשתנות.",
-      event: "zoom", product: "journal",
+      event: "zoom", product: "stoneSet",
     },
     SEHR: {
       id: "weaver", family: "keepers", name: "אורגת המעגל", latin: "THE WEAVER",
@@ -4664,7 +4719,7 @@ window.SITE.who = {
       growth: "הצמיחה שלך היא להאמין שהיופי שלך ראוי להיראות. הראי את מה שיצרת, אמרי את מה שאת צריכה, ותני לרגע של היום לבנות גם משהו למחר.",
       practice: "השבוע, צרי משהו קטן בכל יום: צילום, ציור, סידור פרחים. ושתפי אחד מהם.",
       mantra: "היופי שלי ראוי להיראות.",
-      event: "manifest", product: "cards",
+      event: "manifest", product: "oils",
     },
     MECF: {
       id: "pathfinder", family: "wanderers", name: "נווטת השבילים", latin: "THE PATHFINDER",
@@ -4900,6 +4955,254 @@ window.ART = (() => {
         <g fill="none" stroke="#12243A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M58 138 L82 106 L118 98 L150 132"/><path d="M118 98 L132 70"/><path d="M82 106 L74 138"/></g>
         <circle cx="138" cy="58" r="10" fill="#12243A"/>`);
+    },
+
+    // meditation and practice
+    zafu() {
+      const t = uid("t");
+      let pleats = "";
+      for (let i = 1; i < 12; i++) { const a = (i / 12) * Math.PI, x = (100 - Math.cos(a) * 46).toFixed(1), y = (104 + Math.sin(a) * 14).toFixed(1); pleats += `<path d="M${x} ${y} v22" stroke="#5E2142" stroke-opacity=".45" stroke-width="1.2"/>`; }
+      let rays = "";
+      for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; rays += `<path d="M100 104 L${(100 + Math.cos(a) * 44).toFixed(1)} ${(104 + Math.sin(a) * 13).toFixed(1)}" stroke="#7E2F57" stroke-opacity=".35" stroke-width="1"/>`; }
+      return svg("0 0 200 200", `<defs>${lin(t, [[0, "#B85A82"], [1, "#94406A"]])}</defs><rect width="200" height="200" fill="#E4EEE8"/>
+        <ellipse cx="100" cy="164" rx="86" ry="11" fill="#12243A" opacity=".08"/>
+        <path d="M18 134 Q100 112 182 134 L182 148 Q100 172 18 148Z" fill="#4F7F78"/>
+        <path d="M18 134 Q100 112 182 134 Q100 156 18 134Z" fill="#7FAEA6"/>
+        <path d="M30 134 Q100 116 170 134" fill="none" stroke="#F7FAF9" stroke-opacity=".4" stroke-dasharray="3 4"/>
+        <path d="M54 104 v22 a46 14 0 0 0 92 0 v-22z" fill="#7E2F57"/>${pleats}
+        <ellipse cx="100" cy="104" rx="46" ry="14" fill="url(#${t})"/>${rays}
+        <circle cx="100" cy="104" r="3.4" fill="#E3C27A"/>`);
+    },
+    mala() {
+      let beads = "";
+      const N = 44;
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2, x = 100 + Math.sin(a) * 60, y = 84 - Math.cos(a) * 50 + Math.max(0, -Math.cos(a)) * 8;
+        const c = i % 2 ? "#E7A9BC" : "#F2C3D0";
+        beads += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.3" fill="${c}"/><circle cx="${(x - 1.3).toFixed(1)}" cy="${(y - 1.4).toFixed(1)}" r="1.2" fill="#FFFFFF" opacity=".8"/>`;
+      }
+      let tassel = "";
+      for (let i = -5; i <= 5; i++) tassel += `<path d="M100 160 Q${100 + i * 1.5} 172 ${100 + i * 2.6} 186" stroke="#B8336A" stroke-width="1.6" fill="none"/>`;
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#F6E7EC"/>
+        <ellipse cx="100" cy="182" rx="40" ry="5" fill="#12243A" opacity=".06"/>${beads}
+        <circle cx="100" cy="148" r="7.5" fill="#D98FA6"/><circle cx="97.5" cy="145.5" r="2" fill="#FFFFFF" opacity=".8"/>
+        <rect x="95" y="155" width="10" height="7" rx="2" fill="#C9A35B"/>${tassel}`);
+    },
+    bowl() {
+      const b = uid("b"), g = uid("g");
+      let rings = "";
+      for (let i = 0; i < 4; i++) { const r = 54 + i * 14; rings += `<path d="M${100 - r} ${100 - i * 4} a${r} ${r * 0.5} 0 0 1 ${r * 2} 0" fill="none" stroke="#E3C27A" stroke-opacity="${(0.32 - i * 0.07).toFixed(2)}" stroke-width="1.4"/>`; }
+      return svg("0 0 200 200", `<defs>${lin(b, [[0, "#E2BE70"], [0.55, "#B98A3E"], [1, "#7A5626"]], 1, 0)}${rad(g, [[0, "#FFD98C", 0.35], [1, "#FFD98C", 0]])}</defs>
+        <rect width="200" height="200" fill="#2B2350"/><circle cx="100" cy="112" r="80" fill="url(#${g})"/>${rings}
+        <ellipse cx="100" cy="154" rx="56" ry="12" fill="#9B2657"/><ellipse cx="100" cy="150" rx="50" ry="9" fill="#B8336A"/>
+        <path d="M50 112 Q54 152 100 152 Q146 152 150 112Z" fill="url(#${b})"/>
+        <ellipse cx="100" cy="112" rx="50" ry="11" fill="#F0D58F"/><ellipse cx="100" cy="113" rx="44" ry="8" fill="#6B4F22"/>
+        <path d="M60 124 Q100 136 140 124" fill="none" stroke="#FFF1C9" stroke-opacity=".35" stroke-width="2"/>
+        <g transform="rotate(28 160 118)"><rect x="156" y="78" width="8" height="70" rx="4" fill="#C99A6A"/><rect x="155" y="78" width="10" height="16" rx="5" fill="#8C5A3C"/></g>`);
+    },
+    eyeMask() {
+      let lav = "";
+      for (let i = 0; i < 7; i++) lav += `<ellipse cx="${(146 + i * 2.2).toFixed(1)}" cy="${(170 - i * 7).toFixed(1)}" rx="3" ry="4.4" fill="#9B83C9" transform="rotate(${-20 + i * 2} ${(146 + i * 2.2).toFixed(1)} ${(170 - i * 7).toFixed(1)})"/>`;
+      const lash = (cx) => `<path d="M${cx - 15} 92 Q${cx} 102 ${cx + 15} 92" fill="none" stroke="#E3C27A" stroke-width="2" stroke-linecap="round"/>${[-10, -4, 2, 8].map((dx) => `<path d="M${cx + dx} ${(97.5 + Math.abs(dx) * -0.06).toFixed(1)} l${(dx * 0.12).toFixed(1)} 5" stroke="#E3C27A" stroke-width="1.6" stroke-linecap="round"/>`).join("")}`;
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#E6DFF2"/>
+        <path d="M34 26 a14 14 0 1 0 12 22 a11 11 0 1 1 -12 -22z" fill="#C9A35B" opacity=".75"/><circle cx="62" cy="30" r="1.6" fill="#C9A35B"/><circle cx="170" cy="44" r="1.4" fill="#C9A35B"/>
+        <path d="M14 100 Q100 56 186 100" fill="none" stroke="#3B2A5C" stroke-width="6" stroke-linecap="round" opacity=".45"/>
+        <ellipse cx="100" cy="130" rx="70" ry="9" fill="#3B2A5C" opacity=".1"/>
+        <path d="M34 98 C34 70 68 66 100 80 C132 66 166 70 166 98 C166 124 136 130 112 118 Q100 112 88 118 C64 130 34 124 34 98Z" fill="#5B4B8A"/>
+        <path d="M42 98 C42 77 70 74 100 87 C130 74 158 77 158 98 C158 118 134 123 113 112 Q100 106 87 112 C66 123 42 118 42 98Z" fill="none" stroke="#C9B8EA" stroke-opacity=".55" stroke-dasharray="2.5 3"/>
+        ${lash(70)}${lash(130)}
+        <path d="M150 178 Q150 150 158 126" fill="none" stroke="#6E9E97" stroke-width="2"/>${lav}`);
+    },
+    hourglass() {
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#F5E8DA"/>
+        <ellipse cx="100" cy="170" rx="60" ry="7" fill="#12243A" opacity=".08"/>
+        <path d="M76 44 C76 80 98 92 98 100 C98 108 76 120 76 156 L124 156 C124 120 102 108 102 100 C102 92 124 80 124 44Z" fill="#FFFFFF" opacity=".6"/>
+        <path d="M82 66 C86 82 98 90 99 97 L101 97 C102 90 114 82 118 66Z" fill="#E3B27A"/>
+        <rect x="99.3" y="97" width="1.4" height="40" fill="#E3B27A"/>
+        <path d="M78 156 C82 140 92 134 100 132 C108 134 118 140 122 156Z" fill="#E3B27A"/>
+        <path d="M76 44 C76 80 98 92 98 100 C98 108 76 120 76 156 M124 44 C124 80 102 92 102 100 C102 108 124 120 124 156" fill="none" stroke="#C9B29A" stroke-width="1.5"/>
+        <path d="M82 52 C82 70 88 80 92 84" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+        <rect x="58" y="34" width="84" height="12" rx="4" fill="#8A5A3C"/><rect x="58" y="154" width="84" height="12" rx="4" fill="#8A5A3C"/>
+        <rect x="63" y="46" width="5" height="108" rx="2" fill="#A87452"/><rect x="132" y="46" width="5" height="108" rx="2" fill="#A87452"/>`);
+    },
+
+    // scent and atmosphere
+    candle() {
+      const s = uid("s"), f = uid("f"), g = uid("g"), j = uid("j");
+      return svg("0 0 200 200", `<defs>${lin(s, [[0, "#F6E0E4"], [1, "#EFCDBF"]])}${lin(f, [[0, "#FFF3C4"], [0.5, "#FFC66E"], [1, "#FF7F5C"]])}${rad(g, [[0, "#FFC66E", 0.6], [1, "#FFC66E", 0]])}${lin(j, [[0, "#EBC8B0"], [1, "#D9A98C"]], 1, 0)}</defs>
+        <rect width="200" height="200" fill="url(#${s})"/><circle cx="100" cy="70" r="58" fill="url(#${g})"/>
+        <ellipse cx="100" cy="170" rx="50" ry="6" fill="#7A4A3A" opacity=".12"/>
+        <rect x="62" y="86" width="76" height="82" rx="13" fill="url(#${j})"/>
+        <ellipse cx="100" cy="93" rx="33" ry="6.5" fill="#FFF7EE"/>
+        <rect x="74" y="114" width="52" height="34" rx="5" fill="#FFFBF4"/>
+        <path d="M95 121 a7 7 0 1 0 6 11 a5.5 5.5 0 1 1 -6 -11z" fill="#B8336A"/>
+        <rect x="86" y="139" width="28" height="2" rx="1" fill="#C9A35B"/>
+        <path d="M100 92 v-7" stroke="#3A2A3E" stroke-width="1.5"/>
+        <g class="flame" style="transform-box: fill-box"><path d="M100 58 C108 68 108 78 100 85 C92 78 92 68 100 58Z" fill="url(#${f})"/></g>
+        <path d="M150 168 Q152 136 162 112" fill="none" stroke="#8FAF8A" stroke-width="1.8"/><circle cx="162" cy="110" r="5" fill="#E7A9BC"/><circle cx="156" cy="124" r="4" fill="#F2C09B"/>`);
+    },
+    smudge() {
+      const sh = uid("sh");
+      // a bundle of white sage, lit at its tip, resting on an abalone shell beside two sticks of palo santo
+      let leaves = "";
+      for (let i = 0; i < 9; i++) { const y = -40 + i * 8, w = 13 - Math.abs(i - 4) * 1.4; leaves += `<ellipse cx="${(i % 2 ? -5 : 5)}" cy="${y}" rx="${w.toFixed(1)}" ry="6" fill="${i % 2 ? "#A9C2A3" : "#BFD3B8"}"/>`; }
+      return svg("0 0 200 200", `<defs>${lin(sh, [[0, "#BFDDE0"], [0.5, "#E9CFE0"], [1, "#C8C2EA"]], 1, 0)}</defs>
+        <rect width="200" height="200" fill="#EFE8DD"/>
+        <ellipse cx="100" cy="164" rx="72" ry="8" fill="#12243A" opacity=".07"/>
+        <path d="M34 150 C34 126 68 114 100 118 C132 114 166 126 166 150 C142 164 58 164 34 150Z" fill="url(#${sh})"/>
+        <path d="M44 148 C70 136 130 136 156 148" fill="none" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="1.5"/>
+        <g transform="rotate(-8 74 140)"><rect x="42" y="130" width="62" height="7" rx="3" fill="#D9B98C"/><rect x="48" y="140" width="54" height="7" rx="3" fill="#CFAE7E"/></g>
+        <g transform="translate(104 98) rotate(-40)">${leaves}<path d="M-9 16 h18 M-10 26 h20" stroke="#8C6E5A" stroke-width="2.2"/><rect x="-4" y="30" width="8" height="24" rx="3" fill="#8F7A5A"/>
+        <ellipse cx="0" cy="-45" rx="5" ry="3" fill="#7A6A5A"/><circle cx="0" cy="-46" r="2.4" fill="#FF8A5C"/></g>
+        <path d="M74 64 C66 54 80 46 72 36 C64 26 76 18 70 6" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity=".8"/>
+        <path d="M78 62 C86 52 76 44 84 32" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>`);
+    },
+    oils() {
+      const d = uid("d");
+      return svg("0 0 200 200", `<defs>${lin(d, [[0, "#FBF8F3"], [1, "#E6DED2"]], 1, 0)}</defs>
+        <rect width="200" height="200" fill="#DCEBE4"/>
+        <ellipse cx="100" cy="166" rx="80" ry="8" fill="#12243A" opacity=".08"/>
+        <path d="M84 72 C70 60 92 50 80 38 C72 30 84 22 78 12" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+        <path d="M92 74 C104 62 88 52 100 40" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+        <path d="M38 162 C38 118 56 92 76 86 L96 86 C116 92 134 118 134 162Z" fill="url(#${d})"/>
+        <ellipse cx="86" cy="86" rx="10" ry="3" fill="#CFC5B6"/>
+        <path d="M54 130 Q86 122 118 130" fill="none" stroke="#C9B8A6" stroke-opacity=".6"/>
+        <rect x="34" y="156" width="104" height="10" rx="4" fill="#B98B63"/>
+        <rect x="142" y="112" width="28" height="52" rx="6" fill="#A4552E"/><rect x="146" y="100" width="20" height="14" rx="3" fill="#2B2350"/><rect x="150" y="84" width="12" height="18" rx="6" fill="#3B2A5C"/>
+        <rect x="146" y="128" width="20" height="18" rx="2" fill="#F7EFE2"/><circle cx="156" cy="137" r="4" fill="#6E9E97"/>
+        <rect x="124" y="134" width="13" height="30" rx="4" fill="#C9A2D6"/><circle cx="130.5" cy="132" r="6" fill="#EDE6F4"/><rect x="124" y="148" width="13" height="7" fill="#F7EFE2"/>`);
+    },
+    bathSalts() {
+      const r = rng(23);
+      let bits = "";
+      for (let i = 0; i < 70; i++) { const x = 66 + r() * 68, y = 106 + r() * 52, k = r(); bits += k < 0.2 ? `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="3.2" ry="1.8" fill="#C95C7E" transform="rotate(${(r() * 180).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>` : k < 0.32 ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.6" fill="#8D74C2"/>` : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(0.8 + r() * 1.2).toFixed(1)}" fill="#FFFFFF" opacity=".8"/>`; }
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#F6E5EC"/>
+        <ellipse cx="100" cy="170" rx="56" ry="7" fill="#12243A" opacity=".08"/>
+        <rect x="60" y="70" width="80" height="98" rx="16" fill="#FFFFFF" opacity=".55"/>
+        <path d="M62 104 Q100 96 138 104 L138 152 Q138 166 124 166 L76 166 Q62 166 62 152Z" fill="#F2B6C6"/>${bits}
+        <rect x="60" y="70" width="80" height="98" rx="16" fill="none" stroke="#E2C2CF" stroke-width="1.5"/>
+        <path d="M70 82 v62" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+        <rect x="68" y="56" width="64" height="17" rx="5" fill="#C9A27A"/><path d="M72 62 h56" stroke="#A9825A" stroke-width="1"/>
+        <g transform="rotate(-24 160 156)"><ellipse cx="160" cy="156" rx="13" ry="8" fill="#C99A6A"/><rect x="171" y="153" width="24" height="6" rx="3" fill="#C99A6A"/></g>
+        <ellipse cx="38" cy="160" rx="7" ry="4" fill="#C95C7E" transform="rotate(-30 38 160)"/><ellipse cx="48" cy="166" rx="6" ry="3.4" fill="#E7A9BC" transform="rotate(20 48 166)"/>`);
+    },
+
+    // women's empowerment and awareness
+    cycle() {
+      const cols = ["#3B2A5C", "#6E9E97", "#E3C27A", "#D98FA6"];
+      let wedges = "";
+      for (let i = 0; i < 28; i++) {
+        const a0 = (i / 28) * Math.PI * 2 - Math.PI / 2 + 0.02, a1 = ((i + 1) / 28) * Math.PI * 2 - Math.PI / 2 - 0.02, R = 50, r0 = 30;
+        const p = (a, rr) => `${(100 + Math.cos(a) * rr).toFixed(1)} ${(104 + Math.sin(a) * rr).toFixed(1)}`;
+        wedges += `<path d="M${p(a0, r0)} L${p(a0, R)} A${R} ${R} 0 0 1 ${p(a1, R)} L${p(a1, r0)} A${r0} ${r0} 0 0 0 ${p(a0, r0)}Z" fill="${cols[Math.floor(i / 7)]}" opacity="${i % 7 < 3 ? 0.95 : 0.55}"/>`;
+      }
+      const moon = (x, y, f) => `<circle cx="${x}" cy="${y}" r="7" fill="#3B2A5C" opacity=".18"/><path d="${moonPath(x, y, 7, f)}" fill="#C9A35B"/>`;
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#F1E5EC"/>
+        <rect x="26" y="22" width="148" height="160" rx="10" fill="#FFFBF6"/>
+        <rect x="26" y="22" width="148" height="160" rx="10" fill="none" stroke="#E5D3DD"/>
+        ${wedges}<circle cx="100" cy="104" r="22" fill="#FFFBF6"/>
+        <path d="M100 112 C88 104 90 94 96 94 C99 94 100 97 100 98 C100 97 101 94 104 94 C110 94 112 104 100 112Z" fill="#B8336A"/>
+        ${moon(100, 40, 0.02)}${moon(164, 104, 0.25)}${moon(100, 168, 0.5)}${moon(36, 104, 0.75)}`);
+    },
+    jewelry() {
+      const g = uid("g"), c = uid("c");
+      return svg("0 0 200 200", `<defs>${rad(g, [[0, "#3A4A7A", 1], [1, "#1E2A4A", 1]], 0.5, 0.42, 0.7)}${lin(c, [[0, "#F3DC9A"], [1, "#B88C3E"]], 1, 1)}</defs>
+        <rect width="200" height="200" fill="url(#${g})"/>
+        <path d="M28 0 Q100 150 172 0" fill="none" stroke="#E3C27A" stroke-width="1.6" stroke-dasharray="2.4 2"/>
+        <circle cx="100" cy="76" r="3" fill="none" stroke="#E3C27A" stroke-width="1.6"/>
+        <path d="M108 86 a24 24 0 1 0 14 42 a19 19 0 1 1 -14 -42z" fill="url(#${c})"/>
+        <circle cx="124" cy="102" r="3.4" fill="#F7E7B4"/>
+        <path d="M58 150 l2 -6 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2z" fill="#F7E7B4" opacity=".8"/>
+        <path d="M150 54 l1.6 -4.6 l1.6 4.6 l4.6 1.6 l-4.6 1.6 l-1.6 4.6 l-1.6 -4.6 l-4.6 -1.6z" fill="#F7E7B4" opacity=".7"/>
+        <circle cx="46" cy="40" r="1.4" fill="#F7E7B4" opacity=".7"/><circle cx="160" cy="150" r="1.6" fill="#F7E7B4" opacity=".6"/>`);
+    },
+
+    // crystals and stones
+    stoneSet() {
+      const stone = (cx, cy, rx, ry, a, c1, c2) => { const id = uid("st"); return `<defs>${rad(id, [[0, c1], [1, c2]], 0.38, 0.32, 0.75)}</defs><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id})" transform="rotate(${a} ${cx} ${cy})"/><ellipse cx="${cx - rx * 0.32}" cy="${cy - ry * 0.38}" rx="${(rx * 0.26).toFixed(1)}" ry="${(ry * 0.18).toFixed(1)}" fill="#FFFFFF" opacity=".55" transform="rotate(${a - 18} ${cx - rx * 0.32} ${cy - ry * 0.38})"/>`; };
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#F2EBE2"/>
+        <ellipse cx="100" cy="164" rx="80" ry="9" fill="#12243A" opacity=".07"/>
+        <path d="M44 84 C40 120 46 150 70 156 L120 156 C140 150 146 120 140 84 C126 92 58 92 44 84Z" fill="#D8C7AE"/>
+        <path d="M44 84 C60 74 124 74 140 84 C126 92 58 92 44 84Z" fill="#B9A586"/>
+        <path d="M44 84 C40 120 46 150 70 156" fill="none" stroke="#C4B094" stroke-width="2"/>
+        <path d="M60 82 C70 64 84 70 92 80 M92 80 C100 64 118 66 122 80" fill="none" stroke="#8C6E5A" stroke-width="2.2" stroke-linecap="round"/>
+        ${stone(82, 142, 22, 16, -12, "#F6C7D4", "#D9839E")}${stone(122, 146, 20, 15, 10, "#4A4458", "#1F1B28")}${stone(152, 128, 18, 14, -6, "#F7DC8E", "#D9A53E")}
+        <g transform="rotate(8 158 64)"><rect x="140" y="44" width="36" height="44" rx="4" fill="#FFFBF4"/><path d="M158 70 C150 64 151 57 155 57 C157 57 158 59 158 60 C158 59 159 57 161 57 C165 57 166 64 158 70Z" fill="#B8336A"/></g>`);
+    },
+    crystals() {
+      const pt = (x, w, h, c1, c2, a) => `<g transform="rotate(${a} ${x} 150)"><path d="M${x - w} 150 L${x - w} ${150 - h} L${x} ${150 - h - w * 1.3} L${x + w} ${150 - h} L${x + w} 150Z" fill="${c1}"/><path d="M${x} 150 L${x} ${150 - h} L${x + w} ${150 - h} L${x + w} 150Z" fill="${c2}"/><path d="M${x} ${150 - h} L${x} ${150 - h - w * 1.3} L${x + w} ${150 - h}Z" fill="#FFFFFF" opacity=".3"/></g>`;
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#EEE6F3"/>
+        <ellipse cx="100" cy="160" rx="84" ry="9" fill="#12243A" opacity=".08"/>
+        <path d="M24 156 C26 140 52 136 96 140 C110 142 112 154 104 158 C80 164 36 164 24 156Z" fill="#8A8496"/>
+        ${pt(46, 9, 34, "#9B7BC9", "#7B5BA6", -18)}${pt(66, 11, 52, "#B697DE", "#8A68B8", -4)}${pt(86, 8, 30, "#8A68B8", "#6A4C96", 14)}${pt(58, 6, 20, "#C9B0EA", "#9B7BC9", -30)}
+        <path d="M118 158 L112 128 L128 104 L156 100 L176 118 L178 148 L160 162Z" fill="#F2B6C6"/>
+        <path d="M128 104 L142 126 L156 100Z" fill="#F8D2DC"/><path d="M142 126 L176 118 L178 148Z" fill="#E596AE"/>
+        <path d="M112 128 L142 126 L160 162 L118 158Z" fill="#EBA5BA"/><path d="M142 126 L178 148 L160 162Z" fill="#D9839E"/>
+        <path d="M128 110 L136 120" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>`);
+    },
+    guaSha() {
+      const p = uid("p"), q = uid("q");
+      return svg("0 0 200 200", `<defs>${lin(p, [[0, "#F9D3DD"], [1, "#E393AB"]], 1, 1)}${lin(q, [[0, "#F6C3D1"], [0.5, "#FBE1E8"], [1, "#E8A2B7"]], 0, 1)}</defs>
+        <rect width="200" height="200" fill="#F7E8EA"/>
+        <ellipse cx="100" cy="168" rx="80" ry="8" fill="#12243A" opacity=".07"/>
+        <g transform="rotate(-18 72 112)"><path d="M72 84 C60 64 24 68 26 98 C28 124 54 140 72 156 C90 140 116 124 118 98 C120 68 84 64 72 84Z" fill="url(#${p})"/>
+        <path d="M30 104 q4 -4 8 0 t8 0 t8 0" fill="none" stroke="#FBE1E8" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+        <path d="M38 86 C34 98 36 112 44 122" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".6"/></g>
+        <g transform="rotate(-32 146 112)"><rect x="141" y="94" width="10" height="74" rx="4" fill="#C9A35B"/>
+        <path d="M128 98 h36 v-6 h-36z M128 98 v-14 M164 98 v-14" fill="none" stroke="#C9A35B" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="130" y="60" width="32" height="26" rx="12" fill="url(#${q})"/><path d="M136 64 v18" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" opacity=".6"/></g>`);
+    },
+
+    // digital
+    printables() {
+      let lines = "";
+      for (let i = 0; i < 6; i++) lines += `<rect x="96" y="${82 + i * 12}" width="10" height="10" rx="2" fill="none" stroke="#B9AECC"/><rect x="112" y="${86 + i * 12}" width="${36 - (i % 3) * 8}" height="2.4" rx="1.2" fill="#B9AECC"/>`;
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#E4ECF1"/>
+        <ellipse cx="104" cy="170" rx="70" ry="7" fill="#12243A" opacity=".08"/>
+        <g transform="rotate(-8 80 104)"><rect x="34" y="40" width="96" height="124" rx="6" fill="#FFFFFF"/><path d="M50 62 h64 M50 74 h52 M50 86 h60" stroke="#D5DCE6" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="82" cy="122" r="18" fill="none" stroke="#D5DCE6" stroke-width="3"/></g>
+        <g transform="rotate(5 122 106)"><rect x="80" y="44" width="96" height="124" rx="6" fill="#FFFDF8"/>
+        <path d="M98 64 a9 9 0 1 0 6 15 a7 7 0 1 1 -6 -15z" fill="#3B2A5C"/><rect x="112" y="66" width="44" height="4" rx="2" fill="#3B2A5C" opacity=".7"/>${lines}</g>
+        <rect x="136" y="134" width="44" height="22" rx="6" fill="#B8336A"/><text x="158" y="149.5" text-anchor="middle" font-family="Assistant, sans-serif" font-weight="700" font-size="11" letter-spacing="1.5" fill="#FFFFFF">PDF</text>
+        <g transform="rotate(-52 52 150)"><rect x="40" y="146" width="56" height="8" rx="2" fill="#E3C27A"/><path d="M96 146 l10 4 l-10 4z" fill="#F2D6B0"/><rect x="34" y="146" width="7" height="8" rx="2" fill="#D98FA6"/></g>`);
+    },
+
+    // boxes and a subscription
+    ritualBox() {
+      const s = uid("s"), f = uid("f"), g = uid("g");
+      return svg("0 0 200 200", `<defs>${lin(s, [[0, "#2B2350"], [1, "#5A3F6E"]])}${lin(f, [[0, "#FFF3C4"], [0.5, "#FFC66E"], [1, "#FF7F5C"]])}${rad(g, [[0, "#FFF1DA", 0.55], [1, "#FFF1DA", 0]])}</defs>
+        <rect width="200" height="200" fill="url(#${s})"/><circle cx="154" cy="42" r="40" fill="url(#${g})"/><circle cx="154" cy="42" r="14" fill="#FFF1DA"/>
+        <path d="M34 104 L166 104 L176 92 L44 92Z" fill="#A47A52"/>
+        <rect x="60" y="62" width="16" height="40" rx="3" fill="#F2ECE4"/><path d="M68 62 v-5" stroke="#2B2350" stroke-width="1.4"/>
+        <g class="flame" style="transform-box: fill-box"><path d="M68 40 C74 47 74 53 68 57 C62 53 62 47 68 40Z" fill="url(#${f})"/></g>
+        <g transform="rotate(8 108 80)"><rect x="92" y="54" width="32" height="48" rx="4" fill="#1E2A4A" stroke="#C9A35B"/><path d="M110 68 a8 8 0 1 0 5 13 a6.4 6.4 0 1 1 -5 -13z" fill="#C9A35B"/></g>
+        <path d="M138 100 L136 64" stroke="#8C6E5A" stroke-width="2"/><circle cx="135.8" cy="62" r="2.2" fill="#FF8A5C"/>
+        <path d="M136 60 C130 50 142 44 136 34" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity=".6"/>
+        <path d="M144 100 l6 -12 l12 -2 l6 10 l-8 8z" fill="#9B7BC9"/><path d="M150 88 l12 -2 l-4 8z" fill="#C9B0EA"/>
+        <path d="M34 104 L166 104 L166 160 L34 160Z" fill="#C99A6A"/><path d="M34 104 L166 104 L166 112 L34 112Z" fill="#B48558"/>
+        <rect x="80" y="122" width="40" height="22" rx="3" fill="#F2ECE4" opacity=".9"/><path d="M96 128 a5 5 0 1 0 4 8 a4 4 0 1 1 -4 -8z" fill="#3B2A5C"/>`);
+    },
+    giftBox() {
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#F6DDE3"/>
+        <ellipse cx="100" cy="170" rx="70" ry="8" fill="#12243A" opacity=".08"/>
+        <rect x="44" y="96" width="112" height="70" rx="6" fill="#F3E7DC"/>
+        <rect x="38" y="80" width="124" height="22" rx="6" fill="#FFF8F1"/>
+        <rect x="44" y="124" width="112" height="12" fill="#B8336A"/><rect x="92" y="80" width="16" height="86" fill="#B8336A"/>
+        <path d="M100 80 C84 58 62 62 70 76 C74 84 90 82 100 80Z" fill="#B8336A"/><path d="M100 80 C116 58 138 62 130 76 C126 84 110 82 100 80Z" fill="#9B2657"/>
+        <circle cx="100" cy="80" r="6" fill="#9B2657"/>
+        <path d="M100 84 C96 96 90 104 82 110 M100 84 C104 96 110 104 118 110" fill="none" stroke="#B8336A" stroke-width="4" stroke-linecap="round"/>
+        <path d="M150 104 C160 114 162 122 158 130" fill="none" stroke="#8C6E5A" stroke-width="1.3"/>
+        <g transform="rotate(-12 160 142)"><rect x="146" y="130" width="28" height="22" rx="3" fill="#FFFBF4"/><path d="M160 146 C154 141 155 136 158 136 C159.5 136 160 137.5 160 138 C160 137.5 160.5 136 162 136 C165 136 166 141 160 146Z" fill="#B8336A"/></g>
+        <path d="M30 150 Q34 128 44 116" fill="none" stroke="#6E9E97" stroke-width="1.8"/><ellipse cx="40" cy="128" rx="6" ry="3" fill="#8FB8A8" transform="rotate(-50 40 128)"/><ellipse cx="34" cy="140" rx="6" ry="3" fill="#8FB8A8" transform="rotate(-30 34 140)"/>`);
+    },
+    monthly() {
+      const box = (x, y, w, c1, c2) => `<rect x="${x}" y="${y + 8}" width="${w}" height="30" rx="4" fill="${c1}"/><rect x="${x - 3}" y="${y}" width="${w + 6}" height="11" rx="4" fill="${c2}"/><rect x="${x + w / 2 - 4}" y="${y}" width="8" height="38" fill="#FFFFFF" opacity=".6"/>`;
+      return svg("0 0 200 200", `<rect width="200" height="200" fill="#E5EEE8"/>
+        <circle cx="100" cy="104" r="74" fill="none" stroke="#B8336A" stroke-width="3" stroke-dasharray="330 135" stroke-linecap="round" transform="rotate(-62 100 104)"/>
+        <path d="M29 74 L19 92 L38 90Z" fill="#B8336A"/>
+        <ellipse cx="100" cy="160" rx="54" ry="6" fill="#12243A" opacity=".08"/>
+        ${box(66, 120, 68, "#D98FA6", "#E7A9BC")}${box(72, 84, 56, "#9B83C9", "#B9A6E2")}${box(78, 50, 44, "#6E9E97", "#A9CDB4")}
+        <path d="M100 28 a8 8 0 1 0 6 13 a6.4 6.4 0 1 1 -6 -13z" fill="#C9A35B"/>`);
     },
   };
 
@@ -6203,38 +6506,64 @@ window.ART = (() => {
   function initShop() {
     const tabs = $("#shop-tabs"), grid = $("#products"), cartBtn = $("#cart-btn"), count = $("#cart-count");
     const catName = Object.fromEntries(S.categories);
+    const byId = (id) => S.products.find((p) => p.id === id);
+    // a product's choice (pick): the chosen line [key, text, price?], and the price it sets
+    const choiceOf = (p, v) => (p && p.pick ? p.pick.list.find((c) => c[0] === String(v)) || null : null);
+    const priceFor = (p, v) => { const c = choiceOf(p, v); return c && c[2] ? c[2] : p.price; };
+    const priceTag = (p, v) => ils(priceFor(p, v)) + (p.per ? `<small>${esc(p.per)}</small>` : "");
     tabs.innerHTML = S.categories.map(([k, t], i) => `<button type="button" data-cat="${k}" aria-pressed="${i === 0}">${t}</button>`).join("");
-    grid.innerHTML = S.products.map((p) => `<article class="product" data-cat="${p.cat}" data-id="${p.id}">
+    grid.innerHTML = S.products.map((p) => {
+      const pk = p.pick, first = pk ? pk.list[0][0] : "";
+      const select = pk ? `<label class="sr-only" for="v-${p.id}">${esc(pk.label)}: ${esc(p.name)}</label><select id="v-${p.id}" data-pick="${p.id}">${pk.list.map(([k, t]) => `<option value="${esc(k)}">${esc(t)}</option>`).join("")}</select>` : "";
+      return `<article class="product" data-cat="${p.cat}" data-id="${p.id}">
       <div class="product__art">${ART.product(p.art)}</div>
       <div class="product__body"><p class="product__cat">${catName[p.cat]}</p><h3 class="product__name">${esc(p.name)}</h3><p class="product__desc">${esc(p.desc)}</p>
-      <div class="product__foot">${p.options ? `<label class="sr-only" for="opt-${p.id}">סכום השובר</label><select id="opt-${p.id}">${p.options.map((o) => `<option value="${o}">${ils(o)}</option>`).join("")}</select>` : `<span class="price num">${ils(p.price)}</span>`}
-      <button class="btn btn--primary btn--sm" type="button" data-add="${p.id}">הוספה לסל</button></div></div></article>`).join("");
+      <div class="product__buy">${pk && !pk.money ? `<div class="product__pick">${select}</div>` : ""}
+      <div class="product__foot">${pk && pk.money ? select : `<span class="price num" id="pr-${p.id}">${priceTag(p, first)}</span>`}
+      <button class="btn btn--primary btn--sm" type="button" data-add="${p.id}" aria-label="הוספה לסל: ${esc(p.name)}">הוספה לסל</button></div></div></div></article>`;
+    }).join("");
+    // a choice with a price of its own changes the price shown
+    grid.addEventListener("change", (e) => { const s = e.target.closest("[data-pick]"); if (!s) return; const p = byId(s.dataset.pick), pr = $(`#pr-${p.id}`); if (pr) pr.innerHTML = priceTag(p, s.value); });
     const filter = (cat) => {
       $$("button", tabs).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === cat)));
       $$(".product", grid).forEach((el) => { el.hidden = cat !== "all" && el.dataset.cat !== cat; });
     };
     $$("button", tabs).forEach((b) => b.addEventListener("click", () => filter(b.dataset.cat)));
-    let cart = store.get("natasha-cart", []);
+    // the bag: [{ key, id, v (the choice), qty }]. A bag kept from before (other products, or a voucher sum in opt) is
+    // brought up to date: what no longer exists is dropped, and a choice no longer offered falls back to the first.
+    let cart = (store.get("natasha-cart", []) || []).map((it) => {
+      const p = it && byId(it.id);
+      if (!p || !(it.qty > 0)) return null;
+      let v = it.v != null ? String(it.v) : it.opt ? String(it.opt) : "";
+      if (p.pick && !choiceOf(p, v)) v = p.pick.list[0][0];
+      if (!p.pick) v = "";
+      return { key: p.id + (v ? ":" + v : ""), id: p.id, v, qty: Math.min(99, Math.round(it.qty)) };
+    }).filter(Boolean).reduce((acc, it) => { const same = acc.find((x) => x.key === it.key); if (same) same.qty += it.qty; else acc.push(it); return acc; }, []);
     const save = () => { store.set("natasha-cart", cart); update(); };
-    const priceOf = (it) => it.opt || S.products.find((p) => p.id === it.id).price;
+    const priceOf = (it) => priceFor(byId(it.id), it.v);
     const update = () => {
       const n = cart.reduce((s, it) => s + it.qty, 0);
       count.hidden = n === 0; count.textContent = String(n);
       cartBtn.setAttribute("aria-label", n ? `סל הקניות, ${n} פריטים` : "סל הקניות, ריק");
     };
-    const add = (id, opt) => {
-      const key = id + (opt ? ":" + opt : "");
+    const add = (id, v) => {
+      const p = byId(id);
+      if (!p) return;
+      v = p.pick ? (choiceOf(p, v) ? String(v) : p.pick.list[0][0]) : "";
+      const key = id + (v ? ":" + v : "");
       const it = cart.find((x) => x.key === key);
-      if (it) it.qty++; else cart.push({ key, id, opt: opt ? +opt : 0, qty: 1 });
+      if (it) it.qty++; else cart.push({ key, id, v, qty: 1 });
       save();
       toast("נוסף לסל");
       if (!CB.still && cartBtn.animate) cartBtn.animate([{ transform: "scale(1)" }, { transform: "scale(1.15)" }, { transform: "scale(1)" }], { duration: 360, easing: "cubic-bezier(0.23,1,0.32,1)" });
     };
-    grid.addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (!b) return; const sel = $(`#opt-${b.dataset.add}`); add(b.dataset.add, sel ? sel.value : 0); });
+    if (cart.length) save(); else update();
+    grid.addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (!b) return; const sel = $(`#v-${b.dataset.add}`); add(b.dataset.add, sel ? sel.value : ""); });
+    const lineName = (it) => { const p = byId(it.id), c = choiceOf(p, it.v); return { p, c }; };
     const cartHTML = () => {
-      if (!cart.length) return `<p class="empty">הסל ריק. אפשר להתחיל מיומן הכוונות, מקלפי הכוונה או משובר מתנה.</p><a class="btn btn--primary" href="#shop">לחנות</a>`;
+      if (!cart.length) return `<p class="empty">הסל ריק. אפשר להתחיל מנר עם כוונה, מקלפי האפירמציות או מקופסת ריטואל לירח.</p><a class="btn btn--primary" href="#shop">לחנות</a>`;
       const total = cart.reduce((s, it) => s + priceOf(it) * it.qty, 0);
-      return `<div class="cart-list">${cart.map((it) => { const p = S.products.find((x) => x.id === it.id); return `<div class="cart-item" data-key="${it.key}"><div class="thumb">${ART.product(p.art)}</div><div><b>${esc(p.name)}</b><small class="num">${ils(priceOf(it))}</small></div><div class="qty"><button type="button" data-q="1" aria-label="להוסיף אחד">+</button><output>${it.qty}</output><button type="button" data-q="-1" aria-label="להוריד אחד">−</button></div></div>`; }).join("")}</div>
+      return `<div class="cart-list">${cart.map((it) => { const { p, c } = lineName(it); return `<div class="cart-item" data-key="${esc(it.key)}"><div class="thumb">${ART.product(p.art)}</div><div><b>${esc(p.name)}</b>${c && !p.pick.money ? `<small class="cart-item__pick">${esc(c[1])}</small>` : ""}<small class="num">${ils(priceOf(it))}${p.per ? ` ${esc(p.per)}` : ""}</small></div><div class="qty"><button type="button" data-q="1" aria-label="להוסיף אחד: ${esc(p.name)}">+</button><output>${it.qty}</output><button type="button" data-q="-1" aria-label="להוריד אחד: ${esc(p.name)}">−</button></div></div>`; }).join("")}</div>
         <p class="cart-total"><span>סך הכול</span><span class="num">${ils(total)}</span></p>
         <div class="field"><label for="cart-note">הערה להזמנה (לא חובה)</label><textarea id="cart-note" rows="2" placeholder="למשל: כתובת למשלוח, הקדשה לשובר"></textarea></div>
         <div class="form__actions"><button class="btn btn--primary" type="button" id="cart-send">לשלוח הזמנה בוואטסאפ</button><span class="fine" id="cart-out">התשלום בביט, בפייבוקס או בהעברה, אחרי אישור ההזמנה.</span></div>
@@ -6249,7 +6578,7 @@ window.ART = (() => {
           save(); body.innerHTML = cartHTML(); return;
         }
         if (e.target.closest("#cart-send")) {
-          const lines = cart.map((it) => { const p = S.products.find((x) => x.id === it.id); return `• ${p.name}${it.opt ? ` (${ils(it.opt)})` : ""} × ${it.qty}`; });
+          const lines = cart.map((it) => { const { p, c } = lineName(it); return `• ${p.name}${c ? ` (${c[1]})` : ""} × ${it.qty}${p.per ? ` (${ils(priceOf(it))} ${p.per})` : ""}`; });
           const total = cart.reduce((s, it) => s + priceOf(it) * it.qty, 0);
           const note = ($("#cart-note", body) || {}).value || "";
           sendWA(["היי נטע-לי, אשמח להזמין מהחנות:", ...lines, `סך הכול: ${ils(total)}`, note ? `הערה: ${note}` : ""].filter(Boolean).join("\n"), $("#cart-out", body));
@@ -6257,18 +6586,20 @@ window.ART = (() => {
       });
     });
     cartBtn.addEventListener("click", openCart);
-    CB.showProduct = (id) => {
-      filter("all");
+    // From elsewhere on the site (a quiz result, the chat): open the shop, on this product (and this choice, if given).
+    CB.showProduct = (id, v) => {
       const el = $(`.product[data-id="${id}"]`, grid);
       if (!el) return;
+      if (CB.view && CB.view.current() !== "shop") go("#shop");
+      filter("all");
+      const sel = $(`#v-${id}`, el);
+      if (sel && v != null && choiceOf(byId(id), v)) { sel.value = String(v); sel.dispatchEvent(new Event("change", { bubbles: true })); }
       const r = el.getBoundingClientRect();
       scrollToY(r.top + window.scrollY - Math.max(80, (window.innerHeight - r.height) / 2));
-      const btn = $("[data-add]", el);
-      btn.focus({ preventScroll: true });
+      $("[data-add]", el).focus({ preventScroll: true });
       if (el.animate && !CB.still) setTimeout(() => el.animate([{ boxShadow: "0 0 0 1px var(--line) inset" }, { boxShadow: "0 0 0 3px var(--accent) inset" }, { boxShadow: "0 0 0 1px var(--line) inset" }], { duration: 1600, easing: "ease-in-out" }), 700);
     };
-    CB.cart = { add, open: openCart, get: () => cart };
-    update();
+    CB.cart = { add, open: openCart, get: () => cart, price: (id, v) => priceFor(byId(id), v) };
   }
 
   /* ---------- Learn: articles, FAQ, legal pages ---------- */
