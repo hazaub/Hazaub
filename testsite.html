@@ -3326,6 +3326,274 @@ html:not(.motion) .my-sky__new, .a11y-still .my-sky__new { display: none; }
 html:not(.motion) .chest *, .a11y-still .chest *, html:not(.motion) .chest-reveal *, .a11y-still .chest-reveal *, html:not(.motion) .gift *, .a11y-still .gift * { animation: none !important; }
 html:not(.motion) .envelope *, .a11y-still .envelope * { transition: none !important; }
 
+/* ==========================================================================================================
+   מסע אל הכוכבים (cosmos.js, cosmos-gate.js): the journey behind the sun and the moon of the home page.
+   One canvas behind the chapters draws their scenes; the words sit on dark glass beside (or below) them.
+   ========================================================================================================== */
+
+/* ---------- the door on the home page: the sun or the moon itself ---------- */
+/* (as the fishing boat's button: a tap goes through it, so a world's gate or a link in front of a low sun still gets its
+   own tap; anywhere else on the orb the hero answers it (journey.js). It stays for the keyboard, and shows the ring.) */
+.orb-door {
+  position: absolute; left: var(--od-x, 27%); top: var(--od-y, 33%); width: var(--od-d, 220px); height: var(--od-d, 220px);
+  transform: translate(-50%, -50%); z-index: 4; padding: 0; border: 0; border-radius: 50%; background: transparent;
+  pointer-events: none;
+}
+.hero.orb-point { cursor: pointer; }
+.orb-door::before, .orb-door::after { content: ""; position: absolute; inset: -5%; border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .45s var(--ease-out), transform .6s var(--ease-out); }
+.orb-door::before { box-shadow: 0 0 0 1.5px rgb(255 248 236 / .75), 0 0 42px 8px rgb(236 228 255 / .28); transform: scale(.96); }
+.orb-door.is-sun::before { box-shadow: 0 0 0 1.5px rgb(255 240 205 / .8), 0 0 48px 10px rgb(255 222 160 / .32); }
+.orb-door.is-hover::before, .orb-door:focus-visible::before { opacity: 1; transform: scale(1); }
+.orb-door:focus-visible { outline: none; }
+.orb-door__tip {
+  position: absolute; top: calc(100% + 12px); left: 50%; translate: -50% 6px; white-space: nowrap; pointer-events: none;
+  padding: 7px 14px; border-radius: 999px; font: 600 .92rem/1.2 var(--font-body); color: #241A3D; background: rgb(255 250 242 / .92);
+  box-shadow: 0 10px 24px -12px rgb(10 8 30 / .6); opacity: 0; transition: opacity .3s var(--ease-out), translate .4s var(--ease-out);
+}
+.orb-door.is-hover .orb-door__tip, .orb-door:focus-visible .orb-door__tip { opacity: 1; translate: -50% 0; }
+/* once a visit: a ring of light goes out from it */
+.orb-door.is-call::after { animation: orb-call 2.1s var(--ease-out) 2; box-shadow: 0 0 0 2px rgb(255 248 236 / .7); }
+@keyframes orb-call { 0% { opacity: .9; transform: scale(.98); } 100% { opacity: 0; transform: scale(1.6); } }
+html:not(.motion) .orb-door.is-call::after { animation: none; }
+.hero.is-water .orb-door__tip { display: none; }
+/* while the boat sails away to the town (and up the hill), the moon is no longer there to touch */
+.hero.jr-away .orb-door { display: none; }
+
+/* ---------- the way in: the layer over the page ---------- */
+.cosmos-gate { position: fixed; inset: 0; z-index: 460; visibility: hidden; pointer-events: none; }
+.cosmos-gate.is-on { visibility: visible; pointer-events: auto; cursor: pointer; }
+.cosmos-gate canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.cosmos-gate__plain { display: none; }
+.cosmos-gate.is-plain canvas { display: none; }
+.cosmos-gate.is-plain .cosmos-gate__plain {
+  display: block; position: absolute; left: var(--gx); top: var(--gy); width: calc(var(--gr) * 2); height: calc(var(--gr) * 2);
+  border-radius: 50%; translate: -50% -50%; background: radial-gradient(circle, #fff 0%, var(--gc) 45%, #2A2152 100%);
+  scale: calc(1 + var(--gp, 0) * var(--gp, 0) * 90); opacity: calc(1 - max(0, var(--gp, 0) - .7) * 3.3);
+}
+html.is-flying { cursor: progress; }
+
+/* ---------- the page ---------- */
+.cosmos-view { position: relative; color: var(--moon); background: #0B0A1E; color-scheme: dark; }
+html[data-view="cosmos"] body { background: #0B0A1E; }
+html[data-view="cosmos"] body::before, html[data-view="cosmos"] body::after { display: none; }
+.cosmos__gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; pointer-events: none; }
+/* without WebGL (or before it draws): a painted night */
+.cosmos__sky {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(1.6px 1.6px at 12% 14%, #FFF6E6 60%, transparent), radial-gradient(1.2px 1.2px at 28% 32%, #FFF6E6 60%, transparent),
+    radial-gradient(1.8px 1.8px at 46% 9%, #FFF6E6 60%, transparent), radial-gradient(1.3px 1.3px at 63% 24%, #FFF6E6 60%, transparent),
+    radial-gradient(1.6px 1.6px at 81% 12%, #FFF6E6 60%, transparent), radial-gradient(1.2px 1.2px at 92% 38%, #FFF6E6 60%, transparent),
+    radial-gradient(1.4px 1.4px at 7% 46%, #FFF6E6 60%, transparent), radial-gradient(1.2px 1.2px at 74% 52%, #FFF6E6 60%, transparent),
+    radial-gradient(1.3px 1.3px at 38% 61%, #FFF6E6 60%, transparent), radial-gradient(1.5px 1.5px at 88% 70%, #FFF6E6 60%, transparent),
+    radial-gradient(60% 40% at 25% 40%, rgb(150 110 220 / .28), transparent 70%),
+    radial-gradient(50% 35% at 80% 75%, rgb(230 120 170 / .16), transparent 70%),
+    linear-gradient(180deg, #0B0A1E 0%, #17123A 50%, #1F1848 100%);
+}
+.cosmos-view.is-plain .cosmos__gl { display: none; }
+.cosmos { position: relative; z-index: 1; }
+.cosmos ::selection { background: var(--moon); color: #1A1440; }
+.cosmos :focus-visible { outline-color: var(--moon); }
+.cosmos .eyebrow { color: var(--moon-accent); }
+.cosmos .btn--primary { background: var(--moon); color: #1A1440; }
+.cosmos .btn--ghost { color: var(--moon); border-color: rgb(236 234 245 / .38); background: rgb(255 255 255 / .05); }
+.cosmos__home {
+  position: fixed; z-index: 6; top: calc(var(--nav-h) + 14px); inset-inline-start: var(--gutter);
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 16px 8px 14px; border-radius: 999px;
+  color: var(--moon); background: rgb(14 11 34 / .62); box-shadow: 0 0 0 1px rgb(255 255 255 / .16) inset; text-decoration: none; font-weight: 600;
+}
+.cosmos__home svg { width: 18px; height: 18px; }
+.cosmos__home:hover { background: rgb(30 24 64 / .8); }
+
+/* the chapters: a screen each, the words on one side and the scene on the other */
+.cos-ch { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-content: center; justify-items: start; gap: 28px; padding: calc(var(--nav-h) + 76px) var(--gutter) 72px; }
+.cos-panel {
+  position: relative; display: grid; gap: 14px; width: min(100%, 36rem); padding: clamp(22px, 3vw, 34px); border-radius: 28px;
+  background: linear-gradient(180deg, rgb(13 10 32 / .74), rgb(13 10 32 / .6)); box-shadow: 0 0 0 1px rgb(255 255 255 / .1) inset, 0 30px 60px -40px rgb(0 0 0 / .8);
+  color: var(--moon-2); line-height: 1.7; text-wrap: pretty;
+}
+.cos-panel > p { margin: 0; }
+.cos-panel .eyebrow { margin: 0; }
+.cos-panel--mid { justify-self: center; width: min(100%, 46rem); text-align: center; justify-items: center; background: none; box-shadow: none; }
+.cos-panel--wide { width: min(100%, 52rem); }
+.cos-title { margin: 0; font: 400 clamp(3rem, 8.4vw, 6.6rem)/.98 var(--font-display); color: var(--moon); text-wrap: balance; text-shadow: 0 0 40px rgb(150 120 255 / .35); }
+.cos-title--end { font-size: clamp(2.6rem, 6.6vw, 5.2rem); }
+.cos-h2 { margin: 0; font: 400 clamp(2.2rem, 4.4vw, 3.5rem)/1.04 var(--font-display); color: var(--moon); text-wrap: balance; }
+.cos-lead { margin: 0; max-width: 40ch; font-size: var(--lead); color: var(--moon-2); }
+.cos-small { margin: 0; font-size: .9rem; color: rgb(198 190 223 / .85); }
+.cos-toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 8px; }
+.cos-toc a { min-height: 40px; display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 999px; color: var(--moon); text-decoration: none; background: rgb(255 255 255 / .06); box-shadow: 0 0 0 1px rgb(255 255 255 / .14) inset; font-size: .95rem; }
+.cos-toc a:hover { background: rgb(255 255 255 / .12); }
+.cos-cue { display: grid; justify-items: center; gap: 10px; margin: 18px 0 0; color: rgb(198 190 223 / .85); font-size: .92rem; }
+.cos-cue i { width: 1.5px; height: 46px; background: linear-gradient(180deg, var(--moon), transparent); border-radius: 2px; transform-origin: top; }
+.motion .cos-cue i { animation: cos-cue 2.2s var(--ease-in-out) infinite; }
+@keyframes cos-cue { 0% { transform: scaleY(0); opacity: 0; } 30% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1) translateY(30px); opacity: 0; } }
+
+/* facts: a number and what it measures */
+.cos-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 6px 0 0; padding: 0; list-style: none; }
+.cos-facts li { display: grid; gap: 2px; padding: 12px 14px; border-radius: 16px; background: rgb(255 255 255 / .05); box-shadow: 0 0 0 1px rgb(255 255 255 / .09) inset; }
+.cos-facts b { font: 400 1.32rem/1.15 var(--font-display); color: #F6D995; }
+.cos-facts span { font-size: .9rem; line-height: 1.45; }
+
+/* the colours of the stars */
+.cos-ch--types { grid-template-columns: minmax(0, 1fr); }
+.cos-types { display: grid; gap: 10px; width: min(100%, 36rem); margin: 0; padding: 0; list-style: none; }
+.cos-type { display: grid; grid-template-columns: 54px minmax(0, 1fr); align-items: center; gap: 14px; padding: 10px 14px 10px 10px; border-radius: 18px; background: rgb(13 10 32 / .58); box-shadow: 0 0 0 1px rgb(255 255 255 / .08) inset; }
+.cos-type__dot { justify-self: center; width: calc(18px + 30px * var(--s)); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 42% 40%, #fff 0%, var(--c) 42%, color-mix(in oklab, var(--c) 70%, #000) 100%); box-shadow: 0 0 calc(10px + 18px * var(--s)) color-mix(in oklab, var(--c) 70%, transparent); }
+.motion .cos-type__dot { animation: cos-glow 4s ease-in-out infinite alternate; }
+.cos-type:nth-child(2n) .cos-type__dot { animation-delay: -1.6s; }
+@keyframes cos-glow { to { box-shadow: 0 0 calc(16px + 26px * var(--s)) color-mix(in oklab, var(--c) 85%, transparent); } }
+.cos-type__txt { display: grid; gap: 2px; min-width: 0; }
+.cos-type__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; color: var(--moon); }
+.cos-type__head b { font: 400 1.5rem/1 var(--font-display); color: var(--c); min-width: 1.1em; }
+.cos-type__head small { color: rgb(198 190 223 / .9); font-size: .86rem; }
+.cos-type__note { font-size: .9rem; line-height: 1.5; color: var(--moon-2); }
+
+/* a star's life: a step for each stage, read one by one while the scene changes behind */
+.cos-ch--life { align-content: start; }
+.cos-steps { display: grid; gap: 0; width: min(100%, 34rem); margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.cos-step { min-height: 78vh; display: grid; align-content: center; }
+.cos-step > * { margin: 0; }
+.cos-step h3, .cos-step p { position: relative; }
+.cos-step > h3 { font: 400 clamp(1.7rem, 3vw, 2.3rem)/1.1 var(--font-display); color: var(--moon); padding: 22px 26px 6px; border-radius: 24px 24px 0 0; background: rgb(13 10 32 / .68); box-shadow: 0 0 0 1px rgb(255 255 255 / .09) inset; }
+.cos-step > p { padding: 4px 26px 24px; border-radius: 0 0 24px 24px; background: rgb(13 10 32 / .68); color: var(--moon-2); line-height: 1.7; box-shadow: 0 0 0 1px rgb(255 255 255 / .09) inset; }
+.cos-step::before { counter-increment: step; content: counter(step); justify-self: start; margin: 0 0 10px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; font: 700 .9rem/1 var(--font-body); color: #1A1440; background: var(--moon); }
+
+/* the Milky Way: "you are here" follows the Sun's place in the drawing */
+.cos-here {
+  position: fixed; left: 0; top: 0; z-index: 2; pointer-events: none; padding: 5px 12px; border-radius: 999px; translate: 14px -50%;
+  font: 700 .86rem/1.2 var(--font-body); color: #241A3D; background: rgb(255 246 230 / .94); box-shadow: 0 8px 18px -10px rgb(0 0 0 / .7);
+  opacity: 0; transition: opacity .4s var(--ease-out); white-space: nowrap;
+}
+.cos-here[hidden] { display: none; }
+.cos-here.is-on { opacity: 1; }
+.cos-here::before { content: ""; position: absolute; inset-inline-end: 100%; top: 50%; width: 12px; height: 1.5px; background: rgb(255 246 230 / .85); }
+
+/* the constellations: a band of the real sky that passes by as the page scrolls */
+.cos-ch--sky { align-content: start; justify-items: stretch; }
+.cos-ch--sky .cos-panel { justify-self: start; }
+.cos-band-wrap { position: relative; height: 300vh; }
+.cos-band { position: sticky; top: calc(var(--nav-h) + 20px); display: grid; gap: 12px; margin: 0; }
+.cos-band__view { position: relative; height: min(62vh, 560px); border-radius: 28px; overflow: hidden; background: linear-gradient(180deg, rgb(8 6 22 / .35), rgb(8 6 22 / .5)); box-shadow: 0 0 0 1px rgb(255 255 255 / .08) inset; }
+.cos-band__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cos-band__cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.cos-band figcaption { justify-self: center; max-width: 60ch; padding: 10px 18px; border-radius: 18px; text-align: center; font-size: .92rem; line-height: 1.55; color: var(--moon-2); background: rgb(13 10 32 / .62); }
+.cos-band figcaption span { display: block; color: #F6D995; font-weight: 600; }
+
+/* the wheel of signs */
+.cos-ch--wheel { justify-items: stretch; }
+.cos-ch--wheel .cos-panel { justify-self: start; }
+.zwheel-wrap { display: grid; justify-items: center; gap: 18px; }
+/* the ring turns: its square box, turned, reaches past a phone's edges (the circle itself never does) */
+.cos-ch--wheel { overflow-x: hidden; overflow-x: clip; }
+.zwheel { position: relative; width: min(88vw, 520px); aspect-ratio: 1; }
+.zwheel__ring { position: absolute; inset: 9%; border-radius: 50%; -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 65%, #000 99%, transparent 100%); mask: radial-gradient(closest-side, transparent 64%, #000 65%, #000 99%, transparent 100%); box-shadow: 0 0 0 1px rgb(255 255 255 / .12) inset; }
+.zwheel::before { content: ""; position: absolute; inset: 9%; border-radius: 50%; box-shadow: 0 0 0 1px rgb(255 255 255 / .16), 0 0 60px 0 rgb(246 214 150 / .12); }
+.zwheel::after { content: ""; position: absolute; inset: 28%; border-radius: 50%; box-shadow: 0 0 0 1px rgb(255 255 255 / .1); }
+.motion .zwheel__ring { animation: zw-turn 240s linear infinite; }
+@keyframes zw-turn { to { rotate: 360deg; } }
+.zwheel__signs { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.zwheel__signs li { position: absolute; translate: -50% -50%; }
+.zsign {
+  display: grid; justify-items: center; gap: 2px; width: clamp(54px, 11.5vw, 70px); padding: 6px 0 5px; border: 0; border-radius: 16px; cursor: pointer;
+  color: var(--moon); background: rgb(13 10 32 / .55); box-shadow: 0 0 0 1px rgb(255 255 255 / .1) inset; font: 600 .78rem/1.1 var(--font-body);
+  transition: background .25s, box-shadow .25s, transform .25s var(--ease-out);
+}
+.zsign .zglyph { width: 26px; height: 26px; color: var(--ec); }
+.zsign:hover { background: rgb(40 32 84 / .8); transform: translateY(-2px); }
+.zsign[aria-pressed="true"] { background: color-mix(in oklab, var(--ec) 26%, rgb(20 16 48)); box-shadow: 0 0 0 1.5px var(--ec) inset, 0 0 26px -4px var(--ec); }
+.zglyph { display: block; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.zwheel__mid { position: absolute; inset: 0; pointer-events: none; }
+.zwheel__sun, .zwheel__moon { position: absolute; width: 16px; height: 16px; border-radius: 50%; translate: -50% -50%; }
+.zwheel__sun { background: radial-gradient(circle, #FFF7E0 0%, #F6C66A 60%, #E39A3A 100%); box-shadow: 0 0 18px 4px rgb(255 200 110 / .55); }
+.zwheel__moon { width: 12px; height: 12px; background: radial-gradient(circle at 40% 40%, #fff, #CFC8EA); box-shadow: 0 0 14px 3px rgb(220 214 255 / .5); }
+.zcard { width: min(100%, 34rem); }
+.zcard__in { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; align-items: start; padding: 20px 22px; border-radius: 24px; background: rgb(13 10 32 / .72); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ec) 45%, transparent) inset; color: var(--moon-2); line-height: 1.65; }
+.zcard__in h3 { margin: 0; font: 400 1.9rem/1.1 var(--font-display); color: var(--moon); }
+.zcard__in p { margin: 4px 0 0; }
+.zglyph--big { width: 64px; height: 64px; color: var(--ec); stroke-width: 1.3; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--ec) 60%, transparent)); }
+.zcard__dates { font-size: .92rem; color: #F6D995; }
+.zcard__tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; padding: 0; list-style: none; }
+.zcard__tags li { padding: 3px 10px; border-radius: 999px; font-size: .82rem; color: var(--moon); background: rgb(255 255 255 / .07); box-shadow: 0 0 0 1px rgb(255 255 255 / .12) inset; }
+
+/* your sign */
+.cos-ch--you { justify-items: center; }
+.zform { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: 12px; }
+.zform .field > span { font: 700 .92rem/1.3 var(--font-body); color: var(--moon); }
+.zform .field small { font-weight: 400; color: rgb(198 190 223 / .9); }
+.zform .field input { background: rgb(255 255 255 / .08); color: var(--moon); border-color: rgb(255 255 255 / .26); }
+.zform .field input:focus-visible { border-color: var(--moon); box-shadow: 0 0 0 3px rgb(242 237 249 / .25); }
+.zform .btn { min-height: 50px; }
+.zform__err { grid-column: 1 / -1; margin: 0; min-height: 1.2em; color: #FFB4A8; font-size: .92rem; }
+.zform__err:empty { min-height: 0; }
+.zresult:empty { display: none; }
+.zresult__card { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 20px; align-items: center; padding: 22px; border-radius: 26px; background: rgb(255 255 255 / .05); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ec) 50%, transparent) inset, 0 0 60px -20px var(--ec); }
+.zresult__art { position: relative; display: grid; place-items: center; aspect-ratio: 1; }
+.zresult__art .zglyph--big { position: absolute; top: 4%; inset-inline-end: 4%; width: 46px; height: 46px; }
+.zfig { width: 100%; height: 100%; overflow: visible; }
+.zfig__lines path { fill: none; stroke: rgb(214 200 255 / .75); stroke-width: .35; stroke-linecap: round; stroke-linejoin: round; }
+.zfig__stars circle { fill: #FFF6E6; filter: drop-shadow(0 0 1.2px #fff); }
+.motion .zresult.is-in .zfig__lines path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: zfig-draw 1.8s var(--ease-out) .2s forwards; }
+@keyframes zfig-draw { to { stroke-dashoffset: 0; } }
+.motion .zresult.is-in .zresult__card { animation: zres-in .7s var(--ease-out) both; }
+@keyframes zres-in { from { transform: translateY(14px); } }
+.zresult__txt { display: grid; gap: 4px; color: var(--moon-2); line-height: 1.65; }
+.zresult__txt h3 { margin: 0; font: 400 clamp(1.8rem, 3.4vw, 2.5rem)/1.1 var(--font-display); color: var(--moon); }
+.zresult__txt h3:focus { outline: none; }
+.zresult__txt p { margin: 0; }
+.zresult__where, .zresult__con { font-size: .92rem; color: #F6D995; }
+.zresult__cusp { padding: 10px 14px; border-radius: 14px; background: rgb(255 255 255 / .06); }
+.zmoon { display: grid; gap: 8px; padding: 18px 20px; border-radius: 22px; background: rgb(255 255 255 / .05); box-shadow: 0 0 0 1px rgb(255 255 255 / .1) inset; }
+.zmoon h3 { margin: 0; font: 400 1.5rem/1.1 var(--font-display); color: var(--moon); }
+.zmoon__body { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; }
+.zmoon__body p { margin: 0; color: var(--moon-2); line-height: 1.6; }
+.zmoon__body b { color: var(--moon); }
+.zmoon__pic { width: 48px; height: 48px; }
+.zmoon__dark { fill: #2A2452; stroke: rgb(255 255 255 / .18); stroke-width: .4; }
+.zmoon__lit { fill: #EEE9FA; filter: drop-shadow(0 0 2px rgb(240 236 255 / .7)); }
+.cos-end__acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
+
+/* things rise into place as they are reached (cosmos.js, with the site's .rv and --ry); the words are never hidden */
+.a11y-still .cosmos *, html:not(.motion) .cosmos * { animation: none !important; transition: none !important; }
+
+/* a wide screen: the words on the right, the scene on the left */
+@media (min-width: 900px) {
+  .cos-ch { padding-inline: var(--gutter) calc(var(--gutter) + 2vw); }
+  .cos-ch--types { grid-template-columns: minmax(0, 36rem) minmax(0, 1fr); align-items: center; column-gap: clamp(28px, 4vw, 64px); }
+  .cos-ch--types .cos-types { justify-self: center; }
+  .cos-ch--wheel { grid-template-columns: minmax(0, 34rem) minmax(0, 1fr); align-items: center; column-gap: clamp(24px, 4vw, 56px); }
+  .cos-band__view { height: min(58vh, 560px); }
+}
+/* a phone: the scene above, the words below it */
+@media (max-width: 899px) {
+  .cos-ch { align-content: end; padding: calc(var(--nav-h) + 40vh) var(--gutter) 56px; justify-items: stretch; }
+  .cos-ch--intro, .cos-ch--end { align-content: center; padding-top: calc(var(--nav-h) + 40px); }
+  .cos-panel { width: 100%; }
+  .cos-ch--life { padding-top: calc(var(--nav-h) + 44vh); }
+  .cos-step { min-height: 92vh; align-content: end; padding-bottom: 6vh; }
+  .cos-ch--sky, .cos-ch--wheel, .cos-ch--you, .cos-ch--types { padding-top: calc(var(--nav-h) + 40px); align-content: start; }
+  .cos-facts { grid-template-columns: minmax(0, 1fr); }
+  .zform { grid-template-columns: minmax(0, 1fr); }
+  .zresult__card { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .zresult__art { width: min(200px, 60vw); }
+  .zresult__txt { justify-items: center; }
+  .zcard__in { grid-template-columns: 48px minmax(0, 1fr); padding: 16px; }
+  .zcard__in .zglyph--big { width: 48px; height: 48px; }
+  .cos-band-wrap { height: 260vh; }
+  .cos-band__view { height: min(54vh, 460px); }
+  .cosmos__home { top: auto; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); inset-inline: auto; left: 50%; translate: -50% 0; }
+}
+
+/* born on the seam between two signs: both, side by side */
+.zresult__card--cusp { grid-template-columns: minmax(0, 1fr); }
+.zresult__two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.zmini { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start; padding: 14px; border-radius: 18px; background: rgb(255 255 255 / .05); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ec) 45%, transparent) inset; text-align: start; }
+.zmini .zglyph { width: 34px; height: 34px; color: var(--ec); }
+.zmini b { font: 400 1.4rem/1.1 var(--font-display); color: var(--moon); }
+.zmini__when { font-size: .86rem; color: #F6D995; }
+.zmini p { margin: 4px 0 0; font-size: .92rem; }
+@media (max-width: 899px) { .zresult__two { grid-template-columns: minmax(0, 1fr); } .zresult__card--cusp .zresult__txt { justify-items: stretch; } }
+
 .gate--retreats, .menu-world--retreats { --paint: url("data:image/webp;base64,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"); }
 .gate--sound, .menu-world--sound { --paint: url("data:image/webp;base64,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"); }
 .gate--magic, .menu-world--magic { --paint: url("data:image/webp;base64,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"); }
@@ -3396,6 +3664,7 @@ html:not(.motion) .envelope *, .a11y-still .envelope * { transition: none !impor
         </g></g>
       </svg>
     </button>
+    <button class="orb-door" id="orb-door" type="button" aria-label="מסע אל הכוכבים" hidden><span class="orb-door__tip" aria-hidden="true">למסע אל הכוכבים</span></button>
     <div class="water-ui" id="water-ui" hidden>
       <p class="water-ui__hint" id="water-hint" aria-live="polite">געי במים</p>
       <div class="water-ui__bar">
@@ -4258,6 +4527,147 @@ html:not(.motion) .envelope *, .a11y-still .envelope * { transition: none !impor
   </section>
 </div>
 
+<div class="view cosmos-view" data-view="cosmos" data-title="מסע אל הכוכבים">
+  <h1 class="sr-only" id="cosmos-page-title" tabindex="-1">מסע אל הכוכבים</h1>
+  <canvas class="cosmos__gl" id="cosmos-gl" aria-hidden="true"></canvas>
+  <div class="cosmos__sky" aria-hidden="true"></div>
+  <div class="cosmos">
+    <a class="cosmos__home" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>חזרה לחוף</a>
+
+    <section class="cos-ch cos-ch--intro" data-scene="0" id="cos-intro" aria-labelledby="cos-intro-title">
+      <div class="cos-panel cos-panel--mid">
+        <p class="eyebrow">מעבר לשמש · מעבר לירח</p>
+        <h2 class="cos-title" id="cos-intro-title">מסע אל הכוכבים</h2>
+        <p class="cos-lead">מהשמש שלנו, דרך הצבעים והחיים של הכוכבים, אל שביל החלב, קבוצות הכוכבים וגלגל המזלות. גללי לאט, והשמיים ייפתחו.</p>
+        <nav class="cos-toc" aria-label="פרקי המסע">
+          <a href="#cos-sun">השמש</a><a href="#cos-types">צבעי הכוכבים</a><a href="#cos-life">חייו של כוכב</a><a href="#cos-galaxy">שביל החלב</a><a href="#cos-sky">קבוצות הכוכבים</a><a href="#cos-wheel">גלגל המזלות</a><a href="#cos-you">המזל שלך</a>
+        </nav>
+        <p class="cos-cue" aria-hidden="true"><span>גללי למסע</span><i></i></p>
+      </div>
+    </section>
+
+    <section class="cos-ch" data-scene="1" id="cos-sun" aria-labelledby="cos-sun-title">
+      <div class="cos-panel">
+        <p class="eyebrow">הכוכב הקרוב אלינו</p>
+        <h2 class="cos-h2" id="cos-sun-title">השמש שלנו</h2>
+        <p>השמש היא כוכב. כוכב בינוני וצהוב, בן כ־4.6 מיליארד שנה, שנמצא בערך באמצע חייו. בכל שנייה מתמזגים בליבה שלה כ־600 מיליון טונות של מימן להליום, ומשם בא האור שמחמם אותנו.</p>
+        <ul class="cos-facts">
+          <li><b>109</b><span>כדורי ארץ, זה לצד זה, לרוחבה</span></li>
+          <li><b>8 דקות ו־19 שניות</b><span>לוקח לאור שלה להגיע אלינו</span></li>
+          <li><b>כ־5,500°</b><span>על פני השטח, ובליבה כ־15 מיליון מעלות</span></li>
+          <li><b>99.86%</b><span>מכל המסה של מערכת השמש</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cos-ch cos-ch--types" data-scene="0" id="cos-types" aria-labelledby="cos-types-title">
+      <div class="cos-panel">
+        <p class="eyebrow latin" lang="en">O · B · A · F · G · K · M</p>
+        <h2 class="cos-h2" id="cos-types-title">לכל כוכב צבע משלו</h2>
+        <p>הצבע של כוכב מספר כמה הוא חם. הכחולים לוהטים, האדומים קרירים יחסית. האסטרונומים ממיינים אותם בשבע אותיות, מהחם אל הקר: O, B, A, F, G, K, M.</p>
+        <p>גם הגודל משתנה מאוד. ננס לבן קטן בערך כמו כדור הארץ, ובטלגז, הענקית האדומה שבכתף של אוריון, גדולה כל כך שאילו עמדה במקום השמש, הייתה בולעת את מסלול מאדים.</p>
+      </div>
+      <ol class="cos-types" id="cos-types-list" aria-label="שבעת סוגי הכוכבים, מהחם אל הקר"></ol>
+    </section>
+
+    <section class="cos-ch cos-ch--life" data-scene="2" id="cos-life" aria-labelledby="cos-life-title">
+      <div class="cos-panel">
+        <p class="eyebrow">מענן אל אבק כוכבים</p>
+        <h2 class="cos-h2" id="cos-life-title">חייו של כוכב</h2>
+        <p>כוכבים נולדים, חיים ומתים, רק בקצב של מיליוני ומיליארדי שנים. גללי, ותראי כוכב אחד עובר את כל חייו.</p>
+      </div>
+      <ol class="cos-steps">
+        <li class="cos-step"><h3>ענן של גז ואבק</h3><p>כל כוכב נולד בענן ענק וקר של גז ואבק, ערפילית. במשך מיליוני שנים כוח הכבידה אוסף את הענן פנימה, לאט לאט.</p></li>
+        <li class="cos-step"><h3>כוכב נולד</h3><p>הגז מתכווץ, מסתובב ומתחמם. סביבו נוצרת דסקה, ומהקטבים שלו פורצים סילונים של חומר. זה פרוטוכוכב: כוכב שעוד לא נדלק.</p></li>
+        <li class="cos-step"><h3>כוכב בוגר</h3><p>כשהליבה מגיעה לכ־10 מיליון מעלות, מימן מתחיל להתמזג להליום, והכוכב נדלק. ככה הוא יאיר, יציב, מיליוני ועד מיליארדי שנים. כאן נמצאת השמש שלנו היום.</p></li>
+        <li class="cos-step"><h3>ענק אדום</h3><p>כשהמימן בליבה אוזל, הכוכב מתנפח ומאדים. בעוד כחמישה מיליארד שנה גם השמש תהפוך לענקית אדומה, גדולה פי מאות מהיום.</p></li>
+        <li class="cos-step"><h3>טבעת של אור</h3><p>כוכב כמו השמש משיל בעדינות את השכבות החיצוניות שלו לטבעת זוהרת של גז, ערפילית פלנטרית. במרכזה נשארת ליבה קטנה ולוהטת, ננס לבן בגודל של כדור הארץ, שמתקררת לאט מאוד.</p></li>
+        <li class="cos-step"><h3>סופרנובה</h3><p>כוכב כבד פי שמונה מהשמש ויותר חי מהר, ומסיים בפיצוץ: סופרנובה, שלכמה שבועות יכולה להאיר יותר מגלקסיה שלמה. בפיצוץ מתפזרים לחלל יסודות שנוצרו בתוך הכוכב.</p></li>
+        <li class="cos-step"><h3>כוכב נייטרונים וחור שחור</h3><p>מהכוכב הכבד נשארת ליבה דחוסה מאוד: כוכב נייטרונים, שכפית מהחומר שלו שוקלת כמיליארד טונות. יש כאלה שמסתובבים ושולחים אלומות, כמו מגדלור. מהכבדים ביותר נשאר חור שחור, שאפילו אור לא יכול לברוח ממנו.</p></li>
+        <li class="cos-step"><h3>והכול מתחיל מחדש</h3><p>מה שנשאר מכל כוכב חוזר לחלל, ונהיה חומר הגלם של עננים חדשים, של כוכבים ושל כוכבי לכת. הברזל בדם שלך והסידן בעצמות שלך נוצרו בכוכבים, לפני שהשמש נולדה.</p></li>
+      </ol>
+    </section>
+
+    <section class="cos-ch cos-ch--galaxy" data-scene="3" id="cos-galaxy" aria-labelledby="cos-galaxy-title">
+      <span class="cos-here" id="cos-here" aria-hidden="true" hidden>את כאן</span>
+      <div class="cos-panel">
+        <p class="eyebrow">הבית הגדול שלנו</p>
+        <h2 class="cos-h2" id="cos-galaxy-title">שביל החלב</h2>
+        <p>השמש היא אחד מ־100 עד 400 מיליארד כוכבים בגלקסיה אחת: ספירלה עם מוט של כוכבים במרכזה, שנמשכת כ־100 אלף שנות אור מקצה לקצה. אנחנו גרים בזרוע קטנה שלה, זרוע אוריון, כ־26 אלף שנות אור מהמרכז.</p>
+        <p>בלילה חשוך, הפס החלבי שחוצה את השמיים הוא הגלקסיה הזאת עצמה, כשמסתכלים עליה מבפנים.</p>
+        <ul class="cos-facts">
+          <li><b>כ־240 מיליון שנה</b><span>לסיבוב אחד של השמש סביב מרכז הגלקסיה: שנה גלקטית</span></li>
+          <li><b>כ־800 אלף קמ״ש</b><span>המהירות שבה אנחנו נעים סביבו</span></li>
+          <li><b>כ־4 מיליון שמשות</b><span>המסה של החור השחור שבלב הגלקסיה, קשת A*</span></li>
+          <li><b>9.5 טריליון ק״מ</b><span>הם שנת אור אחת: הדרך שהאור עובר בשנה</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cos-ch cos-ch--sky" data-scene="4" id="cos-sky" aria-labelledby="cos-sky-title">
+      <div class="cos-panel">
+        <p class="eyebrow">ציורים בשמיים</p>
+        <h2 class="cos-h2" id="cos-sky-title">קבוצות הכוכבים</h2>
+        <p>מאז ומעולם אנשים חיברו כוכבים לדמויות, ונתנו להן שמות וסיפורים. האיגוד האסטרונומי הבינלאומי מכיר ב־88 קבוצות כוכבים, והגבולות המדויקים שלהן פורסמו ב־1930. 48 מהן כבר מופיעות אצל תלמי, לפני כמעט 1,900 שנה.</p>
+        <p>השמש, הירח וכוכבי הלכת נעים כולם באותו מסלול בשמיים, המִלְקָה. לאורכה עוברות 13 קבוצות כוכבים: שתים־עשרה קבוצות המזלות, ונושא הנחש, שהשמש עוברת בו בסוף נובמבר ובתחילת דצמבר.</p>
+      </div>
+      <div class="cos-band-wrap">
+        <figure class="cos-band" id="cos-band">
+          <div class="cos-band__view"><svg class="cos-band__svg" id="cos-band-svg" role="img" aria-labelledby="cos-band-cap"></svg></div>
+          <figcaption id="cos-band-cap">שלוש־עשרה קבוצות הכוכבים לאורך המילקה, עם הכוכבים האמיתיים שלהן. מתחת: שנים־עשר המזלות, כל אחד שלושים מעלות. <span id="cos-band-today"></span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="cos-ch cos-ch--wheel" data-scene="5" id="cos-wheel" aria-labelledby="cos-wheel-title">
+      <div class="cos-panel">
+        <p class="eyebrow">אסטרולוגיה</p>
+        <h2 class="cos-h2" id="cos-wheel-title">גלגל המזלות</h2>
+        <p>אסטרונומיה היא המדע שחוקר את הכוכבים. אסטרולוגיה היא מסורת עתיקה שקוראת בהם סמלים ומשמעות. היא מחלקת את מסלול השמש לשנים־עשר מזלות שווים, שלושים מעלות כל אחד, החל מנקודת האביב.</p>
+        <p>כל מזל קשור לאחד מארבעה יסודות, אש, אדמה, אוויר או מים, לאחת משלוש איכויות, פותח, קבוע או משתנה, ולכוכב שמושל בו.</p>
+        <p>ומה הקשר לקבוצות שעל שמן? לפני כאלפיים שנה הן כמעט חפפו. מאז ציר כדור הארץ מתנדנד לאט, כמו סביבון, ונקודת האביב זזה מעלה אחת בכל כ־72 שנה. <span id="cos-wheel-now"></span></p>
+      </div>
+      <div class="zwheel-wrap">
+        <div class="zwheel" id="zwheel">
+          <div class="zwheel__ring" aria-hidden="true"></div>
+          <ul class="zwheel__signs" id="zwheel-signs" aria-label="שנים־עשר המזלות"></ul>
+          <div class="zwheel__mid" aria-hidden="true"><i class="zwheel__sun" id="zwheel-sun"></i><i class="zwheel__moon" id="zwheel-moon"></i></div>
+        </div>
+        <div class="zcard" id="zcard" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="cos-ch cos-ch--you" data-scene="6" id="cos-you" aria-labelledby="cos-you-title">
+      <div class="cos-panel cos-panel--wide">
+        <p class="eyebrow">המזל שלך</p>
+        <h2 class="cos-h2" id="cos-you-title">איפה עמדה השמש כשנולדת?</h2>
+        <p>הקלידי את תאריך הלידה שלך, ואם את יודעת, גם את השעה. נחשב באיזה מזל עמדה השמש באותו רגע.</p>
+        <form class="zform" id="zform" novalidate>
+          <label class="field"><span>תאריך לידה</span><input type="date" id="zdate" name="date" required min="1900-01-01"></label>
+          <label class="field"><span>שעת לידה <small>(לא חובה)</small></span><input type="time" id="ztime" name="time"></label>
+          <button class="btn btn--primary" type="submit">לגלות את המזל</button>
+          <p class="zform__err" id="zform-err" role="alert"></p>
+        </form>
+        <div class="zresult" id="zresult" aria-live="polite"></div>
+        <div class="zmoon" id="zmoon">
+          <h3 id="zmoon-title">הירח היום</h3>
+          <div class="zmoon__body" id="zmoon-body"></div>
+        </div>
+        <p class="cos-small">החישוב לפי האסטרולוגיה המערבית ולפי שעון ישראל. מפה אסטרולוגית מלאה, עם אופק עולה ובתים, צריכה גם את מקום הלידה.</p>
+      </div>
+    </section>
+
+    <section class="cos-ch cos-ch--end" data-scene="0" id="cos-end" aria-labelledby="cos-end-title">
+      <div class="cos-panel cos-panel--mid">
+        <p class="eyebrow">ובסוף המסע</p>
+        <h2 class="cos-title cos-title--end" id="cos-end-title">עשויה מאבק כוכבים</h2>
+        <p class="cos-lead">הפחמן, החמצן והברזל שבגופך נוצרו בכוכבים שחיו ומתו לפני שהשמש נולדה. בפעם הבאה שתרימי את הראש לשמיים, את מסתכלת הביתה.</p>
+        <div class="cos-end__acts"><a class="btn btn--primary" href="#magic">לעולם הירח והקסם</a><a class="btn btn--ghost" href="#top">חזרה לחוף</a><a class="btn btn--ghost" href="#cos-intro">שוב מההתחלה</a></div>
+      </div>
+    </section>
+  </div>
+</div>
+
 <div class="view" data-view="learn" data-title="ללמוד">
   <h1 class="sr-only" id="learn-page-title" tabindex="-1">ללמוד</h1>
   <section class="section principles" id="principles" aria-labelledby="principles-title">
@@ -4994,7 +5404,7 @@ window.SITE = {
     { id: "sound", name: "עולם השקט והצלילים", line: "נשימה, צלילים, מנדלת חול ומדיטציה", areas: [["breathe", "דקה של נשימה"], ["soundbath", "אמבט צלילים"], ["mandala", "מנדלת חול"], ["sound-events", "מדיטציות וסדנאות"]] },
     { id: "magic", name: "עולם הירח והקסם", line: "הירח, קלף היום, כוונות, גוף ונפש, ערבי נשים וספר החוכמות", areas: [["moon", "הירח הלילה"], ["card-of-day", "קלף היום"], ["intentions", "קיר הכוונות"], ["ritual-evening", "ערב הנשים"], ["body-map", "הגוף מדבר"], ["quiz", "השאלון"], ["wisdom", "ספר החוכמות"]] },
   ],
-  pages: [["events", "כל האירועים"], ["community", "המעגל"], ["who", "גלי מי את"], ["pouch", "שקיק הירח"], ["mine", "האזור שלי"], ["learn", "ללמוד"], ["shop", "חנות"], ["about", "נעים להכיר"], ["contact", "צרי קשר"]],
+  pages: [["events", "כל האירועים"], ["community", "המעגל"], ["who", "גלי מי את"], ["pouch", "שקיק הירח"], ["mine", "האזור שלי"], ["cosmos", "מסע אל הכוכבים"], ["learn", "ללמוד"], ["shop", "חנות"], ["about", "נעים להכיר"], ["contact", "צרי קשר"]],
 
   // שקיק הירח: a collection game. 30 charms in three sets (one per world), five tiers; a pouch a day and more for doing things here.
   pouch: {
@@ -5108,6 +5518,53 @@ window.SITE = {
     },
   },
 
+  // מסע אל הכוכבים (cosmos.js): the journey behind the sun and the moon of the home page.
+  // The signs follow Western (tropical) astrology: twelve equal parts of the Sun's path, from the spring point.
+  // glyph: a drawing of the sign's symbol (an SVG path, 24 x 24); con: the constellation it is named after.
+  cosmos: {
+    elements: { fire: ["אש", "#F2A285"], earth: ["אדמה", "#B5C48A"], air: ["אוויר", "#F1DA9A"], water: ["מים", "#90BCEB"] },
+    qualities: { cardinal: "פותח", fixed: "קבוע", mutable: "משתנה" },
+    signs: [
+      { id: "ari", name: "טלה", el: "fire", q: "cardinal", ruler: "מאדים", con: "Ari", line: "המזל הראשון, ראשית האביב. מתואר כאמיץ, ישיר ומלא להט, אוהב להתחיל דברים חדשים ולפתוח דרך.",
+        glyph: "M12 20.5V10M12 10C12 6 10 3.6 7.6 3.6S3.6 5.6 3.6 7.6c0 1.5.8 2.6 1.9 3M12 10c0-4 2-6.4 4.4-6.4s4 2 4 4c0 1.5-.8 2.6-1.9 3" },
+      { id: "tau", name: "שור", el: "earth", q: "fixed", ruler: "נוגה", con: "Tau", line: "יציב, סבלני ונאמן, אוהב יופי, טבע ותענוגות פשוטים. כשהוא בוחר משהו, הוא נשאר.",
+        glyph: "M7 15.4a5 5 0 1 0 10 0a5 5 0 1 0-10 0M4 4.6c.8 3.4 3.8 5.5 8 5.5s7.2-2.1 8-5.5" },
+      { id: "gem", name: "תאומים", el: "air", q: "mutable", ruler: "כוכב חמה", con: "Gem", line: "סקרן, קליל ורב־שיח, אוהב רעיונות, אנשים ושינויים. רואה תמיד יותר מצד אחד.",
+        glyph: "M5 4.6c4.5 1.6 9.5 1.6 14 0M5 19.4c4.5-1.6 9.5-1.6 14 0M9 5.7v12.6M15 5.7v12.6" },
+      { id: "cnc", name: "סרטן", el: "water", q: "cardinal", ruler: "הירח", con: "Cnc", line: "רגיש, אינטואיטיבי ומגונן. הבית והקרובים הם הלב שלו: זוכר הכול, ומרגיש עוד יותר.",
+        glyph: "M4.4 9.6a2.6 2.6 0 1 0 5.2 0a2.6 2.6 0 1 0-5.2 0M7 7C10.4 4.6 16 4.8 19.6 8M19.6 14.4a2.6 2.6 0 1 0-5.2 0a2.6 2.6 0 1 0 5.2 0M17 17C13.6 19.4 8 19.2 4.4 16" },
+      { id: "leo", name: "אריה", el: "fire", q: "fixed", ruler: "השמש", con: "Leo", line: "חם, נדיב ויצירתי, נולד להאיר. אוהב לב גדול, משחק ובמה, ונותן מעצמו לכולם.",
+        glyph: "M5.6 16.2a3 3 0 1 0 6 0a3 3 0 1 0-6 0M11.6 16.2c0-2.6-2.3-4.7-2.3-7.7a4.4 4.4 0 0 1 8.8 0c0 3.6-3.3 6.4-3.3 9.5c0 1.5.9 2.5 2.3 2.5s2.4-1 2.4-2.4" },
+      { id: "vir", name: "בתולה", el: "earth", q: "mutable", ruler: "כוכב חמה", con: "Vir", line: "מדויק, מעשי ומתבונן. רואה את הפרטים הקטנים, ואוהב לעזור, לסדר ולשפר.",
+        glyph: "M3.6 6.8V18M3.6 9.4c0-1.9 1.3-3 2.8-3s2.8 1.1 2.8 3V18M9.2 9.4c0-1.9 1.3-3 2.8-3s2.8 1.1 2.8 3v6.4c0 2.5 1.6 4.2 4.2 4.2M14.8 12.8c1.4-1.8 5.6-1.8 5.6 1.2c0 2.6-2.6 4.4-5.6 6.2" },
+      { id: "lib", name: "מאזניים", el: "air", q: "cardinal", ruler: "נוגה", con: "Lib", line: "מחפש הרמוניה, צדק ויופי. מגשר מטבעו, חושב בשניים ואוהב שותפות.",
+        glyph: "M4 19.4h16M4 15.4h4.3a3.9 3.9 0 1 1 7.4 0H20" },
+      { id: "sco", name: "עקרב", el: "water", q: "fixed", ruler: "פלוטו, ובמסורת העתיקה מאדים", con: "Sco", line: "עמוק, עוצמתי ונאמן, לא מסתפק בפני השטח. מזל של תשוקה, סודות והתחדשות.",
+        glyph: "M3.6 6.8V18M3.6 9.4c0-1.9 1.3-3 2.8-3s2.8 1.1 2.8 3V18M9.2 9.4c0-1.9 1.3-3 2.8-3s2.8 1.1 2.8 3v7.8c0 1 .6 1.6 1.6 1.6h3.6M18.4 16.2l2.2 2.6-2.2 2.6" },
+      { id: "sgr", name: "קשת", el: "fire", q: "mutable", ruler: "צדק", con: "Sgr", line: "אופטימי, חופשי וסקרן. אוהב מסעות, רעיונות גדולים וחיפוש של משמעות.",
+        glyph: "M4.6 19.4L19.4 4.6M12.6 4.6h6.8v6.8M7.6 11.6l4.8 4.8" },
+      { id: "cap", name: "גדי", el: "earth", q: "cardinal", ruler: "שבתאי", con: "Cap", line: "שאפתן, אחראי וסבלני, בונה לאט ולגובה. מטפס על ההר צעד אחר צעד, ומגיע.",
+        glyph: "M3.4 6.2l3.2 10.6L9.8 6.2M9.8 6.2c.9 5.4 2.2 9.6 4.4 12.4M14.2 18.6c2.2 1.8 6.2.9 6.2-2.3c0-2.6-3.4-3.7-5.3-1.4" },
+      { id: "aqr", name: "דלי", el: "air", q: "fixed", ruler: "אורנוס, ובמסורת העתיקה שבתאי", con: "Aqr", line: "מקורי, עצמאי ובעל חזון. חושב קדימה, ואוהב חברים, קהילה ורעיונות חדשים.",
+        glyph: "M3.4 10.6l2.8-2.8 2.9 2.8 2.9-2.8 2.9 2.8 2.8-2.8 2.9 2.8M3.4 16.4l2.8-2.8 2.9 2.8 2.9-2.8 2.9 2.8 2.8-2.8 2.9 2.8" },
+      { id: "psc", name: "דגים", el: "water", q: "mutable", ruler: "נפטון, ובמסורת העתיקה צדק", con: "Psc", line: "רך, חומל ובעל דמיון, מרגיש גם את מה שלא נאמר. המזל האחרון, שבו המעגל נסגר ומתחיל מחדש.",
+        glyph: "M6.4 4c3.4 4.4 3.4 11.6 0 16M17.6 4c-3.4 4.4-3.4 11.6 0 16M5 12h14" },
+    ],
+    // the constellations along the Sun's path (Ophiuchus too, the thirteenth, which is not a sign)
+    constellations: { Ari: "טלה", Tau: "שור", Gem: "תאומים", Cnc: "סרטן", Leo: "אריה", Vir: "בתולה", Lib: "מאזניים", Sco: "עקרב", Oph: "נושא הנחש", Sgr: "קשת", Cap: "גדי", Aqr: "דלי", Psc: "דגים" },
+    // the colours of the stars, hottest first (temperatures at the surface, in kelvin; examples to look for in the sky)
+    types: [
+      { c: "O", color: "#9FB6FF", size: 1.0, name: "כחול", temp: "מעל 33,000 מעלות", note: "הנדירים ביותר: פחות מאחד ממיליון כוכבים. כמו אלניטק, בחגורה של אוריון." },
+      { c: "B", color: "#BCCBFF", size: 0.86, name: "כחלחל־לבן", temp: "10,000–33,000 מעלות", note: "כמו ריגל, הכוכב הכחול שבכף הרגל של אוריון." },
+      { c: "A", color: "#E4E9FF", size: 0.72, name: "לבן", temp: "7,300–10,000 מעלות", note: "כמו סיריוס, הכוכב הבהיר ביותר בשמי הלילה." },
+      { c: "F", color: "#FBF6EE", size: 0.62, name: "לבן־צהבהב", temp: "6,000–7,300 מעלות", note: "כמו פרוקיון, בקבוצת הכלב הקטן." },
+      { c: "G", color: "#FFE8B8", size: 0.55, name: "צהוב", temp: "5,300–6,000 מעלות", note: "כמו השמש שלנו." },
+      { c: "K", color: "#FFC98A", size: 0.47, name: "כתום", temp: "3,900–5,300 מעלות", note: "כמו ארקטורוס, מהבהירים בשמי האביב." },
+      { c: "M", color: "#FF9C76", size: 0.38, name: "אדום", temp: "2,300–3,900 מעלות", note: "שלושה מכל ארבעה כוכבים הם ננסים אדומים, כמו פרוקסימה קנטאורי, השכן הקרוב ביותר שלנו." },
+    ],
+    phases: ["מולד", "סהר מתמלא", "רבע ראשון", "ירח מתמלא", "ירח מלא", "ירח פוחת", "רבע אחרון", "סהר פוחת"],
+  },
+
   legal: {
     terms: ["תקנון האתר", ["התקנון המלא יתווסף כאן.", "עד אז, תנאי ההרשמה, התשלום והביטול של כל אירוע מופיעים בעמוד ההרשמה שלו."]],
     privacy: ["מדיניות פרטיות", ["האתר לא שומר את מה שאת כותבת בטפסים. כשאת לוחצת שליחה, ההודעה נפתחת בוואטסאפ ונשלחת רק אם תאשרי אותה שם.", "הכוונות מקיר הכוונות, סל הקניות, המיקס האחרון מאמבט הצלילים, התוצאה של השאלון ״גלי מי את״ והגדרות הנגישות נשמרים רק בדפדפן שלך, ואפשר למחוק אותם בניקוי נתוני האתר."]],
@@ -5124,10 +5581,11 @@ window.SITE = {
       { k: ["כלול", "כולל", "טיסה", "טיסות", "מלון", "אוכל"], a: "בריטריט כלולים טיסות הלוך ושוב, ארבעה ימים ושלושה לילות במלון הכל כלול למבוגרים בלבד, כל הסדנאות וליווי אישי וקבוצתי." },
       { k: ["ביטול", "החזר", "לבטל"], a: "ב-MANIFEST 2026 ביטול תוך 14 יום מההרשמה החזיר את מלוא הסכום, פחות דמי ביטול לפי החוק. אחר כך היה החזר של 50% עד תאריך מסוים, ומשם אין החזר. התנאים המדויקים מופיעים בעמוד ההרשמה של כל אירוע." },
       { k: ["חדר", "שותפה", "זוגי", "לינה"], a: "החדרים לשלוש משתתפות, עם מרפסת פרטית. אפשר לשדרג לחדר זוגי בתוספת תשלום, לפי זמינות." },
+      { k: ["מזל", "המזל", "מזלות", "אסטרולוג", "הורוסקופ", "גלקסי", "שביל החלב", "סופרנובה", "חור שחור", "היקום", "סוגי כוכבים", "קבוצות כוכבים", "קבוצת כוכבים", "כוכבי לכת", "מסע אל הכוכבים"], a: "במסע אל הכוכבים נוגעים בשמש או בירח שבראש דף הבית, וטסים: השמש שלנו, הצבעים והחיים של הכוכבים, שביל החלב, קבוצות הכוכבים וגלגל המזלות. בסוף אפשר להקליד תאריך לידה ולגלות את המזל, וגם באיזה מזל הירח היום.", act: ["#cosmos", "למסע אל הכוכבים"] },
       { k: ["ערב", "ריטואל", "ritual", "טקס", "ירח", "נשים", "מכשפות"], a: "THE RITUAL הוא ערב נשים מיסטי: מעגל קלפים, טקס שחרור, ויזואליזציה, כוונות וארוחה מפנקת. הוא נפגש סביב הירח המלא.", act: ["event:ritual", "לערב הבא"] },
       { k: ["חנות", "יומן", "קלפים", "נר", "שובר", "מתנה", "לקנות", "הזמנה", "כרית", "מאלה", "קערה", "קטורת", "שמן", "מלח", "תכשיט", "קריסטל", "אבנים", "מארז", "מנוי"], a: "בחנות יש כלים למדיטציה (כריות, מאלות וקערות שירה), נרות וריחות, יומנים וקלפי אפירמציות, קריסטלים, מדיטציות להורדה, קופסאות ריטואל ומנוי חודשי, וגם שוברי מתנה ופגישות אישיות. מוסיפים לסל ושולחים את ההזמנה בוואטסאפ.", act: ["#shop", "לחנות"] },
       { k: ["פגישה", "אימון", "אישי", "אישית", "קליניקה", "פילאטיס", "אירינה"], a: "אפשר לקבוע פגישת אימון מנטלי עם נטע-לי (60 דקות, פנים מול פנים או בזום), או שיעור פילאטיס אישי עם אירינה.", act: ["#shop", "לפגישות"] },
-      { k: ["שקיק", "קמע", "קמעות", "אלבום", "תיבה", "תיבת הירח", "מפתחות", "האזור שלי", "אזור אישי"], a: "בשקיק הירח פותחים כל יום שקיק ואוספים קמעות לאלבום. מי שמשלימה עולם באלבום, אוספת אבקת כוכבים או ניצוצות זוהרים, או פותחת שקיק שבוע ברצף, מקבלת מפתח לתיבת הירח, ובתוכה מעטפה חתומה עם מתנה. המתנות מחכות באזור האישי.", act: ["#chest", "לתיבת הירח"] },
+      { k: ["שקיק", "קמע", "קמעות", "אלבום", "תיבה", "תיבת הירח", "מפתחות", "האזור שלי", "אזור אישי", "אבקת כוכבים", "ניצוצות"], a: "בשקיק הירח פותחים כל יום שקיק ואוספים קמעות לאלבום. מי שמשלימה עולם באלבום, אוספת אבקת כוכבים או ניצוצות זוהרים, או פותחת שקיק שבוע ברצף, מקבלת מפתח לתיבת הירח, ובתוכה מעטפה חתומה עם מתנה. המתנות מחכות באזור האישי.", act: ["#chest", "לתיבת הירח"] },
       { k: ["צליל", "צלילים", "אמבט", "מוזיקה", "תדר", "תדרים", "סאונד", "להירדם", "שינה"], a: "באמבט הצלילים אפשר לשלב גלים, גשם, מדורה, צרצרים, קערה, פעמונים ותדר, לראות איך כל צליל מצייר על הבד, ולשמור את היצירה כתמונה. יש גם מצב ״לפני שינה״ עם טיימר.", act: ["#soundbath", "לאמבט הצלילים"] },
       { k: ["מנדל", "mandala", "לצייר", "ציור", "משחק", "חול צבעוני"], a: "במנדלת החול מציירים באצבע או בעכבר, והחול נשפך סביב המרכז ויוצר מנדלה. אפשר לבחור צבע וכיוונים, ללחוץ ״הפתעה״ למנדלה שנשפכת מעצמה, לשמור אותה כתמונה, או לשחרר את החול אל המרכז.", act: ["#mandala", "למנדלת החול"] },
       { k: ["חסימ", "כאב", "גרון", "כתפ", "להיפתח", "הסתגר", "מפת הגוף", "גוף ונפש", "הגוף מדבר"], a: "ב״הגוף מדבר״, בעולם הירח והקסם, נוגעים באזור במפה (גרון, כתפיים, לב, בטן, גב, וגם הסתגרות) או עונים על שאלון קצר, ומקבלים הסבר, שאלות להתבוננות ותרגול קטן. זו הזמנה להתבוננות, לא מידע רפואי: כאב שנמשך או מחמיר צריך בדיקה אצל רופא או רופאה.", act: ["#body-map", "לפתוח את המפה"] },
@@ -6468,8 +6926,14 @@ window.ART = (() => {
   const VEILED = ["retreats", "sound", "magic", "who"];
   function go(hash, { push = true } = {}) {
     if (CB.veil && CB.veil.busy()) CB.veil.skip(); // a new step ends a veil still playing
+    if (CB.cosmos && CB.cosmos.gate && CB.cosmos.gate.busy()) CB.cosmos.gate.skip();
     const id = String(hash || "").replace(/^#/, "");
     const { view, target } = whereIs(id);
+    // the cosmos journey has its own way in: a flight through the stars from the sun or the moon (cosmos-gate.js)
+    if (push && view !== curView && view.dataset.view === "cosmos" && CB.cosmos && CB.cosmos.gate && CB.cosmos.gate.wants()) {
+      CB.cosmos.gate.play(() => route(id, view, target, push));
+      return;
+    }
     if (push && view !== curView && VEILED.includes(view.dataset.view) && CB.veil && CB.veil.wants()) {
       CB.veil.play(view.dataset.view, () => route(id, view, target, push));
       return;
@@ -6511,6 +6975,7 @@ window.ART = (() => {
     CB.bus.dispatchEvent(own);
     if (own.defaultPrevented) return;
     if (CB.veil && CB.veil.busy()) CB.veil.cancel(); // back during a veil: stay where the address now points
+    if (CB.cosmos && CB.cosmos.gate && CB.cosmos.gate.busy()) CB.cosmos.gate.cancel();
     const id = location.hash.slice(1);
     const { view, target } = whereIs(id);
     if (sheet.open) closeSheet(false);
@@ -7518,7 +7983,11 @@ window.ART = (() => {
       const b = e.target.closest("[data-act]"); if (!b) return;
       const act = b.dataset.act;
       if (act.startsWith("event:")) openEvent(act.slice(6));
-      else if (act.startsWith("#")) { const el = doc.getElementById(act.slice(1)); if (el) scrollToEl(el); }
+      else if (act.startsWith("#")) {
+        // a place on the site, in this view or in another (a world, the stars): go there; the chat steps aside when the view changes
+        if (whereIs(act.slice(1)).view !== curView) { panel.hidden = true; panel.classList.remove("is-open"); fab.setAttribute("aria-expanded", "false"); }
+        go(act);
+      }
       else if (act === "wa") openOut(waLink("היי נטע-לי, יש לי שאלה:")) || add("bot", `<a href="${waLink("היי נטע-לי, יש לי שאלה:")}" target="_blank" rel="noopener">לפתוח את וואטסאפ</a>`);
       else if (act === "a11y") CB.openA11y();
     });
@@ -10759,7 +11228,7 @@ void main(){
   draw(still() ? frozenAt : 0);
   doc.documentElement.classList.add("gl-hero");
   kick();
-  CB.sea = { state: () => ({ W, H, night, day: sky.day, sun: sky.sun, layout, orbY: sky.sun > 0.5 ? layout.hz + (layout.oy - layout.hz) * sky.rise : layout.oy, orbR: layout.r * sky.size, frames: CB.seaFrames || 0 }) };
+  CB.sea = { state: () => ({ W, H, night, day: sky.day, sun: sky.sun, vis: sky.vis, layout, orbY: sky.sun > 0.5 ? layout.hz + (layout.oy - layout.hz) * sky.rise : layout.oy, orbR: layout.r * sky.size, frames: CB.seaFrames || 0 }) };
   // [journey] the sea's own clock (so tapped stars start on time) and a way to wake the render loop
   CB.seaClock = () => (still() ? frozenAt : (performance.now() - t0) / 1000);
   CB.seaKick = kick;
@@ -14293,6 +14762,12 @@ void main(){
     if (state !== "lake" || (interactive(e) && !e.target.closest("#jr-fish"))) return;
     const [x, y] = local(e);
     if (fbHit(x, y)) { tapBoat(x); return; }
+    // [cosmos] the sun or the moon is the door to the stars (cosmos-gate.js), in the water's moment or not: its button
+    // lets taps through, so they come here (a world's gate or a link in front of a low sun keeps its own tap)
+    // (out of the water's moment the hero's words lie over the sky: there only the orb itself counts, not its glow;
+    // where it is comes from the page as it is now, also the moment the home page is back from another)
+    const door = doc.getElementById("orb-door"), o = CB.cosmos && CB.cosmos.orb ? CB.cosmos.orb() : null;
+    if (o && CB.cosmos.enter && door && !door.hidden && Math.hypot(e.clientX - o.x, e.clientY - o.y) < o.r * (waterOn() ? 1.35 : 1.1)) { CB.cosmos.enter(o); return; }
     if (!waterOn()) return;
     if (hitMoon(x, y)) { if (isSun()) tapSun(x); else tapMoon(x); }
     else if (hitHills(x, y)) sail();
@@ -21984,6 +22459,1380 @@ void main(){
       streak: () => streakTick(),
     },
   };
+})();
+
+</script>
+<script>
+/* The constellations along the Sun's path, for the cosmos journey (written by ai/cosmos_sky.py; do not edit by hand).
+   Ecliptic coordinates, J2000, in degrees, made from the data of d3-celestial 0.7.35 (stick figures, Hipparcos stars,
+   IAU borders). figs: each figure's strokes as flat [lambda, beta, ...]; borders: [lambda where the Sun's path enters,
+   id]; stars: flat [lambda*10, beta*10, magnitude*10, (B-V)*100], brightest first; named: [lambda, beta, name].
+
+   d3-celestial's license:
+
+   Copyright (c) 2015, Olaf Frohn
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+   3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
+window.COSMOS_SKY = {"figs":{"Ari":[[48.2,10.4,37.7,10.0,34.0,8.5,33.2,7.2]],"Tau":[[84.8,-2.2,69.8,-5.5,68.0,-5.8,65.8,-5.7,66.9,-4.0,68.5,-2.6,82.6,5.4],[65.8,-5.7,60.6,-8.0,51.9,-8.8,59.9,-14.5],[51.9,-8.8,51.2,-9.3,52.0,-18.4]],"Gem":[[93.4,-0.9,95.3,-0.8,99.9,2.1,105.4,7.8,110.2,10.1,113.2,6.7,111.3,5.2,108.5,-0.2,105.0,-2.0,99.1,-6.7,101.2,-10.1],[108.5,-0.2,108.8,-5.6]],"Cnc":[[133.6,-5.1,128.7,0.1,127.5,3.2,126.3,10.4],[128.7,0.1,124.3,-10.3]],"Leo":[[149.8,0.5,147.9,4.9,149.6,8.8,161.3,14.3,171.6,12.3,163.4,9.7,149.8,0.5],[149.6,8.8,147.6,11.9,141.4,12.3,140.7,9.7]],"Vir":[[174.2,4.6,177.2,0.7,184.8,1.4,190.1,2.8,198.2,1.7,203.8,-2.1,213.8,7.2,220.1,9.7],[189.9,16.2,191.5,8.6,190.1,2.8],[198.2,1.7,202.1,8.6,207.7,13.1,218.5,17.1]],"Lib":[[230.7,-7.6,225.1,0.3,229.4,8.5,235.1,4.4,238.6,-8.5,239.4,-10.0],[225.1,0.3,235.1,4.4]],"Sco":[[242.9,-5.5,242.6,-2.0,243.2,1.0],[242.6,-2.0,247.8,-4.0,249.8,-4.6,251.5,-6.1,255.3,-11.7,256.2,-15.4,257.2,-19.6,260.7,-20.2,265.6,-19.6,267.5,-16.7,266.5,-15.6,264.6,-13.8]],"Oph":[[269.8,13.7,266.6,26.1,265.3,27.9,262.4,35.8,251.8,31.8,245.6,23.6,242.3,17.2,243.5,16.4,249.2,11.4,258.0,7.2],[251.8,31.8,249.2,11.4,248.7,5.2,248.0,3.2,247.6,1.6,248.4,-1.8],[265.3,27.9,258.0,7.2,261.4,-1.8,262.9,-6.6]],"Sgr":[[273.6,-13.4,275.1,-11.1,274.6,-6.5,276.3,-2.1,273.2,2.3],[285.8,-22.1,286.6,-18.4,283.6,-7.2,280.2,-4.0,276.3,-2.1],[292.6,-20.7,294.9,-14.4,295.9,-5.4,291.8,-3.3,289.3,-2.5,287.0,-2.9,282.4,-3.4,280.2,-4.0,274.6,-6.5,271.3,-7.0,275.1,-11.1,283.6,-7.2,284.8,-5.1,282.4,-3.4,285.0,0.9,286.3,1.4,288.3,3.3,289.5,4.2,289.7,6.1],[285.0,0.9,283.5,1.7,282.5,0.1,282.4,-3.4]],"Cap":[[303.8,7.0,304.0,4.6,305.2,1.2,307.2,-7.0,308.0,-9.0,316.9,-7.0,323.5,-2.6,321.8,-2.6,317.7,-1.4,313.8,-0.6,303.8,7.0]],"Aqr":[[311.7,8.1,313.1,8.2,323.4,8.6,333.4,10.7,336.7,8.2,338.9,8.8,340.4,8.1,341.6,-0.4,346.7,-4.3,340.0,-14.5],[323.4,8.6,328.7,-2.1],[333.4,10.7,333.3,2.7],[338.9,8.8,338.6,10.5],[343.5,-14.8,346.7,-4.3,348.6,-14.5]],"Psc":[[26.5,15.5,28.3,20.7,28.8,17.5,26.5,15.5,24.5,12.4,26.8,5.4,27.7,-1.6,29.4,-9.1,27.5,-7.9,25.5,-4.7,23.1,-3.1,19.9,-0.2,17.5,1.1,14.1,2.2,2.6,6.4,-2.4,7.2,-4.8,9.0,-7.0,8.9,-8.5,7.3,-7.1,4.4,-3.4,3.4,-1.7,4.6,-2.4,7.2],[-8.5,7.3,-11.4,9.1]]},"borders":[[28.7,"Ari"],[53.45,"Tau"],[90.15,"Gem"],[118.0,"Cnc"],[138.05,"Leo"],[173.9,"Vir"],[217.85,"Lib"],[241.05,"Sco"],[247.65,"Oph"],[266.25,"Sgr"],[299.7,"Cap"],[327.5,"Aqr"],[351.65,"Psc"]],"stars":[2042,307,0,124,819,229,1,80,768,-311,2,-3,1158,-160,4,43,888,-160,4,150,3018,293,8,22,698,-55,9,154,2038,-21,10,-24,2498,-46,11,186,1132,67,12,99,3339,-211,12,14,1498,5,14,-9,1102,101,16,3,2646,-138,16,-23,809,-168,16,-22,826,54,16,-13,835,-245,17,-18,847,-253,17,-20,621,301,18,48,2751,-111,18,-3,2656,-196,19,41,899,215,19,8,991,-67,19,0,1473,-224,20,144,377,100,20,115,1496,88,20,113,26,-208,20,102,2824,-34,20,-13,2223,-221,21,101,143,257,21,-4,304,259,21,158,2624,358,21,16,562,224,21,0,442,278,21,137,1716,123,21,9,824,-236,22,-18,2426,-20,23,-12,2553,-117,23,114,2335,-300,23,-15,2302,-255,23,-16,3319,221,24,152,2665,-156,24,-17,2580,72,24,6,3594,311,24,166,3535,194,25,0,443,-126,25,163,2492,114,25,4,1613,143,26,13,2432,10,26,-6,1907,-145,26,-11,2836,-72,26,6,2294,85,26,-7,2321,255,26,117,340,85,26,16,899,138,26,-8,1974,-180,26,89,1993,281,27,58,2350,-250,27,-18,766,105,27,149,2640,-140,27,-18,2746,-65,27,138,3009,312,27,151,2423,172,27,158,1901,28,27,37,830,-292,28,-21,2131,-260,28,7,2251,3,28,15,2653,279,28,117,753,-279,28,16,2562,373,28,116,2415,-212,28,-22,2515,-61,28,-21,2763,-21,28,102,92,126,28,-19,631,113,28,27,2649,-266,28,-14,600,41,28,-9,1899,162,28,93,3235,-26,28,18,953,-8,29,162,2863,14,29,38,1122,-135,29,-10,2429,-55,29,-18,657,191,29,-20,2478,-40,29,30,3234,86,29,83,600,345,29,72,3557,351,29,85,1935,-122,29,-1,3334,107,30,97,848,-22,30,-15,1407,97,30,81,2713,-70,30,98,2070,-137,30,92,2675,-167,30,51,2898,362,30,1,424,206,30,14,1488,355,30,114,2562,-154,30,-20,3174,-231,30,-8,648,273,30,-12,1917,-197,30,133,788,209,30,54,3040,46,30,79,999,21,31,138,1412,290,31,160,2736,-134,31,158,1346,-110,31,98,1704,-218,31,123,2991,-278,31,100,1228,296,31,22,2348,-240,31,-21,1318,180,31,155,1273,349,32,48,2802,-40,32,-11,794,183,32,-15,719,-154,32,48,2518,318,32,116,2679,-136,32,119,2387,-214,32,-23,2435,164,32,97,2757,204,32,94,3049,187,32,-7,2186,-130,32,109,2307,-76,32,167,218,244,33,127,2614,-18,33,-19,3389,-82,33,7,934,-9,33,160,549,206,33,153,2607,-202,33,44,2698,137,33,99,2848,-51,33,117,1634,97,33,0,802,-255,34,-24,1012,-101,34,44,2936,248,34,32,2401,-252,34,-19,1323,-111,34,68,2021,86,34,11,837,-134,34,-16,1915,86,34,157,680,-58,34,18,606,-80,34,-10,2212,-283,34,-22,3462,177,34,-9,369,168,34,49,2458,-174,34,-21,1476,119,34,31,2873,176,34,-10,1395,299,34,3,118,-161,35,116,394,-120,35,9,2215,-290,35,-17,1479,49,35,-3,178,-248,35,73,1567,262,35,140,2751,-226,35,-18,1085,-2,35,37,3070,392,35,157,3544,294,35,93,509,-287,35,92,1442,-38,35,52,2835,17,35,115,3368,163,35,9,685,-26,35,101,1243,-103,35,148,1880,-316,35,95,2359,162,35,-4,2645,79,35,26,2288,-302,36,-18,9,-100,36,121,1767,-176,36,111,2562,-154,36,-21,1137,31,36,93,1239,290,36,1,2375,-172,36,153,1088,-56,36,11,3039,69,36,88,424,354,36,127,778,-298,36,-12,1772,7,36,52,162,-158,36,106,1011,110,36,10,2386,-85,36,136,482,104,36,-10,512,-93,36,89,1594,-220,36,101,268,54,36,97,604,39,36,-7,2572,-196,36,139,3163,319,36,42,658,-57,36,98,2299,343,36,7,2712,-267,36,-10,3389,88,36,41,2394,-100,37,-18,721,-168,37,-16,3034,389,37,131,3400,-145,37,120,786,182,37,115,3218,-26,37,32,3515,73,37,92,725,-200,37,-18,2343,240,37,15,2722,330,37,16,3024,267,37,86,482,-277,37,88,594,42,37,-10,899,308,37,101,519,-88,37,-8,2185,171,37,0,3416,-4,37,163,220,-203,37,114,2666,261,38,4,983,-303,38,-11,2850,9,38,101,587,375,38,169,638,222,38,42,669,-40,38,98,841,-259,38,-19,3169,-70,38,100,3174,330,38,-6,3444,343,38,44,1090,58,38,102,2130,279,38,4,3117,81,38,0,577,261,38,98,1509,249,38,104,1573,247,38,61,2283,289,38,27,294,-91,38,2,1306,201,38,7,2456,236,38,2,1650,-247,38,146,2230,-280,38,-22,611,122,38,2,680,-57,38,95,1564,1,38,-15,2732,23,38,20,2328,352,38,48,2790,149,38,132,292,297,39,13,3367,82,39,-6,597,44,39,-6,2201,97,39,38,2243,-305,39,-21,2431,-86,39,-20,3004,215,39,63,332,72,39,-5,1414,123,39,122,2395,-297,39,-3,388,-245,39,109,1403,-131,39,-6,1848,14,39,3,1476,-143,39,131,2165,-276,39,119,599,-145,39,3,1299,-224,39,-1,2351,44,39,101,2376,-284,39,-14,2895,42,39,23,3231,201,39,55,579,344,39,76,668,-251,39,-21,2437,2,39,-5,2702,264,39,3,1193,-305,39,102,1287,1,39,108,695,262,40,-2,1253,237,40,46,2858,-221,40,-8,2866,-184,40,-10,3435,-148,40,108,883,157,40,113,2428,-132,40,-4,3216,-313,40,102,3531,288,40,107,650,149,40,2,194,-310,40,155,942,-297,40,132,1676,61,40,42,2446,16,40,8,446,369,40,-10,693,-254,40,-15,1050,-20,40,90,2299,-210,40,-16,2521,-283,40,108,1922,-217,40,33,2860,168,40,108,2883,376,40,108,26,64,40,42,435,189,40,2,813,374,40,92,1263,104,40,101,2715,259,40,86,3141,291,40,-12,594,-275,40,33,1742,46,40,150,3404,81,40,-8,593,306,40,60,1687,17,40,-6,1992,252,40,152,2257,-225,40,-3,3386,-57,40,157,743,-91,41,116,1113,52,41,154,1792,-197,41,22,2294,-184,41,136,2596,-303,41,145,2138,72,41,51,2377,-265,41,-16,206,176,41,110,376,-145,41,-21,1737,-227,41,108,3138,-6,41,-1,3303,333,41,111,841,-140,41,95,2298,371,41,162,386,290,41,54,547,316,41,51,2752,-258,41,100,2841,-168,41,116,1557,-261,41,92,2841,-153,41,4,708,267,41,94,906,-138,41,17,1777,85,41,97,2926,-207,41,106,3080,-90,41,163,3216,-316,41,157,796,-309,41,94,968,-31,41,-12,2399,35,41,100,3072,-70,41,43,3576,72,41,51,536,-59,41,111,597,40,41,-5,1303,-124,41,0,3389,366,41,42,1095,-227,42,0,909,-2,42,84,1091,98,42,32,2413,92,42,46,2623,-10,42,28,3333,27,42,98,2145,29,42,132,2526,-131,42,154,3313,-173,42,-10,2180,-216,42,152,824,-173,42,-14,1445,251,42,91,3322,-236,42,95,3479,184,42,50,666,395,42,42,682,6,42,14,518,209,42,34,2467,-156,42,-18,2480,32,42,22,2824,182,42,109,3471,-11,42,154,1126,75,42,112,1844,325,42,57,2077,131,42,12,2167,-206,42,39,2836,-144,42,52,338,-282,42,-12,2515,-127,42,-17,2654,105,42,9,3463,-40,42,111,688,-117,42,18,698,289,42,-1,736,190,42,117,752,-315,42,-19,1176,231,42,155,2094,-314,42,22,277,-16,43,94,364,364,43,1,1336,-51,43,14,2653,-153,43,108,175,11,43,95,419,-56,43,31,636,-122,43,-5,698,-95,43,12,722,7,43,-11,2404,-285,43,-9,2858,-225,43,35,3194,327,43,104,3552,90,43,106,685,11,43,26,2629,-66,43,40,3177,-14,43,89,520,-184,43,57,1934,-315,43,-10,2487,52,43,92,3272,-214,43,1,3287,-21,43,-8,375,-59,43,-5,596,45,43,-11,675,-37,43,5,900,225,43,170,1323,-143,43,-19,1555,165,43,2,1750,-30,43,98,1938,-117,43,39,3038,70,43,93,2438,1,43,83,3117,168,43,95,637,280,43,-6,834,-47,43,206,934,61,43,102,1379,79,43,154,1384,-303,43,90,1889,230,43,46,2179,-201,43,-15,2339,-259,43,-15,2603,103,43,4,1123,-128,43,142,2298,-291,43,43,2600,-35,43,86,209,230,43,87,227,271,43,-12,2253,-310,43,60,2424,-225,43,141,2606,273,43,148,3350,290,43,116,509,18,44,103,724,-135,44,1,991,354,44,85,1329,-116,44,-4,1739,284,44,113,2350,-115,44,110,3173,-183,44,-5,340,-43,44,88,626,280,44,137,635,13,44,106,710,-278,44,26,1251,-226,44,97,2241,-266,44,-20,2958,200,44,-8,2949,-144,44,-15,3580,-57,44,163,1982,17,44,-1,3372,-317,44,-10,3439,-156,44,146,836,-138,44,-16,887,-32,44,59,963,-187,44,22,1222,-177,44,125,1504,-14,44,145,2226,185,44,103,2506,325,44,-9,2609,20,44,39,3011,388,44,78,3012,382,44,104,224,159,44,94,1054,78,44,126,2268,-239,44,-18,3370,-257,44,111,3467,-43,44,-14,20,248,44,62,919,-87,44,-16,1589,129,44,5,2285,-111,44,137,2324,265,44,60,2705,247,44,5,510,-311,44,160,602,-284,44,82,793,309,44,-2,2971,-71,44,164,3130,124,44,164,3181,319,44,30,141,22,44,150,931,356,44,3,3555,-188,44,164,255,-47,44,135,929,-92,44,-18,1312,-146,44,122,1715,-76,44,21,2496,4,44,13,2968,287,44,118,556,-227,45,67,776,-201,45,117,1231,335,45,29,1786,-256,45,2,2529,-255,45,-7,3313,-236,45,-4,552,103,45,156,735,-209,45,137,985,-159,45,2,1274,354,45,3,1353,104,45,122,2232,120,45,32,3189,-260,45,135,3244,247,45,53,325,393,45,-7,674,-60,45,26,1028,-205,45,110,1541,-111,45,-3,2476,16,45,100,3383,-166,45,89,3486,91,45,-12,1009,-98,45,117,1410,221,45,19,2119,304,45,0,3118,-81,45,160,3405,395,45,51,3502,-116,45,-3,3566,34,45,20,845,-192,45,-10,1690,173,45,55,1979,265,45,51,3164,48,45,93,3176,-66,45,89,3221,-201,45,5,204,316,45,5,283,207,45,109,878,158,45,95,2272,381,45,6,3202,-50,45,-18,484,125,45,111,2170,5,45,13,2721,-225,45,101,2897,61,45,8,3341,361,45,162,291,326,45,-14,900,-265,45,120,2613,181,45,38,2672,-44,45,60,811,103,45,125,1338,207,45,91,1457,-150,45,11,2135,338,45,72,2310,-18,45,-7,2379,-177,45,-16,2959,-63,45,146,3516,139,45,156,3581,148,45,94,663,385,46,49,1123,-97,46,128,1293,383,46,4,2427,-249,46,-18,2474,-27,46,76,2718,-50,46,94,3538,-162,46,-5,510,178,46,155,885,42,46,-1,1275,209,46,104,1605,168,46,166,2297,-290,46,-15,2654,-232,46,-2,2416,352,46,0,2484,-18,46,23,2836,-179,46,107,11,256,46,18,830,-281,46,-18,2462,-67,46,-17,2643,152,46,13,812,-201,46,-20,1456,-167,46,41,2416,-49,46,-7,2918,-33,46,-8,3456,-246,46,0,718,284,46,4,1583,-232,46,-9,2128,313,46,97,2389,-194,46,0,212,334,46,6,275,-79,46,93,564,210,46,112,1057,269,46,0,2337,89,46,100,3589,-58,46,103,768,-12,46,16,819,-305,46,-26,1645,13,46,33,2466,132,46,18,2701,197,46,39,2765,-191,46,99,2858,269,46,16,101,232,46,158,485,42,46,5,1355,-244,46,84,2411,-55,46,-7,736,-124,46,8,909,-33,46,24,2436,-243,46,41,2524,116,46,48,2721,322,46,95,2934,220,46,58,3158,322,46,12,469,113,46,-12,690,-70,46,26,765,-74,46,-6,1776,62,46,12,2489,-279,46,90,214,-205,47,33,245,124,47,102,1004,-132,47,-23,1275,32,47,1,1465,331,47,-4,1922,-35,47,124,2407,-145,47,96,2711,-61,47,77,2740,-37,47,163,2760,144,47,93,265,155,47,105,629,296,47,-10,691,189,47,101,705,-62,47,15,1213,-23,47,53,2771,87,47,8,3084,-147,47,89,539,217,47,6,1453,-89,47,131,1488,216,47,82,1493,-39,47,159,2036,31,47,161,3241,60,47,18,3352,-100,47,136,673,-69,47,98,818,169,47,63,1228,-214,47,148,1786,-113,47,-7,2571,-197,47,44,2808,140,47,36,2959,-54,47,75,3234,252,47,26,3454,-165,47,2,451,-78,47,-11,735,-82,47,177,817,-243,47,159,842,89,47,28,1841,-183,47,96,3026,287,47,102,3119,-157,47,7,3396,-157,47,67,796,-235,47,-17,882,139,47,162,1439,289,47,22,1454,222,47,26,1774,183,47,101,2582,226,47,112,3216,-48,47,87,518,337,47,153,1035,-96,47,32,1676,-80,47,159,2485,-238,47,23,3131,82,47,32,288,175,47,3,301,-285,47,45,488,-233,47,-9,2050,-93,47,71,2700,-4,47,-3,2823,-193,47,-3,3321,92,47,-10,2178,-190,48,-11,2378,0,48,157,2414,-146,48,-15,880,-216,48,138,1542,308,48,11,1864,218,48,157,2061,-63,48,110,2665,-260,48,42,3588,285,48,128,59,-141,48,100,615,375,48,102,839,-305,48,14,1021,-149,48,140,1465,-262,48,93,1744,-57,48,153,1962,-34,48,159,2708,153,48,41,2951,-172,48,142,3044,66,48,-5,3052,12,48,39,117,-63,48,155,433,233,48,12,685,-56,48,17,829,-293,48,-25,1126,306,48,5,1497,84,48,45,1741,258,48,52,1958,126,48,164,2226,-128,48,130,2287,-293,48,31,2635,-7,48,2,2680,-167,48,26,3405,133,48,104,3495,356,48,-1,116,170,48,157,357,108,48,29,761,141,48,141,2497,-32,48,-12,2677,-83,48,-3,2701,278,48,-10,3200,-283,48,79,438,-259,48,23,671,-41,48,15,716,246,48,-2,732,-298,48,-16,977,193,48,124,1233,361,48,20,1458,-238,48,91,1784,241,48,1,1834,318,48,148,2080,400,48,167,2477,-71,48,1,3095,-240,48,3,3386,105,48,-17,3549,344,48,-1,778,-73,48,31,895,25,48,-9,1328,238,48,99,1762,-135,48,156,2155,118,48,69,2759,28,48,131,3191,381,48,-3,806,154,48,19,2001,357,48,54,2434,222,48,34,2545,184,48,148,3127,-30,48,17,3354,-12,48,-5,3420,209,48,-13,3486,-145,48,82,333,-260,48,45,388,333,48,42,2382,-256,48,-18,2584,-112,48,26,2820,-143,48,40,2848,169,48,106,231,-31,48,137,436,193,48,61,468,289,48,148,483,-145,48,68,633,-117,48,80,855,-68,48,-12,1649,-25,48,114,1733,61,48,17,2065,284,48,123,2442,330,48,150,2966,-55,48,88,3254,-306,48,103,563,154,48,149,2119,-277,48,69,2694,-209,48,118,2758,267,48,91,2801,-300,48,-5,973,363,49,8,2105,214,49,1,2152,227,49,99,2535,-218,49,4,2661,17,49,47,2792,-126,49,-17,2825,1,49,141,2870,-29,49,57,3353,157,49,144,379,338,49,108,384,-92,49,88,519,29,49,-1,593,-309,49,116,2949,14,49,106,297,-252,49,-3,825,-13,49,-14,875,12,49,102,1801,339,49,116,1855,135,49,8,2696,-183,49,162,2811,147,49,111,2875,-261,49,110,2883,33,49,101,3583,-31,49,93,757,149,49,145,805,-213,49,-20,874,-108,49,-7,1107,129,49,41,1151,-26,49,142,1663,-204,49,280,1833,247,49,90,2536,354,49,12,3056,-154,49,100,3563,-153,49,49,139,-218,49,123,853,-219,49,114,1009,222,49,3,2057,-261,49,-3,2432,10,49,-2,2465,-175,49,-15,3017,-273,49,149,508,232,49,58,662,-217,49,132,775,-42,49,66,956,-263,49,161,1044,168,49,145,1096,-265,49,102,1680,-235,49,92,2253,82,49,0,2347,-130,49,37,2513,44,49,110,3091,156,49,116,3109,155,49,161,3486,145,49,0,945,259,49,190,1743,275,49,28,1793,-303,49,37,1968,302,49,143,2004,125,49,3,2297,-183,49,1,2313,80,49,45,2713,-200,49,26,2760,-226,49,-10,91,283,49,94,661,-8,49,26,692,129,49,95,776,151,49,4,1064,367,49,10,1230,-238,49,120,1736,235,49,96,1799,302,49,68,1864,-294,49,54,2160,-29,49,168,2210,135,49,99,2429,109,49,9,2920,-318,49,159,2949,143,49,-5,3471,-28,49,161,412,160,49,77,525,174,49,124,1172,72,49,113,1583,-296,49,156,2048,-146,49,105,3101,341,49,7,3227,-198,49,49,314,383,50,17,847,-245,50,-20,929,-73,50,-15,1715,-6,50,100,2404,61,50,-8,3529,44,50,4,3583,46,50,251,389,279,50,-7,401,297,50,62,595,240,50,5,680,-53,50,114,806,-10,50,94,891,323,50,5,2120,-64,50,106,2439,-50,50,123,2727,-3,50,106,79,310,50,138,611,139,50,-5,679,58,50,115,1152,58,50,10,1834,51,50,117,1950,213,50,71,2243,-141,50,-7,2383,-41,50,130,2515,-283,50,79,2527,367,50,160,3497,-110,50,26,224,-134,50,138,390,121,50,34,806,286,50,34,830,-287,50,-10,830,-287,50,60,1363,-297,50,142,1640,-2,50,17,1746,271,50,9,2858,269,50,20,2910,166,50,94,499,390,50,-7,625,292,50,-9,713,396,50,144,802,-196,50,-10,1000,188,50,126,1076,-267,50,-20,1117,-126,50,99,1374,-110,50,119,1416,-32,50,105,1520,358,50,100,1691,316,50,114,2100,148,50,-12,2410,-284,50,52,2464,-207,50,99,2965,-114,50,121,3217,-211,50,150,3468,-48,50,-2,3568,-101,50,162,718,375,50,50,815,-58,50,54,1042,270,50,9,1443,-70,50,105,2357,372,50,93,2698,-68,50,165,2827,2,50,135],"named":[[60.0,4.1,"כימה"],[69.8,-5.5,"אלדברן"],[110.2,10.1,"קסטור"],[113.2,6.7,"פולוקס"],[149.8,0.5,"רגולוס"],[203.8,-2.1,"ספיקה"],[249.8,-4.6,"אנטארס"]]};
+
+</script>
+<script>
+/* The cosmos journey's two shaders (cosmos.js draws them): the scenes behind the chapters, and the way in.
+   Everything is drawn by code: no images, nothing to download.
+   Scenes: 0 deep space, 1 our Sun, 2 a star's life (a stage from 0 to 8), 3 the Milky Way, 4 the night sky along the
+   Sun's path, 5 the wheel of signs, 6 your sign. Two scenes blend while one chapter gives way to the next.
+   The way in: the sun or the moon of the home page grows until it fills the screen, then a flight through the stars. */
+(() => {
+  "use strict";
+  const CB = (window.CB = window.CB || {});
+
+  const VERT = "attribute vec2 aPos; void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }";
+
+  // shared: hashes, value noise, fbm, stars
+  const LIB = `
+#define PI 3.14159265
+float h12(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+vec2 h22(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973)); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.xx + p3.yz) * p3.zy); }
+float vnoise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h12(i), h12(i + vec2(1.0, 0.0)), u.x), mix(h12(i + vec2(0.0, 1.0)), h12(i + vec2(1.0, 1.0)), u.x), u.y); }
+const mat2 ROT = mat2(1.6, 1.2, -1.2, 1.6);
+float fbm(vec2 p){ float s = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { s += a * vnoise(p); p = ROT * p; a *= 0.5; } return s; }
+float fbm3(vec2 p){ float s = 0.0, a = 0.5; for (int i = 0; i < 3; i++) { s += a * vnoise(p); p = ROT * p; a *= 0.5; } return s; }
+// one layer of stars: at most one per cell of size 1/sc (in height units); px = one pixel, in height units
+vec3 starLayer(vec2 p, float sc, float amt, float t, float px){
+  vec2 g = p * sc, i = floor(g), f = fract(g) - 0.5;
+  float r = h12(i + 7.13);
+  if (r < 0.42) return vec3(0.0);
+  vec2 o = (h22(i) - 0.5) * 0.76;
+  float big = pow(h12(i + 3.31), 7.0);
+  float d = length(f - o) / sc;                            // distance in height units
+  float core = max(px * (0.7 + 1.6 * big), 0.0006);
+  float s = smoothstep(core * 1.6, core * 0.4, d) + exp(-d / (px * (1.3 + 5.0 * big))) * big * 0.9;
+  float tw = 0.72 + 0.28 * sin(t * (0.8 + 2.4 * h12(i + 9.7)) + 6.2832 * h12(i + 1.77));
+  vec3 c = mix(vec3(0.72, 0.8, 1.0), vec3(1.0, 0.86, 0.72), h12(i + 5.53));
+  return c * s * tw * amt * (0.35 + 0.65 * r);
+}
+vec3 stars(vec2 p, float t, float px){
+  return starLayer(p, 9.0, 1.15, t, px) + starLayer(p + 3.1, 21.0, 0.8, t, px) + starLayer(p + 7.7, 46.0, 0.5, t, px);
+}
+`;
+
+  /* ---------- the scenes ---------- */
+  const FRAG = (high) => `
+precision ${high ? "highp" : "mediump"} float;
+uniform vec2 uRes;
+uniform float uT;
+uniform vec4 uS;    // scene A, scene B, how much of B (0..1), the star's life stage (0..8)
+uniform vec4 uL;    // the focus (x, y in screen heights from the middle), its size, the screen's width / height
+uniform vec4 uSun;  // our Sun: how near (0..1), how high it sits (screen heights), -, -
+uniform vec4 uGal;  // the galaxy: tilt (radians), turn (radians), zoom, the "you are here" pulse
+uniform vec2 uGc;   // the galaxy's middle (it moves so that, close up, the Sun is at the focus)
+${LIB}
+float PX;
+// where the Sun is in the galaxy's own plane: on the Orion spur, about half way out
+const float ME_A = 0.11;
+const float ME_R = 0.53;
+
+vec3 nebula(vec2 p, float t, vec3 c1, vec3 c2, vec3 c3){
+  vec2 q = p * 1.35 + vec2(t * 0.006, -t * 0.004);
+  float n1 = fbm(q + fbm3(q * 0.8 + 3.0) * 1.3);
+  float n2 = fbm3(q * 1.7 - 5.2);
+  float dens = smoothstep(0.42, 0.95, n1);
+  vec3 col = mix(c1, c2, n2) * dens;
+  col += c3 * smoothstep(0.55, 0.95, n1 * n2 * 2.0) * 0.55;
+  float dust = smoothstep(0.52, 0.8, fbm3(q * 2.3 + 11.0));
+  return col * (1.0 - dust * 0.55);
+}
+vec3 deep(vec2 p){
+  return mix(vec3(0.028, 0.024, 0.075), vec3(0.11, 0.08, 0.21), smoothstep(-0.9, 1.0, p.y + 0.35 * p.x));
+}
+vec3 space(vec2 p, float t){
+  vec3 c = deep(p);
+  c += nebula(p, t, vec3(0.40, 0.25, 0.62), vec3(0.78, 0.36, 0.56), vec3(0.30, 0.62, 0.72)) * 0.6;
+  c += stars(p + vec2(t * 0.002, 0.0), t, PX);
+  return c;
+}
+
+/* a star seen up close: a glowing ball with boiling cells, darker at the rim, and its corona.
+   hot / warm / deep: its colours from the middle to the rim; cells: how big the cells are */
+vec3 starBall(vec2 p, vec2 c, float R, float t, vec3 hot, vec3 warm, vec3 deepc, float cells, float corona){
+  vec2 d = (p - c) / R;
+  float r = length(d);
+  float edge = PX / R * 1.5;
+  vec3 col = vec3(0.0);
+  float inside = smoothstep(1.0, 1.0 - edge, r);
+  if (r < 1.0) {
+    float z = sqrt(max(0.0, 1.0 - r * r));
+    float lon = atan(d.x, z) + t * 0.025, lat = asin(clamp(d.y, -1.0, 1.0));
+    vec2 uv = vec2(lon, lat) * 2.0;
+    float g = fbm(uv * cells + vec2(t * 0.04, -t * 0.03));
+    float g2 = vnoise(uv * cells * 4.2 - t * 0.12);
+    float spot = smoothstep(0.78, 0.86, fbm3(uv * 1.4 + 4.0)) * 0.6;
+    float limb = pow(z, 0.62);
+    vec3 s = mix(deepc, warm, smoothstep(0.0, 0.75, limb));
+    s = mix(s, hot, pow(limb, 4.0) * 0.6);
+    s *= 0.8 + 0.34 * g + 0.12 * g2;
+    s *= 1.0 - spot * 0.45;
+    col = s * (0.92 + 0.28 * limb) * inside;
+  }
+  float rr = max(r, 1.0) - 1.0;
+  float ang = atan(d.y, d.x);
+  float streak = fbm3(vec2(ang * 4.0 + 7.0, rr * 1.6 - t * 0.035));
+  float cor = (exp(-rr * 3.2) * (0.42 + 0.8 * streak) + exp(-rr * 16.0) * 0.45) * corona;
+  float halo = exp(-rr * 0.8) * 0.16 * corona;
+  vec3 cc = mix(warm * 0.9, hot, exp(-rr * 4.0) * 0.7);
+  col += cc * (cor + halo) * (1.0 - inside);
+  // flames at the rim (prominences)
+  float rim = smoothstep(0.0, 0.02, rr) * smoothstep(0.16, 0.0, rr);
+  float flame = smoothstep(0.62, 0.9, fbm3(vec2(ang * 9.0, rr * 9.0 - t * 0.2)));
+  col += deepc * 1.6 * rim * flame * corona;
+  return col;
+}
+
+vec3 sunScene(vec2 p, float t){
+  vec2 c = uL.xy + vec2(0.0, uSun.y);
+  float R = uL.z * mix(0.16, 1.0, uSun.x * uSun.x * (3.0 - 2.0 * uSun.x));
+  vec3 col = deep(p) * 0.8 + stars(p, t, PX) * 0.8;
+  col += starBall(p, c, R, t, vec3(1.0, 0.93, 0.7), vec3(1.0, 0.66, 0.24), vec3(0.84, 0.27, 0.06), 6.0, 1.0);
+  return col;
+}
+
+/* ---------- a star's life, stage by stage (each stage blends into the next in its last third) ---------- */
+vec3 cloud(vec2 p, vec2 c, float R, float t, float squeeze){
+  vec2 q = (p - c) / (R * mix(5.5, 2.2, squeeze));
+  float fall = exp(-dot(q, q) * 1.2);
+  float n = fbm(q * 2.2 + vec2(t * 0.01, 0.0) + fbm3(q * 1.5 - t * 0.008) * 1.4);
+  float n2 = fbm3(q * 3.1 + 9.0);
+  float dens = smoothstep(0.26, 0.85, n * (0.75 + 0.5 * fall)) * fall;
+  vec3 col = mix(vec3(0.36, 0.22, 0.62), vec3(0.88, 0.4, 0.58), n2) * dens * 1.35;
+  col += vec3(0.5, 0.32, 0.7) * fall * fall * 0.18;
+  col += vec3(0.4, 0.75, 0.85) * smoothstep(0.6, 0.95, n * n2 * 2.1) * fall * 0.6;
+  // the middle begins to glow as it gathers
+  col += vec3(1.0, 0.7, 0.45) * exp(-length(q) * mix(9.0, 5.0, squeeze)) * squeeze * 1.2;
+  return col;
+}
+vec3 protostar(vec2 p, vec2 c, float R, float t){
+  vec2 d = (p - c) / R;
+  float r = length(d);
+  vec3 col = vec3(1.0, 0.78, 0.5) * (exp(-r * 4.0) * 1.3 + exp(-r * 14.0) * 1.6);
+  // the spinning disc, seen from its side
+  vec2 e = vec2(d.x, d.y * 4.6);
+  float er = length(e);
+  float ang = atan(e.y, e.x);
+  float disc = smoothstep(2.6, 0.5, er) * smoothstep(0.25, 0.6, er) * (0.55 + 0.6 * fbm3(vec2(ang * 3.0 - t * 0.6, er * 3.0)));
+  col += mix(vec3(0.95, 0.5, 0.35), vec3(1.0, 0.8, 0.6), smoothstep(2.2, 0.6, er)) * disc * 0.9;
+  // jets from the poles
+  float jet = exp(-abs(d.x) / (0.07 + 0.05 * abs(d.y))) * smoothstep(0.3, 1.0, abs(d.y)) * exp(-abs(d.y) * 0.45);
+  jet *= 0.6 + 0.4 * vnoise(vec2(d.x * 8.0, abs(d.y) * 3.0 - t * 1.4));
+  col += vec3(0.55, 0.7, 1.0) * jet * 0.9;
+  return col + cloud(p, c, R, t, 1.0) * 0.45;
+}
+vec3 ringNebula(vec2 p, vec2 c, float R, float t, float grow){
+  vec2 d = (p - c) / R;
+  float r = length(d);
+  float ang = atan(d.y, d.x);
+  float rad = mix(1.4, 4.6, grow);
+  float w = mix(0.5, 1.5, grow);
+  float n = fbm(vec2(ang * 2.0, r * 0.8) * 2.0 + t * 0.02);
+  float shell = exp(-pow((r - rad * (0.92 + 0.16 * n)) / w, 2.0));
+  vec3 inner = vec3(0.3, 0.78, 0.82), outer = vec3(0.95, 0.38, 0.5);
+  vec3 col = mix(inner, outer, smoothstep(rad - w, rad + w * 0.8, r)) * shell * (0.65 + 0.7 * n) * 1.1;
+  col += inner * 0.35 * smoothstep(rad, 0.0, r) * (0.4 + 0.6 * fbm3(d * 2.0 + t * 0.03)) * (1.0 - 0.6 * grow);
+  // the white dwarf left in the middle
+  col += vec3(0.85, 0.92, 1.0) * (exp(-r * 18.0) * 2.0 + exp(-r * 5.0) * 0.25);
+  return col;
+}
+vec3 supernova(vec2 p, vec2 c, float R, float t, float f){
+  vec2 d = (p - c) / R;
+  float r = length(d);
+  float ang = atan(d.y, d.x);
+  vec3 col = vec3(0.0);
+  // before: a red supergiant, swelling
+  float pre = 1.0 - smoothstep(0.08, 0.2, f);
+  col += starBall(p, c, R * mix(2.6, 3.0, f / 0.2), t, vec3(1.0, 0.6, 0.34), vec3(0.9, 0.24, 0.1), vec3(0.42, 0.05, 0.05), 2.0, 0.8) * pre;
+  // the flash, and the shell that flies out
+  float g = smoothstep(0.12, 1.0, f);
+  float flash = exp(-max(0.0, f - 0.14) * 14.0) * smoothstep(0.08, 0.16, f);
+  col += vec3(1.0, 0.97, 1.0) * flash * (exp(-r * 0.32) * 2.4 + 0.18);
+  float rad = mix(0.4, 5.6, sqrt(g));
+  float fil = fbm(vec2(ang * 3.0, r * 0.6) * 2.4 - t * 0.05);
+  float shell = exp(-pow((r - rad * (0.9 + 0.22 * fil)) / mix(0.4, 1.8, g), 2.0)) * smoothstep(0.1, 0.2, f);
+  col += mix(vec3(0.6, 0.75, 1.0), vec3(1.0, 0.55, 0.35), smoothstep(0.3, 0.9, fil)) * shell * (0.6 + 0.9 * fil) * (1.0 - 0.5 * g);
+  col += vec3(0.5, 0.65, 1.0) * exp(-r * 9.0) * g;   // what is left in the middle
+  return col;
+}
+vec3 remnant(vec2 p, vec2 c, float R, float t, float f){
+  vec2 d = (p - c) / R;
+  float r = length(d);
+  float ang = atan(d.y, d.x);
+  // a neutron star: tiny, blue-white, its two beams turning like a lighthouse
+  float a1 = 1.0 - smoothstep(0.35, 0.62, f);
+  float th = t * 1.7;
+  float beam = exp(-abs(sin(ang - th)) * 16.0) * exp(-r * 0.35) * smoothstep(0.05, 0.4, r);
+  vec3 ns = vec3(0.75, 0.88, 1.0) * (exp(-r * 22.0) * 2.4 + exp(-r * 5.0) * 0.45) + vec3(0.55, 0.7, 1.0) * beam * 0.9 + vec3(0.4, 0.5, 1.0) * exp(-abs(sin(ang - th)) * 3.0) * exp(-r * 1.2) * 0.25;
+  // a black hole: a shadow, a thin ring of light around it, and its disc bent over the top by gravity
+  float a2 = smoothstep(0.42, 0.7, f);
+  float Rb = 0.75;
+  float shadow = smoothstep(Rb * 1.0, Rb * 0.92, r);
+  float ring = exp(-pow((r - Rb * 1.12) / 0.05, 2.0)) * 1.3;
+  vec2 e = vec2(d.x, d.y * 4.2);
+  float er = length(e);
+  float disc = smoothstep(4.2, 1.3, er) * smoothstep(1.0, 1.4, er) * (0.55 + 0.6 * fbm3(vec2(atan(e.y, e.x) * 3.0 - t * 0.8, er * 2.0)));
+  float dop = 0.55 + 0.45 * (-d.x / max(0.3, er * 0.25));           // the side coming toward us is brighter
+  float behind = step(0.0, d.y) * (1.0 - smoothstep(Rb * 0.95, Rb * 1.05, r));
+  float arc = exp(-pow((r - Rb * 1.45) / 0.18, 2.0)) * smoothstep(-0.2, 0.5, d.y);  // the far side, lifted
+  vec3 hot = vec3(1.0, 0.72, 0.42);
+  vec3 bh = hot * (disc * clamp(dop, 0.25, 1.6) * (1.0 - behind) + arc * 0.75) + vec3(1.0, 0.86, 0.7) * ring;
+  bh *= 1.0 - shadow * 0.98;
+  vec3 col = ns * a1 + bh * a2;
+  return col;
+}
+vec3 lifeStage(float k, vec2 p, vec2 c, float R, float t, float f){
+  if (k < 0.5) return cloud(p, c, R, t, f * 0.7);
+  if (k < 1.5) return mix(cloud(p, c, R, t, 0.7 + 0.3 * f), protostar(p, c, R, t), smoothstep(0.0, 0.5, f));
+  if (k < 2.5) return starBall(p, c, R * 0.9, t, vec3(1.0, 0.95, 0.76), vec3(1.0, 0.66, 0.24), vec3(0.86, 0.28, 0.07), 6.0, 0.9);
+  if (k < 3.5) { float g = f * f * (3.0 - 2.0 * f);
+    return starBall(p, c, R * mix(0.9, 2.5, g), t, mix(vec3(1.0, 0.95, 0.76), vec3(1.0, 0.6, 0.34), g), mix(vec3(1.0, 0.66, 0.24), vec3(0.9, 0.24, 0.1), g), mix(vec3(0.86, 0.28, 0.07), vec3(0.42, 0.05, 0.05), g), mix(6.0, 2.0, g), mix(0.9, 0.75, g)); }
+  if (k < 4.5) return ringNebula(p, c, R, t, f);
+  if (k < 5.5) return supernova(p, c, R, t, f);
+  if (k < 6.5) return remnant(p, c, R, t, f);
+  return cloud(p, c, R, t, 0.15 * f) * smoothstep(0.0, 0.6, f) + remnant(p, c, R, t, 1.0) * (1.0 - smoothstep(0.0, 0.5, f));
+}
+vec3 lifeScene(vec2 p, float t){
+  vec2 c = uL.xy;
+  float R = uL.z * 0.2;
+  float s = clamp(uS.w, 0.0, 7.999);
+  float k = floor(s), f = s - k;
+  vec3 col = deep(p) * 0.85 + stars(p, t, PX) * 0.7;
+  float b = smoothstep(0.72, 1.0, f);          // the next stage comes in over the last part of this one
+  vec3 a = lifeStage(k, p, c, R, t, f);
+  if (b > 0.0 && k < 6.5) a = mix(a, lifeStage(k + 1.0, p, c, R, t, 0.0), b);
+  return col + a;
+}
+
+/* ---------- the Milky Way: a barred spiral, seen at a slant; "you are here" in the Orion arm ---------- */
+vec2 galPlane(vec2 p){
+  vec2 q = (p - uGc) / max(0.05, uGal.z);
+  q.y /= max(0.15, cos(uGal.x));
+  float a = uGal.y, cs = cos(a), sn = sin(a);
+  return mat2(cs, sn, -sn, cs) * q;
+}
+vec3 galaxy(vec2 p, float t){
+  vec2 q = galPlane(p) / (uL.z * 1.2);
+  float r = length(q), a = atan(q.y, q.x);
+  float ph = a - log(max(r, 0.03)) * 3.4;
+  float arms = pow(0.5 + 0.5 * cos(2.0 * ph), 3.0);
+  float spurs = pow(0.5 + 0.5 * cos(2.0 * ph + 1.75), 6.0) * 0.5;
+  float n = fbm(q * 6.0);
+  float fade = smoothstep(1.2, 0.35, r);
+  float dens = (arms + spurs) * (0.5 + 0.75 * n) * fade * smoothstep(0.06, 0.22, r);
+  vec3 col = vec3(0.6, 0.68, 1.0) * dens * 0.85;
+  col += vec3(1.0, 0.5, 0.72) * dens * smoothstep(0.66, 0.85, fbm3(q * 14.0 + 3.0)) * 1.3;      // pink nurseries of stars
+  float bar = exp(-(q.x * q.x / 0.05 + q.y * q.y / 0.0055));
+  float core = exp(-r * 8.0) * 1.1 + exp(-r * 28.0) * 0.9;
+  col += vec3(1.0, 0.84, 0.6) * (core + bar * 0.95 + exp(-r * 2.4) * 0.28 * fade);
+  float dust = pow(0.5 + 0.5 * cos(2.0 * ph - 0.6), 9.0) * smoothstep(0.95, 0.25, r) * smoothstep(0.08, 0.25, r);
+  col *= 1.0 - dust * 0.6 * (0.55 + 0.45 * fbm3(q * 10.0));
+  // grains of stars over the disc
+  vec2 g = q * 90.0, gi = floor(g);
+  vec2 go = fract(g) - 0.5 - (h22(gi) - 0.5) * 0.7;
+  float sp = step(0.86, h12(gi)) * smoothstep(0.22, 0.0, length(go)) * (0.4 + 0.6 * h12(gi + 2.0));
+  col += vec3(0.85, 0.9, 1.0) * sp * (dens * 1.5 + core * 0.3) * 0.75;
+  // you are here: about half way out, in the Orion arm
+  vec2 me = vec2(cos(ME_A), sin(ME_A)) * ME_R;
+  float dm = length(q - me) * uL.z * 1.2 * uGal.z;
+  float pulse = uGal.w;
+  col += vec3(1.0, 0.92, 0.7) * (exp(-dm / (PX * 2.2)) * 1.6);
+  col += vec3(1.0, 0.75, 0.85) * exp(-pow((dm - (0.012 + 0.03 * pulse)) / (PX * 1.4), 2.0)) * (1.0 - pulse) * 1.2;
+  return col;
+}
+vec3 galaxyScene(vec2 p, float t){ return deep(p) * 0.75 + stars(p, t, PX) * 0.6 + galaxy(p, t); }
+
+/* ---------- a night sky for the constellations, the wheel, your sign ---------- */
+vec3 skyScene(vec2 p, float t){
+  vec3 c = mix(vec3(0.016, 0.018, 0.05), vec3(0.06, 0.05, 0.13), smoothstep(-0.9, 0.9, p.y));
+  float band = exp(-pow((p.y - 0.28 * p.x - 0.12) / 0.3, 2.0));
+  c += vec3(0.24, 0.2, 0.36) * band * fbm(p * 2.6 + 4.0) * 0.55;
+  c += stars(p * 1.25, t, PX) * 0.7;
+  return c;
+}
+vec3 auraScene(vec2 p, float t, vec3 tint){
+  vec3 c = space(p, t) * 0.75;
+  float d = length(p - uL.xy);
+  c += tint * (exp(-d * 2.4) * 0.3 + exp(-d * 7.0) * 0.12);
+  return c;
+}
+
+vec3 scene(float id, vec2 p, float t){
+  if (id < 0.5) return space(p, t);
+  if (id < 1.5) return sunScene(p, t);
+  if (id < 2.5) return lifeScene(p, t);
+  if (id < 3.5) return galaxyScene(p, t);
+  if (id < 4.5) return skyScene(p, t);
+  if (id < 5.5) return auraScene(p, t, vec3(1.0, 0.8, 0.5));
+  return auraScene(p, t, vec3(1.0, 0.55, 0.72));
+}
+void main(){
+  PX = 1.0 / uRes.y;
+  vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+  vec3 c = scene(uS.x, p, uT);
+  if (uS.z > 0.002) c = mix(c, scene(uS.y, p, uT), uS.z);
+  c *= 1.0 - 0.22 * dot(p * vec2(0.62, 0.9), p * vec2(0.62, 0.9));
+  c = c / (1.0 + c * 0.35);                                  // soft highlights, never a hard white
+  c += (h12(gl_FragCoord.xy + fract(uT * 7.0) * 61.0) - 0.5) / 255.0;
+  gl_FragColor = vec4(c * 1.18, 1.0);
+}`;
+
+  /* ---------- the way in ---------- */
+  const GATE = (high) => `
+precision ${high ? "highp" : "mediump"} float;
+uniform vec2 uRes;
+uniform float uP;    // 0..1
+uniform float uT;
+uniform vec4 uO;     // where the sun or the moon was: x, y (pixels, from the bottom left), its radius (pixels), 1 = the sun
+uniform vec4 uX;     // x: the moon's phase (0 new, 0.5 full), y: 1 the full way in, 0 the short one
+${LIB}
+float PX;
+void main(){
+  PX = 1.0 / uRes.y;
+  vec2 fc = gl_FragCoord.xy;
+  vec2 mid = 0.5 * uRes;
+  float diag = length(uRes);
+  float sun = uO.w;
+  // 1. it grows until it fills the screen, and drifts to the middle on the way
+  float e = smoothstep(0.0, 0.36, uP);
+  float g = e * e * (3.0 - 2.0 * e);
+  vec2 c = mix(uO.xy, mid, g * g);
+  float R = mix(uO.z, diag * 0.62, pow(g, 2.2));
+  float d = length(fc - c);
+  float dr = d / max(R, 1.0);
+  vec3 orbA = sun > 0.5 ? vec3(1.0, 0.8, 0.46) : vec3(0.94, 0.92, 1.0);
+  vec3 orbB = sun > 0.5 ? vec3(1.0, 1.0, 0.95) : vec3(0.82, 0.76, 0.98);
+  // the moon's dark side, while it is still small enough to see
+  float lit = 1.0;
+  if (sun < 0.5) {
+    vec2 q = (fc - c) / max(R, 1.0);
+    float ph = uX.x * 6.2832;
+    float z = sqrt(max(0.0, 1.0 - dot(q, q)));
+    vec3 L = normalize(vec3(sin(ph), 0.0, -cos(ph)));
+    lit = mix(clamp(dot(vec3(q, z), L) * 3.0 + 0.5, 0.12, 1.0), 1.0, smoothstep(0.08, 0.3, uP));
+  }
+  vec3 inside = mix(orbB, orbA, smoothstep(0.25, 1.0, dr) * (1.0 - 0.6 * smoothstep(0.1, 0.3, uP)));
+  if (sun < 0.5) {
+    // the moon as the home page paints it: a pearl, with a soft sheen and a thin rainbow toward its rim
+    vec2 q = (fc - c) / max(R, 1.0);
+    float z = sqrt(max(0.0, 1.0 - dot(q, q)));
+    vec2 hq = q - vec2(0.22, 0.3);
+    vec3 film = 0.5 + 0.5 * cos(6.2832 * (dr * 1.7 + vec3(0.0, 0.33, 0.67)));
+    inside = vec3(0.93, 0.92, 0.99) * (0.8 + 0.2 * z) + vec3(0.72, 0.84, 1.0) * exp(-dot(hq, hq) * 3.2) * 0.2 + film * smoothstep(0.72, 1.0, dr) * 0.13;
+    inside = mix(inside, orbB, smoothstep(0.1, 0.32, uP));
+  }
+  inside *= lit;
+  float disc = smoothstep(1.0, 1.0 - 2.0 / max(R, 1.0), dr);
+  float halo = sun > 0.5 ? exp(-max(0.0, dr - 1.0) * 2.0) * 0.85 : exp(-max(0.0, dr - 1.0) * 3.5) * 0.55;
+  // 2. the flight: from the light into the dark, stars rushing past
+  float fly = smoothstep(0.26, 0.42, uP) * (1.0 - smoothstep(0.86, 1.0, uP));
+  float speed = smoothstep(0.26, 0.5, uP) * (1.0 - smoothstep(0.62, 0.9, uP));
+  vec2 v = (fc - mid) / uRes.y;
+  float rr = length(v), ang = atan(v.y, v.x);
+  vec3 warp = mix(vec3(0.03, 0.025, 0.08), vec3(0.12, 0.08, 0.24), smoothstep(0.9, 0.0, rr));
+  warp += mix(orbA, vec3(0.5, 0.45, 0.85), smoothstep(0.3, 0.55, uP)) * exp(-rr * 3.0) * (1.0 - smoothstep(0.3, 0.6, uP)) * 1.2;
+  float travel = uT * 0.9 + uP * 6.0;
+  for (int i = 0; i < 3; i++) {
+    float fi = float(i);
+    float cells = 70.0 + fi * 50.0;
+    float a = ang / 6.2832 * cells;
+    float ci = floor(a);
+    float off = h12(vec2(ci, fi * 17.0));
+    if (off < 0.35) continue;
+    float lane = abs(fract(a) - 0.5) * 2.0;
+    float z = fract(off * 7.3 + travel * (0.25 + 0.35 * off) * (0.6 + 0.4 * fi));
+    float pr = 0.04 + z * z * 1.4;                         // stars speed up as they come near
+    float len = 0.004 + speed * (0.06 + 0.4 * z * z);
+    float along = smoothstep(pr - len, pr, rr) * smoothstep(pr + 0.004, pr, rr);
+    float width = smoothstep(0.55, 0.0, lane * rr * cells * 0.035 / (0.6 + 0.6 * z));
+    vec3 sc = mix(vec3(0.75, 0.82, 1.0), vec3(1.0, 0.85, 0.75), h12(vec2(ci, 3.0 + fi)));
+    warp += sc * along * width * (0.5 + 1.2 * z) * (0.4 + 0.6 * off);
+  }
+  warp += stars(v * (1.0 + uP * 0.6), uT, PX) * (1.0 - speed) * 0.8;
+  // at first it only lights up over the real one, so the hand-over is soft
+  float come = smoothstep(0.0, 0.07, uP);
+  vec3 col = inside;
+  float a = max(disc, halo * (1.0 - disc)) * come;
+  halo *= come;
+  col = mix(col * disc + orbA * halo * (1.0 - disc), warp, fly);
+  a = mix(a, 1.0, fly);
+  // 3. it opens onto the journey
+  float open = smoothstep(0.84, 1.0, uP);
+  a *= 1.0 - open;
+  col = mix(col, col / (1.0 + col * 0.3) * 1.15, fly);   // the light of the sun or the moon stays bright
+  gl_FragColor = vec4(col * a, a);
+}`;
+
+  CB.cosmosGL = { VERT, FRAG, GATE };
+})();
+
+</script>
+<script>
+/* מסע אל הכוכבים: the journey behind the sun and the moon of the home page.
+   A tap on the sun (by day) or the moon (by night) makes it grow until it fills the screen, then a flight through the
+   stars (cosmos-gl.js draws both), and the journey opens: our Sun, the colours of the stars, a star's life, the Milky
+   Way, the constellations along the Sun's path (the real stars, cosmos-sky.js), the wheel of signs, and your sign.
+   One canvas behind the chapters draws their scenes and blends one into the next as the page scrolls.
+   The Sun and the Moon are where they really are: their positions are worked out here (a short form of Meeus's
+   Astronomical Algorithms, checked against PyEphem: about two minutes at most when either crosses into a new sign).
+   With reduced motion: no flight, and each scene stands still. Without WebGL: a painted night sky. */
+(() => {
+  "use strict";
+  const CB = window.CB;
+  const SITE = window.SITE || {};
+  const C = SITE.cosmos;
+  const doc = document, root = doc.documentElement;
+  const view = doc.querySelector('.view[data-view="cosmos"]');
+  if (!CB || !C || !view || !CB.cosmosGL) return;
+  const TEST = window.__CB_TEST || null;
+  const $ = (s, r = doc) => r.querySelector(s);
+  const $$ = (s, r = doc) => [...r.querySelectorAll(s)];
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const mix = (a, b, t) => a + (b - a) * t;
+  const still = () => !!CB.still || !root.classList.contains("motion");
+
+  /* ---------- the sky right now: the Sun, the Moon, the signs ---------- */
+  const RAD = Math.PI / 180;
+  const norm = (x) => ((x % 360) + 360) % 360;
+  const jcen = (ms) => (ms / 864e5 + 2440587.5 - 2451545) / 36525;
+  // the Sun's apparent longitude along the ecliptic, degrees (Meeus, chapter 25), with the pulls of the Moon, Venus,
+  // Mars and Jupiter (fitted to VSOP87 through PyEphem, 1900-2100): within 0.0014 degrees, two minutes of the Sun's
+  // crossing from one sign to the next. Each term: multiples of the mean anomalies of Venus, Earth, Mars, Jupiter and the
+  // Moon's elongation, then its sine and cosine parts, in arc seconds.
+  const SUN_T = [[0, 0, 0, 0, 1, 6.41, 0], [0, 2, 0, 0, 0, 1.2, 0.5], [1, -1, 0, 0, 0, 4.23, 2.28], [2, -2, 0, 0, 0, -2.95, -4.74], [2, -3, 0, 0, 0, 1.8, 1.79],
+    [3, -4, 0, 0, 0, 0.55, 1.34], [3, -5, 0, 0, 0, 0.52, 0.56], [3, -3, 0, 0, 0, 0, -0.67], [0, -1, 0, 1, 0, 0, -7.23], [0, -2, 0, 2, 0, 2.7, 0],
+    [0, 0, 0, 1, 0, -2.53, 0], [0, -1, 0, 2, 0, 1.52, -0.58], [0, -1, 2, 0, 0, -0.53, -1.62], [0, -2, 4, 0, 0, -0.36, 0], [0, -2, 2, 0, 0, 0, 1.97]];
+  function sunLon(ms) {
+    const T = jcen(ms);
+    const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+    const M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * RAD;
+    const Cc = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M) + (0.019993 - 0.000101 * T) * Math.sin(2 * M) + 0.000289 * Math.sin(3 * M);
+    const om = (125.04 - 1934.136 * T) * RAD;
+    const M2 = 50.4161 + 58517.8039 * T, M3 = 357.5291 + 35999.0503 * T, M4 = 19.373 + 19139.858 * T, M5 = 20.0202 + 3034.6874 * T, D = 297.8502 + 445267.1115 * T;
+    let p = -4.17 + 0.85 * T;
+    for (const [a, b, c, d, e, s, k] of SUN_T) { const x = (a * M2 + b * M3 + c * M4 + d * M5 + e * D) * RAD; p += s * Math.sin(x) + k * Math.cos(x); }
+    return norm(L0 + Cc - 0.00569 - 0.00478 * Math.sin(om) + p / 3600);
+  }
+  // the Moon moves fast enough that the slowing of the Earth's turn counts: Delta T, seconds (measured, then foreseen)
+  const DT = [[1900, -2.7], [1910, 10.4], [1920, 21.2], [1930, 24], [1940, 24.3], [1950, 29.1], [1960, 33.1], [1970, 40.2], [1980, 50.5], [1990, 56.9], [2000, 63.8], [2010, 66.1], [2020, 69.4], [2030, 71], [2050, 75], [2100, 90]];
+  const deltaT = (ms) => {
+    const y = 1970 + ms / 31557600000;
+    if (y <= DT[0][0]) return DT[0][1];
+    for (let i = 1; i < DT.length; i++) if (y <= DT[i][0]) return DT[i - 1][1] + ((DT[i][1] - DT[i - 1][1]) * (y - DT[i - 1][0])) / (DT[i][0] - DT[i - 1][0]);
+    return DT[DT.length - 1][1];
+  };
+  // the Moon's longitude (Meeus, chapter 47: the 35 largest terms; within 0.01 degrees, a minute of its crossings)
+  const MT = [[0, 0, 1, 0, 6288774], [2, 0, -1, 0, 1274027], [2, 0, 0, 0, 658314], [0, 0, 2, 0, 213618], [0, 1, 0, 0, -185116], [0, 0, 0, 2, -114332],
+    [2, 0, -2, 0, 58793], [2, -1, -1, 0, 57066], [2, 0, 1, 0, 53322], [2, -1, 0, 0, 45758], [0, 1, -1, 0, -40923], [1, 0, 0, 0, -34720], [0, 1, 1, 0, -30383],
+    [2, 0, 0, -2, 15327], [0, 0, 1, 2, -12528], [0, 0, 1, -2, 10980], [4, 0, -1, 0, 10675], [0, 0, 3, 0, 10034], [4, 0, -2, 0, 8548], [2, 1, -1, 0, -7888],
+    [2, 1, 0, 0, -6766], [1, 0, -1, 0, -5163], [1, 1, 0, 0, 4987], [2, -1, 1, 0, 4036], [2, 0, 2, 0, 3994], [4, 0, 0, 0, 3861], [2, 0, -3, 0, 3665],
+    [0, 1, -2, 0, -2689], [2, 0, -1, 2, -2602], [2, -1, -2, 0, 2390], [1, 0, 1, 0, -2348], [2, -2, 0, 0, 2236], [0, 1, 2, 0, -2120], [0, 2, 0, 0, -2069], [2, -2, -1, 0, 2048]];
+  function moonLon(ms) {
+    const T = jcen(ms + deltaT(ms) * 1000);
+    const Lp = 218.3164477 + 481267.88123421 * T - 0.0015786 * T * T;
+    const D = (297.8501921 + 445267.1114034 * T - 0.0018819 * T * T) * RAD;
+    const M = (357.5291092 + 35999.0502909 * T - 0.0001536 * T * T) * RAD;
+    const Mp = (134.9633964 + 477198.8675055 * T + 0.0087414 * T * T) * RAD;
+    const F = (93.272095 + 483202.0175233 * T - 0.0036539 * T * T) * RAD;
+    const E = 1 - 0.002516 * T - 0.0000074 * T * T;
+    let s = 0;
+    for (const [d, m, mp, f, c] of MT) s += c * (m ? Math.pow(E, Math.abs(m)) : 1) * Math.sin(d * D + m * M + mp * Mp + f * F);
+    s += 3958 * Math.sin((119.75 + 131.849 * T) * RAD) + 1962 * Math.sin(Lp * RAD - F) + 318 * Math.sin((53.09 + 479264.29 * T) * RAD);
+    return norm(Lp + s / 1e6 - 0.00478 * Math.sin((125.04452 - 1934.136261 * T) * RAD));
+  }
+  const signAt = (lon) => Math.floor(norm(lon) / 30) % 12;
+  // when a body's longitude next reaches a sign's edge, after ms (it moves forward; the Moon a sign in ~2.5 days)
+  function nextIngress(fn, ms, stepH) {
+    const s0 = signAt(fn(ms));
+    let a = ms, b = ms;
+    for (let i = 0; i < 2000; i++) { b = a + stepH * 3600e3; if (signAt(fn(b)) !== s0) break; a = b; }
+    for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (signAt(fn(m)) === s0) a = m; else b = m; }
+    return { at: b, sign: signAt(fn(b + 60e3)) };
+  }
+  // when it last crossed into the sign it is in now
+  function lastIngress(fn, ms, stepH) {
+    const s0 = signAt(fn(ms));
+    let a = ms, b = ms;
+    for (let i = 0; i < 2000; i++) { a = b - stepH * 3600e3; if (signAt(fn(a)) !== s0) break; b = a; }
+    for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (signAt(fn(m)) === s0) b = m; else a = m; }
+    return b;
+  }
+  // the Moon's phase: 0 new, 0.5 full; and how much of it is lit
+  const phaseAt = (ms) => norm(moonLon(ms) - sunLon(ms)) / 360;
+  const litOf = (ph) => (1 - Math.cos(ph * 2 * Math.PI)) / 2;
+  const phaseName = (ph) => C.phases[Math.round(ph * 8) % 8];
+  // the constellation the Sun's path is in at a longitude (the IAU borders; the sky data is J2000, close enough for a picture)
+  const SKY = window.COSMOS_SKY || { figs: {}, borders: [], stars: [], named: [] };
+  const conAt = (lon) => { const l = norm(lon); let id = SKY.borders.length ? SKY.borders[SKY.borders.length - 1][1] : ""; for (const [b, c] of SKY.borders) if (l >= b) id = c; return id; };
+
+  /* ---------- Israel time (birth times are read as Israel time; the browser knows the old summer-time rules) ---------- */
+  const TZ = "Asia/Jerusalem";
+  let parts = null;
+  try { parts = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }); } catch (_) { parts = null; }
+  const offsetAt = (ms) => {
+    if (!parts) return 2 * 3600e3;
+    const p = {};
+    for (const x of parts.formatToParts(new Date(ms))) p[x.type] = x.value;
+    const wall = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second);
+    return wall - Math.floor(ms / 1000) * 1000;
+  };
+  function israelTime(y, mo, d, h, mi) {
+    const wall = Date.UTC(y, mo - 1, d, h, mi);
+    let ms = wall - 2 * 3600e3;
+    for (let i = 0; i < 3; i++) ms = wall - offsetAt(ms);
+    return ms;
+  }
+  const fmt = (ms, o) => { try { return new Intl.DateTimeFormat("he-IL", { timeZone: TZ, ...o }).format(new Date(ms)); } catch (_) { return new Date(ms).toLocaleString("he-IL"); } };
+  const dayMonth = (ms) => fmt(ms, { day: "numeric", month: "long" });
+  const hourMin = (ms) => fmt(ms, { hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  const weekday = (ms) => fmt(ms, { weekday: "long" });
+  const nowMs = () => (TEST && TEST.cosmosNow ? TEST.cosmosNow : Date.now());
+
+  const SIGNS = C.signs;
+  const signName = (i) => SIGNS[i].name;
+  const conName = (id) => (C.constellations || {})[id] || id;
+  const glyph = (i, cls = "zglyph") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${SIGNS[i].glyph}"/></svg>`;
+  // the moment the Sun reaches a longitude, within four days of a guess
+  function sunReaches(target, near) {
+    const f = (ms) => ((sunLon(ms) - target + 540) % 360) - 180;
+    let lo = near - 4 * 864e5, hi = near + 4 * 864e5;
+    for (let k = 0; k < 48; k++) { const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; }
+    return hi;
+  }
+  // when the Sun enters a sign and leaves it, in the year of signs that starts with the spring of `year`
+  function signDates(i, year) {
+    const start = sunReaches(i * 30, Date.UTC(year, 2, 20, 12) + ((i * 30) / 0.98565) * 864e5);
+    return [start, sunReaches(((i + 1) % 12) * 30, start + 30.44 * 864e5)];
+  }
+
+  const astro = { sunLon, moonLon, signAt, nextIngress, phaseAt, litOf, conAt, israelTime, offsetAt, signDates };
+  CB.cosmosAstro = astro;
+
+  /* ---------- the scenes behind the chapters: one canvas, one shader ---------- */
+  const G = CB.cosmosGL;
+  const cv = $("#cosmos-gl", view);
+  let gl = null, buf = null, P = null, pending = null, failed = false, lost = false;
+  function ensureGL() {
+    if (gl || failed) return gl;
+    try { gl = cv.getContext("webgl", { alpha: false, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: false, powerPreference: "low-power" }); } catch (_) { gl = null; }
+    if (!gl) { failed = true; view.classList.add("is-plain"); return null; }
+    buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    cv.addEventListener("webglcontextlost", (e) => { e.preventDefault(); lost = true; P = null; pending = null; stop(); view.classList.add("is-plain"); }, false);
+    cv.addEventListener("webglcontextrestored", () => {
+      lost = false; view.classList.remove("is-plain");
+      buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      W = H = 0; kick();
+    }, false);
+    return gl;
+  }
+  const highp = () => { const hp = gl.getShaderPrecisionFormat && gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT); return !!(hp && hp.precision > 0); };
+  // compiled in two steps, as the veil does: started (the browser may compile it in the background), then finished
+  function startProgram() {
+    if (P || pending || !ensureGL() || lost) return;
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    const vs = sh(gl.VERTEX_SHADER, G.VERT), fs = sh(gl.FRAGMENT_SHADER, G.FRAG(highp()));
+    const p = gl.createProgram();
+    gl.attachShader(p, vs); gl.attachShader(p, fs);
+    gl.bindAttribLocation(p, 0, "aPos");
+    gl.linkProgram(p);
+    pending = { p, vs, fs };
+  }
+  function program() {
+    if (P) return P;
+    if (!ensureGL() || lost) return null;
+    try {
+      startProgram();
+      const s = pending;
+      pending = null;
+      if (!gl.getProgramParameter(s.p, gl.LINK_STATUS)) {
+        const log = (!gl.getShaderParameter(s.fs, gl.COMPILE_STATUS) && gl.getShaderInfoLog(s.fs)) || (!gl.getShaderParameter(s.vs, gl.COMPILE_STATUS) && gl.getShaderInfoLog(s.vs)) || gl.getProgramInfoLog(s.p);
+        throw new Error(log || "link");
+      }
+      const u = {};
+      for (const n of ["uRes", "uT", "uS", "uL", "uSun", "uGal", "uGc"]) u[n] = gl.getUniformLocation(s.p, n);
+      P = { p: s.p, u };
+    } catch (err) {
+      CB.glError = (CB.glError || "") + "cosmos: " + String(err.message || err).slice(0, 240) + "; ";
+      failed = true;
+      view.classList.add("is-plain");
+      return null;
+    }
+    return P;
+  }
+
+  let W = 0, H = 0, Q = 0.8, slow = 0;
+  const wide = () => innerWidth >= 900 && innerWidth / innerHeight > 1.05;
+  // where each scene's subject stands: to the left of the words on a wide screen, above them on a phone
+  const layout = () => { const a = innerWidth / innerHeight; return wide() ? [-a * 0.235, 0.0, 0.42, a] : [0, 0.19, a < 0.7 ? 0.27 : 0.3, a]; };
+  function size() {
+    const w = innerWidth, h = innerHeight, dpr = devicePixelRatio || 1;
+    let k = Math.min(dpr, 1.5, Math.sqrt(2.1e6 / (w * h))) * Q;
+    if (TEST && TEST.lowfi) k = Math.min(k, 0.3);
+    const cw = Math.max(2, Math.round(w * k)), ch = Math.max(2, Math.round(h * k));
+    if (cw !== W || ch !== H) { W = cv.width = cw; H = cv.height = ch; }
+  }
+
+  /* ---------- reading the page: which chapter, how far into it ---------- */
+  let chs = [], steps = [], band = null;
+  const chapters = $$(".cos-ch", view);
+  function measure() {
+    const y0 = scrollY;
+    chs = chapters.map((el) => { const r = el.getBoundingClientRect(); return { el, id: el.id, scene: +el.dataset.scene, top: r.top + y0, h: r.height }; });
+    steps = $$(".cos-step", view).map((el) => { const r = el.getBoundingClientRect(); return r.top + y0 + r.height / 2; });
+    const bw = $(".cos-band-wrap", view);
+    if (bw) { const r = bw.getBoundingClientRect(); band = { top: r.top + y0, h: r.height }; }
+  }
+  const byId = (id) => chs.find((c) => c.id === id);
+  const progress = (id, y) => { const c = byId(id); return c ? (y - c.top) / c.h : 0; };
+  function readState() {
+    const vh = innerHeight, y = scrollY + vh * 0.5;
+    let i = chs.findIndex((c) => y < c.top + c.h);
+    if (i < 0) i = chs.length - 1;
+    const c = chs[i] || { scene: 0, top: 0, h: 1 };
+    let A = c.scene, B = A, m = 0;
+    const zone = vh * 0.42;
+    const next = chs[i + 1], prev = chs[i - 1];
+    if (next && y > next.top - zone) { B = next.scene; m = smooth(next.top - zone, next.top + zone, y); }
+    else if (prev && y < c.top + zone) { A = prev.scene; B = c.scene; m = smooth(c.top - zone, c.top + zone, y); }
+    if (A === B) m = 0;
+    // a star's life: each step's middle is a stage (a little into it, so the stage has begun when its words are read)
+    let stage = 0;
+    if (steps.length) {
+      if (y <= steps[0]) stage = 0.35 * smooth(steps[0] - vh * 0.7, steps[0], y);
+      else if (y >= steps[steps.length - 1]) stage = steps.length - 1 + 0.35 + 0.5 * smooth(steps[steps.length - 1], steps[steps.length - 1] + vh * 0.6, y);
+      else for (let k = 0; k < steps.length - 1; k++) if (y < steps[k + 1]) { stage = k + 0.35 + (y - steps[k]) / (steps[k + 1] - steps[k]); break; }
+    }
+    return { A, B, m, stage, y, chapter: c.id, i };
+  }
+
+  /* ---------- the galaxy: where "you are here" is on the screen ---------- */
+  const ME_A = 0.11, ME_R = 0.53;
+  function galaxyAt(y, t, L) {
+    const pr = progress("cos-galaxy", y);
+    const out = smooth(0.02, 0.7, pr);                    // from inside the arm, out to the whole galaxy
+    const zoom = mix(3.6, 1.0, out), tilt = mix(1.2, 0.98, smooth(0, 1, pr)), turn = 0.3 + pr * 0.55 + (still() ? 0 : t * 0.012);
+    // the Sun in the galaxy's plane, then onto the screen (the inverse of galPlane in cosmos-gl.js)
+    const R = L[2] * 1.2, qx = Math.cos(ME_A) * ME_R * R, qy = Math.sin(ME_A) * ME_R * R;
+    const cs = Math.cos(-turn), sn = Math.sin(-turn);
+    const tx = cs * qx - sn * qy, ty = (sn * qx + cs * qy) * Math.cos(tilt);
+    // close up, the Sun is at the focus; far out, the galaxy's middle is
+    const cx = mix(L[0] - zoom * tx, L[0], out), cy = mix(L[1] - zoom * ty, L[1], out);
+    return { zoom, tilt, turn, cx, cy, me: [cx + zoom * tx, cy + zoom * ty], pr };
+  }
+
+  /* ---------- drawing ---------- */
+  let raf = 0, active = false, last = 0, frozen = 8;
+  const t0 = performance.now();
+  const here = $("#cos-here", view);
+  let st = null;
+  function draw(now) {
+    const p = program();
+    if (!p || !gl || lost) return false;
+    size();
+    const t = still() ? frozen : (now - t0) / 1000;
+    const s = readState();
+    st = s;
+    const L = layout();
+    const g = galaxyAt(s.y, t, L);
+    const sunNear = smooth(-0.15, 0.5, progress("cos-sun", s.y));
+    gl.viewport(0, 0, W, H);
+    gl.useProgram(p.p);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(p.u.uRes, W, H);
+    gl.uniform1f(p.u.uT, t % 3600);
+    gl.uniform4f(p.u.uS, s.A, s.B, s.m, s.stage);
+    const galOn = s.A === 3 || s.B === 3;
+    gl.uniform4f(p.u.uL, L[0], L[1], L[2], L[3]);
+    gl.uniform2f(p.u.uGc, g.cx, g.cy);
+    gl.uniform4f(p.u.uSun, sunNear, wide() ? 0 : 0.02, 0, 0);
+    gl.uniform4f(p.u.uGal, g.tilt, g.turn, g.zoom, still() ? 0.35 : (t * 0.45) % 1);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // "את כאן", beside the Sun's place in the galaxy
+    if (here) {
+      const w3 = (s.A === 3 ? 1 - s.m : 0) + (s.B === 3 ? s.m : 0);
+      const x = innerWidth / 2 + g.me[0] * innerHeight, y = innerHeight / 2 - g.me[1] * innerHeight;
+      // only while the galaxy is the scene and the Sun's place is on the screen (a label off the edge would widen the page)
+      const show = galOn && w3 > 0.55 && x > 8 && x < innerWidth - 110 && y > 60 && y < innerHeight - 30;
+      here.classList.toggle("is-on", show);
+      here.hidden = !show;
+      if (show) here.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    }
+    CB.cosmosFrames = (CB.cosmosFrames || 0) + 1;
+    return true;
+  }
+  function frame(now) {
+    raf = 0;
+    if (!active || doc.hidden) return;
+    const dt = Math.min(0.1, (now - last) / 1000 || 0.016);
+    if (TEST && now - last < 350) { raf = requestAnimationFrame(frame); return; }
+    last = now;
+    let drew = false;
+    if (!failed && !lost) {
+      // a slower GPU gets a smaller canvas (the scenes are soft; it hardly shows)
+      if (!TEST) { slow = dt > 0.03 ? slow + 1 : Math.max(0, slow - 1); if (slow > 40 && Q > 0.42) { Q *= 0.82; slow = 0; } }
+      drew = draw(now);
+    }
+    // without WebGL the band of the sky (a plain canvas) still follows the page
+    if (!drew) st = readState();
+    const banded = paintBand(now);
+    if (!still() && (drew || banded)) raf = requestAnimationFrame(frame);
+  }
+  const kick = () => { if (!raf && active && !doc.hidden) raf = requestAnimationFrame(frame); };
+  const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+
+  /* ---------- the colours of the stars ---------- */
+  const typesList = $("#cos-types-list", view);
+  if (typesList) typesList.innerHTML = C.types.map((x) => `<li class="cos-type" style="--c:${x.color};--s:${x.size}">
+      <span class="cos-type__dot" aria-hidden="true"></span>
+      <span class="cos-type__txt"><span class="cos-type__head"><b class="latin" lang="en">${x.c}</b><span>${esc(x.name)}</span><small>${esc(x.temp)}</small></span><span class="cos-type__note">${esc(x.note)}</span></span>
+    </li>`).join("");
+
+  /* ---------- the constellations along the Sun's path: a band of the real sky, drawn on a canvas ---------- */
+  const bandCv = $("#cos-band-svg", view);
+  // (the figure's element is an <svg role="img"> placeholder for its name; the band itself is drawn on a canvas inside it)
+  let bcv = null, bg = null, BW = 0, BH = 0, bandDirty = true, bandShown = -1;
+  const FIGS = SKY.figs || {};
+  const STARS = SKY.stars || [];
+  const bvColor = (bv) => { const t = clamp((bv + 0.2) / 1.9); return `rgb(${Math.round(mix(170, 255, smooth(0, 0.45, t)))},${Math.round(mix(196, 205, t) - 40 * smooth(0.55, 1, t))},${Math.round(mix(255, 150, smooth(0.25, 1, t)))})`; };
+  const glyphPaths = SIGNS.map((x) => { try { return new Path2D(x.glyph); } catch (_) { return null; } });
+  const EL = C.elements;
+  function ensureBand() {
+    if (bcv || !bandCv) return !!bcv;
+    const holder = bandCv.parentNode;
+    bcv = doc.createElement("canvas");
+    bcv.className = "cos-band__cv";
+    bcv.setAttribute("aria-hidden", "true");
+    holder.appendChild(bcv);
+    bg = bcv.getContext("2d");
+    return !!bg;
+  }
+  const BETA_TOP = 40, BETA_BOT = -27;               // the band, in degrees above and below the Sun's path
+  function bandSize() {
+    const r = bcv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = Math.max(2, Math.round(r.width * dpr)), h = Math.max(2, Math.round(r.height * dpr));
+    if (w !== BW || h !== BH) { BW = bcv.width = w; BH = bcv.height = h; bandDirty = true; }
+    return dpr;
+  }
+  // how far along the band the page has scrolled: Aries comes first, and the Sun's whole path passes by
+  const bandLon = (y) => { if (!band) return 18; const p = clamp((y - band.top - innerHeight * 0.35) / Math.max(1, band.h - innerHeight * 0.7)); return 18 + p * 360; };
+  // (true while the band is on the screen)
+  function paintBand(now) {
+    if (!bcv || !st) return false;
+    const vis = st.chapter === "cos-sky" || (chs[st.i + 1] && chs[st.i + 1].id === "cos-sky" && st.m > 0) || (chs[st.i - 1] && chs[st.i - 1].id === "cos-sky");
+    if (!vis) return false;
+    const lc = bandLon(st.y);
+    const t = still() ? 0 : now / 1000;
+    if (!bandDirty && Math.abs(lc - bandShown) < 0.01 && still()) return true;
+    bandShown = lc; bandDirty = false;
+    const dpr = bandSize();
+    const g = bg, w = BW, h = BH;
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.clearRect(0, 0, w, h);
+    const ruler = 34 * dpr, top = 14 * dpr;
+    const skyH = h - ruler - top;
+    const ppd = skyH / (BETA_TOP - BETA_BOT);                  // pixels per degree, the same both ways
+    const span = w / ppd;
+    // x grows to the left as the longitude grows: the sky as seen facing south
+    const X = (lon) => w / 2 - ((((lon - lc) % 360) + 540) % 360 - 180) * ppd;
+    const Y = (b) => top + (BETA_TOP - b) * ppd;
+    const near = (lon) => Math.abs((((lon - lc) % 360) + 540) % 360 - 180);
+    // the Sun's path
+    g.strokeStyle = "rgba(246, 214, 150, .45)"; g.lineWidth = 1.2 * dpr; g.setLineDash([6 * dpr, 7 * dpr]);
+    g.beginPath(); g.moveTo(0, Y(0)); g.lineTo(w, Y(0)); g.stroke(); g.setLineDash([]);
+    // where one constellation gives way to the next along the path
+    g.strokeStyle = "rgba(220, 210, 255, .28)"; g.lineWidth = 1 * dpr;
+    for (const [lon] of SKY.borders) { if (near(lon) > span / 2 + 2) continue; const x = X(lon); g.beginPath(); g.moveTo(x, Y(0) - 7 * dpr); g.lineTo(x, Y(0) + 7 * dpr); g.stroke(); }
+    // the stars
+    for (let i = 0; i < STARS.length; i += 4) {
+      const lon = STARS[i] / 10, b = STARS[i + 1] / 10;
+      if (near(lon) > span / 2 + 1) continue;
+      const mag = STARS[i + 2] / 10;
+      const r = Math.max(0.6, (5.4 - mag) * 0.62) * dpr;
+      const tw = t ? 0.82 + 0.18 * Math.sin(t * (1.1 + (i % 7) * 0.31) + i) : 1;
+      g.globalAlpha = clamp(0.35 + (5.2 - mag) * 0.16) * tw;
+      g.fillStyle = bvColor(STARS[i + 3] / 100);
+      g.beginPath(); g.arc(X(lon), Y(b), r, 0, Math.PI * 2); g.fill();
+      if (mag < 2.2) { g.globalAlpha = 0.18 * tw; g.beginPath(); g.arc(X(lon), Y(b), r * 3.2, 0, Math.PI * 2); g.fill(); }
+    }
+    g.globalAlpha = 1;
+    // the figures: drawn in as they come to the middle, with their names
+    g.lineCap = "round"; g.lineJoin = "round";
+    g.font = `${Math.round(17 * dpr)}px Bellefair, "Frank Ruhl Libre", serif`;
+    g.textAlign = "center"; g.direction = "rtl";
+    for (const id of Object.keys(FIGS)) {
+      const segs = FIGS[id];
+      let lmin = 1e9, lmax = -1e9, bmax = -90;
+      for (const s of segs) for (let k = 0; k < s.length; k += 2) { lmin = Math.min(lmin, s[k]); lmax = Math.max(lmax, s[k]); bmax = Math.max(bmax, s[k + 1]); }
+      const mid = (lmin + lmax) / 2;
+      const d = near(mid);
+      if (d > span / 2 + (lmax - lmin) / 2 + 2) continue;
+      const drawn = clamp((span * 0.5 - d) / (span * 0.22));
+      if (drawn <= 0) continue;
+      g.strokeStyle = `rgba(214, 200, 255, ${(0.55 * drawn).toFixed(3)})`; g.lineWidth = 1.3 * dpr;
+      for (const s of segs) {
+        g.beginPath();
+        const n = s.length / 2, upto = Math.max(1, drawn * (n - 1));
+        for (let k = 0; k < n; k++) {
+          if (k > upto) { const f = upto - Math.floor(upto); const a = k - 1; const x0 = X(s[a * 2]), y0 = Y(s[a * 2 + 1]), x1 = X(s[k * 2]), y1 = Y(s[k * 2 + 1]); if (f > 0) g.lineTo(mix(x0, x1, f), mix(y0, y1, f)); break; }
+          const x = X(s[k * 2]), y = Y(s[k * 2 + 1]);
+          if (k === 0) g.moveTo(x, y); else g.lineTo(x, y);
+        }
+        g.stroke();
+      }
+      g.fillStyle = id === "Oph" ? `rgba(198, 190, 223, ${(0.85 * drawn).toFixed(3)})` : `rgba(242, 237, 249, ${drawn.toFixed(3)})`;
+      g.fillText(conName(id), X(mid), Math.max(top + 16 * dpr, Y(Math.min(bmax + 3.5, BETA_TOP - 2))));
+    }
+    // a few bright stars by name
+    g.font = `${Math.round(12.5 * dpr)}px Assistant, Arial, sans-serif`;
+    g.fillStyle = "rgba(244, 179, 203, .85)";
+    for (const [lon, b, name] of SKY.named || []) { if (near(lon) > span / 2) continue; g.fillText(name, X(lon), Y(b) + 17 * dpr); }
+    // today's Sun and Moon on the path
+    const now2 = nowMs(), sl = sunLon(now2), ml = moonLon(now2);
+    const mark = (lon, col, label, up) => {
+      if (near(lon) > span / 2 + 2) return;
+      const x = X(lon), y = Y(0);
+      const gr = g.createRadialGradient(x, y, 0, x, y, 16 * dpr);
+      gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = gr; g.beginPath(); g.arc(x, y, 16 * dpr, 0, Math.PI * 2); g.fill();
+      g.fillStyle = col; g.beginPath(); g.arc(x, y, 4.6 * dpr, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "rgba(255, 246, 230, .95)"; g.font = `600 ${Math.round(12.5 * dpr)}px Assistant, Arial, sans-serif`;
+      g.fillText(label, x, y + (up ? -14 : 24) * dpr);
+    };
+    mark(ml, "rgba(226, 222, 245, .95)", "הירח היום", false);
+    mark(sl, "rgba(255, 210, 120, 1)", "השמש היום", true);
+    // the signs, below: twelve equal parts from the spring point, so the shift against the stars shows
+    const ry = h - ruler + 6 * dpr, rh = ruler - 10 * dpr;
+    for (let i = 0; i < 12; i++) {
+      const a = i * 30, b = a + 30, col = EL[SIGNS[i].el][1];
+      for (const off of [-360, 0, 360]) {
+        const xa = X(a + off), xb = X(b + off);
+        if (Math.max(xa, xb) < -50 || Math.min(xa, xb) > w + 50) continue;
+        g.globalAlpha = 0.16; g.fillStyle = col; g.fillRect(Math.min(xa, xb) + 1 * dpr, ry, Math.abs(xb - xa) - 2 * dpr, rh);
+        g.globalAlpha = 0.9; g.strokeStyle = col; g.lineWidth = 1.5 * dpr;
+        const gx = (xa + xb) / 2, sc = (rh * 0.8) / 24;
+        if (glyphPaths[i]) { g.save(); g.translate(gx - 12 * sc, ry + rh * 0.1); g.scale(sc, sc); g.lineWidth = 1.6; g.stroke(glyphPaths[i]); g.restore(); }
+      }
+    }
+    g.globalAlpha = 1;
+    return true;
+  }
+
+  /* ---------- the wheel of signs ---------- */
+  const wheelList = $("#zwheel-signs", view), zcard = $("#zcard", view);
+  let picked = -1;
+  const ring = (i) => { const a = (180 + i * 30 + 15) * RAD; return [50 + 39.5 * Math.cos(a), 50 - 39.5 * Math.sin(a)]; };
+  function buildWheel() {
+    if (!wheelList || wheelList.children.length) return;
+    wheelList.innerHTML = SIGNS.map((x, i) => { const [l, tp] = ring(i); return `<li style="left:${l.toFixed(2)}%;top:${tp.toFixed(2)}%;--ec:${EL[x.el][1]}"><button class="zsign" type="button" data-sign="${i}" aria-pressed="false">${glyph(i)}<span>${esc(x.name)}</span></button></li>`; }).join("");
+    const r = $(".zwheel__ring", view);
+    if (r) r.style.background = `conic-gradient(from 270deg, ${SIGNS.map((x, i) => `${EL[x.el][1]}33 ${360 - (i + 1) * 30}deg ${360 - i * 30}deg`).reverse().join(", ")})`;
+  }
+  function card(i) {
+    const x = SIGNS[i], now = nowMs(), y = new Date(now).getUTCFullYear();
+    // this year's dates: the year of signs that began with the last spring point
+    const yr = now < sunReachesSpring(y) ? y - 1 : y;
+    const [a, b] = signDates(i, yr);
+    return `<div class="zcard__in" style="--ec:${EL[x.el][1]}">
+      ${glyph(i, "zglyph zglyph--big")}
+      <div class="zcard__txt">
+        <h3>${esc(x.name)}</h3>
+        <p class="zcard__dates">השנה: מ־${esc(dayMonth(a))} עד ${esc(dayMonth(b - 60e3))}</p>
+        <ul class="zcard__tags"><li>${esc(EL[x.el][0])}</li><li>${esc(C.qualities[x.q])}</li><li>הכוכב השולט: ${esc(x.ruler)}</li></ul>
+        <p>${esc(x.line)}</p>
+      </div>
+    </div>`;
+  }
+  const sunReachesSpring = (y) => sunReaches(0, Date.UTC(y, 2, 20, 12));
+  function pick(i, say) {
+    if (!zcard) return;
+    picked = i;
+    $$(".zsign", view).forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.sign === i)));
+    zcard.innerHTML = card(i);
+    if (say) zcard.classList.remove("is-quiet");
+  }
+  if (wheelList) wheelList.addEventListener("click", (e) => { const b = e.target.closest(".zsign"); if (b) pick(+b.dataset.sign, true); });
+  function placeMarks() {
+    const now = nowMs();
+    const put = (el, lon) => { if (!el) return; const a = (180 + lon) * RAD; el.style.left = (50 + 27 * Math.cos(a)).toFixed(2) + "%"; el.style.top = (50 - 27 * Math.sin(a)).toFixed(2) + "%"; };
+    put($("#zwheel-sun", view), sunLon(now));
+    put($("#zwheel-moon", view), moonLon(now));
+  }
+
+  /* ---------- today, in words ---------- */
+  function today() {
+    const now = nowMs(), sl = sunLon(now), si = signAt(sl), con = conAt(sl);
+    const t1 = $("#cos-band-today", view), t2 = $("#cos-wheel-now", view);
+    if (t1) t1.textContent = `היום השמש בקבוצת הכוכבים ${conName(con)}, והירח ב${conName(conAt(moonLon(now)))}.`;
+    if (t2) t2.textContent = conName(con) === signName(si) ? `היום השמש במזל ${signName(si)}, וגם בקבוצת הכוכבים שעל שמו.` : `לכן היום השמש במזל ${signName(si)}, אבל בשמיים היא עומדת בקבוצת הכוכבים ${conName(con)}.`;
+    moonCard(now);
+    placeMarks();
+    if (picked < 0) pick(si, false);
+  }
+  // a small picture of the Moon in its phase: the lit part, as a path (r = 1, in a 2 x 2 box)
+  function moonPath(ph) {
+    const k = Math.cos(ph * 2 * Math.PI);                 // 1 at new moon, -1 at full
+    const waxing = ph < 0.5;
+    const sweepOuter = waxing ? 1 : 0;
+    const rx = Math.abs(k).toFixed(4);
+    // the bright limb is on the right while it grows (as seen from the north), on the left while it wanes
+    const limb = `M12 2 A10 10 0 0 ${sweepOuter} 12 22`;
+    const term = `A${(+rx * 10).toFixed(3)} 10 0 0 ${(k > 0) === waxing ? 0 : 1} 12 2`;
+    return limb + " " + term + " Z";
+  }
+  function moonCard(now) {
+    const box = $("#zmoon-body", view);
+    if (!box) return;
+    const ph = phaseAt(now), lit = litOf(ph), ms = signAt(moonLon(now));
+    const nx = nextIngress(moonLon, now, 1);
+    const sameDay = dayMonth(nx.at) === dayMonth(now);
+    const when = sameDay ? `היום ב־${hourMin(nx.at)}` : `${dayMonth(nx.at) === dayMonth(now + 864e5) ? "מחר" : "ביום " + weekday(nx.at)} ב־${hourMin(nx.at)}`;
+    box.innerHTML = `<svg class="zmoon__pic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" class="zmoon__dark"/><path d="${moonPath(ph)}" class="zmoon__lit"/></svg>
+      <p><b>${esc(phaseName(ph))}</b>, ${Math.round(lit * 100)}% ממנו מואר. הוא במזל ${esc(signName(ms))}, ועובר למזל ${esc(signName(nx.sign))} ${esc(when)}.</p>`;
+  }
+
+  /* ---------- your sign ---------- */
+  const form = $("#zform", view), dateIn = $("#zdate", view), timeIn = $("#ztime", view), err = $("#zform-err", view), res = $("#zresult", view);
+  if (dateIn) dateIn.max = new Date(nowMs() + 864e5).toISOString().slice(0, 10);
+  function figureSVG(id) {
+    const segs = FIGS[id];
+    if (!segs) return "";
+    let lmin = 1e9, lmax = -1e9, bmin = 1e9, bmax = -1e9;
+    for (const s of segs) for (let k = 0; k < s.length; k += 2) { lmin = Math.min(lmin, s[k]); lmax = Math.max(lmax, s[k]); bmin = Math.min(bmin, s[k + 1]); bmax = Math.max(bmax, s[k + 1]); }
+    const pad = 3, w = lmax - lmin + pad * 2, h = bmax - bmin + pad * 2;
+    const X = (l) => (lmax + pad - l).toFixed(2), Y = (b) => (bmax + pad - b).toFixed(2);
+    const lines = segs.map((s) => { let d = ""; for (let k = 0; k < s.length; k += 2) d += (k ? " L" : "M") + X(s[k]) + " " + Y(s[k + 1]); return `<path d="${d}" pathLength="1"/>`; }).join("");
+    const dots = new Set();
+    for (const s of segs) for (let k = 0; k < s.length; k += 2) dots.add(X(s[k]) + "," + Y(s[k + 1]));
+    return `<svg class="zfig" viewBox="0 0 ${w.toFixed(1)} ${h.toFixed(1)}" aria-hidden="true"><g class="zfig__lines">${lines}</g><g class="zfig__stars">${[...dots].map((p) => { const [x, y] = p.split(","); return `<circle cx="${x}" cy="${y}" r="${(Math.max(w, h) / 70).toFixed(2)}"/>`; }).join("")}</g></svg>`;
+  }
+  // the Sun's crossings are known here to within a couple of minutes: closer than this to one, both signs are told
+  const NEAR = 6 * 60e3;
+  function mini(i, when) {
+    const x = SIGNS[i];
+    return `<div class="zmini" style="--ec:${EL[x.el][1]}">${glyph(i, "zglyph")}<div><b>${esc(x.name)}</b> <span class="zmini__when">${esc(when)}</span>
+      <ul class="zcard__tags"><li>${esc(EL[x.el][0])}</li><li>${esc(C.qualities[x.q])}</li><li>הכוכב השולט: ${esc(x.ruler)}</li></ul><p>${esc(x.line)}</p></div></div>`;
+  }
+  function cusp(sa, sb, at, timed) {
+    const A = SIGNS[sa].name, B = SIGNS[sb].name, t = hourMin(at);
+    return `<div class="zresult__card zresult__card--cusp" style="--ec:${EL[SIGNS[sb].el][1]}">
+      <div class="zresult__txt">
+        <h3 tabindex="-1">על התפר בין ${esc(A)} ל${esc(B)}</h3>
+        <p class="zresult__cusp">${timed
+          ? `נולדת דקות ספורות מהרגע שבו עברה השמש ממזל ${esc(A)} למזל ${esc(B)}, בסביבות ${esc(t)} לפי שעון ישראל. כל כך קרוב לתפר, אפשר לקרוא את שניהם.`
+          : `ביום שנולדת עברה השמש ממזל ${esc(A)} למזל ${esc(B)}, בסביבות ${esc(t)} לפי שעון ישראל. שעת הלידה מכריעה: מי שנולדה לפני כן היא ${esc(A)}, ואחרי כן ${esc(B)}.`}</p>
+        <div class="zresult__two">${mini(sa, "לפני " + t)}${mini(sb, "מ־" + t)}</div>
+      </div>
+    </div>`;
+  }
+  function result(ms, timed, y, mo, d) {
+    const sl = sunLon(ms), si = signAt(sl), x = SIGNS[si];
+    if (!timed) {
+      const a = israelTime(y, mo, d, 0, 0), b = israelTime(y, mo, d, 23, 59);
+      const sa = signAt(sunLon(a)), sb = signAt(sunLon(b));
+      if (sa !== sb) return cusp(sa, sb, nextIngress(sunLon, a, 1).at, false);
+    } else {
+      // born within minutes of a crossing (either way)?
+      const nx = nextIngress(sunLon, ms, 6), pv = lastIngress(sunLon, ms, 6);
+      if (nx.at - ms < NEAR) return cusp(si, nx.sign, nx.at, true);
+      if (ms - pv < NEAR) return cusp((si + 11) % 12, si, pv, true);
+    }
+    const more = timed ? `<p>והירח, ברגע שנולדת, עמד במזל ${esc(signName(signAt(moonLon(ms))))}.</p>` : "";
+    return render(si, `המזל שלך: ${esc(x.name)}`, more, sl, ms, timed);
+  }
+  function render(i, head, more, sl, ms, timed) {
+    const x = SIGNS[i];
+    const deg = Math.floor(norm(sl) - Math.floor(norm(sl) / 30) * 30);
+    return `<div class="zresult__card" style="--ec:${EL[x.el][1]}">
+      <div class="zresult__art">${glyph(i, "zglyph zglyph--big")}${figureSVG(x.con)}</div>
+      <div class="zresult__txt">
+        <h3 tabindex="-1">${head}</h3>
+        <p class="zresult__where">השמש עמדה ${timed ? "אז" : "באותו יום"} על ${deg}° במזל ${esc(x.name)}.</p>
+        <ul class="zcard__tags"><li>${esc(EL[x.el][0])}</li><li>${esc(C.qualities[x.q])}</li><li>הכוכב השולט: ${esc(x.ruler)}</li></ul>
+        <p>${esc(x.line)}</p>
+        ${more}
+        <p class="zresult__con">בשמיים: קבוצת הכוכבים ${esc(conName(x.con))}.</p>
+      </div>
+    </div>`;
+  }
+  if (form) form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    const v = (dateIn.value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!v) { err.textContent = "בחרי תאריך לידה."; dateIn.focus(); return; }
+    const y = +v[1], mo = +v[2], d = +v[3];
+    if (y < 1900 || Date.UTC(y, mo - 1, d) > nowMs() + 864e5) { err.textContent = "בחרי תאריך בין 1900 להיום."; dateIn.focus(); return; }
+    const tm = (timeIn.value || "").match(/^(\d{2}):(\d{2})/);
+    const ms = tm ? israelTime(y, mo, d, +tm[1], +tm[2]) : israelTime(y, mo, d, 12, 0);
+    res.innerHTML = result(ms, !!tm, y, mo, d);
+    res.classList.remove("is-in"); void res.offsetWidth; res.classList.add("is-in");
+    const h = $("h3", res);
+    if (h) h.focus({ preventScroll: true });
+    const card2 = $(".zresult__card", res);
+    if (card2 && card2.scrollIntoView) card2.scrollIntoView({ block: "nearest", behavior: still() ? "auto" : "smooth" });
+  });
+
+  /* ---------- the chapters rise into place as they are reached (as the rest of the site does: .rv and --ry) ---------- */
+  const rv = $$(".cos-panel, .cos-step, .cos-type, .zwheel-wrap, .cos-band", view);
+  if (window.gsap && "IntersectionObserver" in window) {
+    const gsap = window.gsap;
+    rv.forEach((el) => el.classList.add("rv"));
+    gsap.set(rv, { "--ry": "40px" });
+    const rise = new IntersectionObserver((es) => {
+      const els = es.filter((e) => e.isIntersecting).map((e) => e.target);
+      if (!els.length) return;
+      els.forEach((el) => { rise.unobserve(el); el.classList.add("is-in"); });
+      gsap.to(els, { "--ry": "0px", duration: still() ? 0 : 1.2, ease: "expo.out", stagger: still() ? 0 : 0.07, overwrite: true });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    rv.forEach((el) => rise.observe(el));
+    CB.bus.addEventListener("a11y", () => { if (still()) gsap.set(rv, { "--ry": "0px" }); });
+  } else rv.forEach((el) => el.classList.add("is-in"));
+
+  /* ---------- the view comes and goes ---------- */
+  function activate() {
+    active = true;
+    view.classList.toggle("is-plain", failed || lost);
+    buildWheel();
+    ensureBand();
+    requestAnimationFrame(() => { measure(); bandDirty = true; today(); last = 0; kick(); });
+  }
+  function deactivate() { active = false; stop(); if (here) { here.classList.remove("is-on"); here.hidden = true; } }
+  CB.bus.addEventListener("view", (e) => { if (e.detail && e.detail.name === "cosmos") activate(); else if (active) deactivate(); });
+  addEventListener("scroll", () => { if (active) kick(); }, { passive: true });
+  addEventListener("resize", () => { if (!active) return; measure(); bandDirty = true; kick(); });
+  doc.addEventListener("visibilitychange", () => { if (!doc.hidden && active) { last = 0; kick(); } });
+  CB.bus.addEventListener("a11y", () => { frozen = (performance.now() - t0) / 1000; if (active) { bandDirty = true; kick(); } });
+  if ("ResizeObserver" in window) new ResizeObserver(() => { if (active) { measure(); kick(); } }).observe(view);
+  setInterval(() => { if (active) today(); }, 60000);
+  if (CB.view && CB.view.current && CB.view.current() === "cosmos") activate();
+
+  CB.cosmos = Object.assign(CB.cosmos || {}, {
+    astro,
+    state: () => ({ active, failed: failed || lost, frames: CB.cosmosFrames || 0, scene: st && { A: st.A, B: st.B, m: +st.m.toFixed(3), stage: +st.stage.toFixed(3), chapter: st.chapter }, band: bcv ? bandShown : null, picked, quality: Q }),
+    pick: (i) => pick(i, true),
+    warm: () => { if (!still()) startProgram(); },
+  });
+  if (TEST) CB.cosmos.test = { setNow: (ms) => { TEST.cosmosNow = ms; if (active) today(); }, measure: () => { measure(); kick(); }, galaxyAt: (y) => galaxyAt(y, 0, layout()) };
+})();
+
+</script>
+<script>
+/* The way into the cosmos journey: the sun (by day) or the moon (by night) of the home page is a door.
+   A tap on it, or on the button over it for the keyboard, makes it grow until it fills the screen; then a flight
+   through the stars, and the journey opens (cosmos-gl.js draws it; the page changes underneath once the light covers it).
+   The first time in a visit it takes its time, later it is short, and a tap or a key skips it. With reduced motion the
+   page simply changes; without WebGL, a soft light opens from where the touch was. Sound only if the sea's sound is on. */
+(() => {
+  "use strict";
+  const CB = window.CB;
+  if (!CB || !CB.cosmosGL) return;
+  const doc = document, root = doc.documentElement;
+  const TEST = window.__CB_TEST || null;
+  const G = CB.cosmosGL;
+  const FULL = 2600, SHORT = 1500, SWITCH = 0.36;
+  const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+  /* ---------- the layer over the page ---------- */
+  let el = null, cv = null, gl = null, P = null, buf = null, glFailed = false;
+  function ensureDom() {
+    if (el) return;
+    el = doc.createElement("div");
+    el.className = "cosmos-gate";
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML = '<canvas></canvas><div class="cosmos-gate__plain"></div>';
+    doc.body.appendChild(el);
+    cv = el.querySelector("canvas");
+  }
+  function ensureGL() {
+    if (gl || glFailed) return gl;
+    ensureDom();
+    try { gl = cv.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false, powerPreference: "low-power" }); } catch (_) { gl = null; }
+    if (!gl) { glFailed = true; return null; }
+    buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    cv.addEventListener("webglcontextlost", (e) => { e.preventDefault(); gl = null; P = null; glFailed = true; }, false);
+    return gl;
+  }
+  function program() {
+    if (P) return P;
+    if (!ensureGL()) return null;
+    try {
+      const hp = gl.getShaderPrecisionFormat && gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+      const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || "compile"); return s; };
+      const p = gl.createProgram();
+      gl.attachShader(p, sh(gl.VERTEX_SHADER, G.VERT));
+      gl.attachShader(p, sh(gl.FRAGMENT_SHADER, G.GATE(!!(hp && hp.precision > 0))));
+      gl.bindAttribLocation(p, 0, "aPos");
+      gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || "link");
+      const u = {};
+      for (const n of ["uRes", "uP", "uT", "uO", "uX"]) u[n] = gl.getUniformLocation(p, n);
+      P = { p, u };
+    } catch (err) {
+      CB.glError = (CB.glError || "") + "cosmos gate: " + String(err.message || err).slice(0, 200) + "; ";
+      glFailed = true;
+      return null;
+    }
+    return P;
+  }
+  let K = 1;
+  function size() {
+    const w = innerWidth, h = innerHeight, dpr = devicePixelRatio || 1;
+    K = Math.min(dpr, 1.25, Math.sqrt(1.6e6 / (w * h)));
+    if (TEST && TEST.lowfi) K = Math.min(K, 0.3);
+    const cw = Math.max(2, Math.round(w * K)), ch = Math.max(2, Math.round(h * K));
+    if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
+  }
+
+  /* ---------- where it starts ---------- */
+  let from = null;
+  const origin = () => (from && performance.now() - from.t < 2500 ? from : { x: innerWidth / 2, y: innerHeight * 0.44, r: 5, sun: 0, phase: 0.5 });
+
+  /* ---------- sound: the air rushing past, and a chime on arrival ---------- */
+  const soundOn = () => !CB.water || !CB.water.state || CB.water.state().soundOn;
+  function whoosh(dur) {
+    if (!soundOn() || !CB.audioCtx) return;
+    const ac = CB.audioCtx();
+    if (!ac) return;
+    try {
+      const t = ac.currentTime + 0.02, len = dur / 1000;
+      const n = Math.floor(ac.sampleRate * (len + 0.2)), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      const src = ac.createBufferSource(); src.buffer = b;
+      const bp = ac.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 0.9;
+      bp.frequency.setValueAtTime(260, t); bp.frequency.exponentialRampToValueAtTime(2400, t + len * 0.55); bp.frequency.exponentialRampToValueAtTime(700, t + len);
+      const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + len * 0.45); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      src.connect(bp).connect(g).connect(ac.destination);
+      src.start(t); src.stop(t + len + 0.1);
+      // the chime as it opens
+      [880, 1318.5, 1760, 2637].forEach((f, i) => {
+        const o = ac.createOscillator(), og = ac.createGain(), at = t + len * 0.82 + i * 0.07;
+        o.type = "sine"; o.frequency.value = f;
+        og.gain.setValueAtTime(0.0001, at); og.gain.exponentialRampToValueAtTime(0.045 / (1 + i * 0.6), at + 0.02); og.gain.exponentialRampToValueAtTime(0.0001, at + 2.2);
+        o.connect(og).connect(ac.destination); o.start(at); o.stop(at + 2.3);
+      });
+    } catch (_) { /* no sound, still the journey */ }
+  }
+
+  /* ---------- playing ---------- */
+  let run = null;
+  const seen = () => { try { return !!sessionStorage.getItem("natasha-cosmos-in"); } catch (_) { return false; } };
+  const remember = () => { try { sessionStorage.setItem("natasha-cosmos-in", "1"); } catch (_) { /* storage blocked */ } };
+  const wants = () => !CB.still && root.classList.contains("motion") && !(TEST && !TEST.cosmosGate);
+  function play(doSwitch) {
+    if (run) finish(true);
+    ensureDom();
+    const full = !seen();
+    remember();
+    const p = program();
+    const dur = full ? FULL : SHORT;
+    const o = origin();
+    from = null;
+    // the flight keeps its own clock, a frame's worth at most per frame: a stall (a slow device compiling the
+    // journey's scenes) pauses it for a moment instead of skipping a part of it
+    const t0 = performance.now();
+    run = { P: p, dur, full, o, t0, clock: 0, last: -1, wall: t0, warmed: false, switched: false, doSwitch, raf: 0, guard: 0 };
+    el.classList.toggle("is-plain", !p);
+    if (!p) { const pl = el.querySelector(".cosmos-gate__plain"); pl.style.setProperty("--gx", o.x + "px"); pl.style.setProperty("--gy", o.y + "px"); pl.style.setProperty("--gr", Math.max(4, o.r) + "px"); pl.style.setProperty("--gc", o.sun ? "#FFE3A6" : "#E6E0FA"); }
+    el.classList.add("is-on");
+    root.classList.add("is-flying");
+    whoosh(dur);
+    run.raf = requestAnimationFrame(frame);
+    // a tab that stops drawing (hidden) still arrives
+    run.guard = setInterval(() => { if (run && performance.now() - run.wall > 3000) finish(false); }, 500);
+  }
+  function frame(now) {
+    const r = run;
+    if (!r) return;
+    if (r.last >= 0) r.clock += Math.min(80, Math.max(0, now - r.last));
+    r.last = now;
+    r.wall = performance.now();
+    const p = Math.min(1, r.clock / r.dur);
+    if (!r.switched && p >= SWITCH) switchNow(r);
+    if (r.P && gl) {
+      size();
+      gl.viewport(0, 0, cv.width, cv.height);
+      gl.useProgram(r.P.p);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+      gl.uniform2f(r.P.u.uRes, cv.width, cv.height);
+      gl.uniform1f(r.P.u.uP, r.full ? p : Math.min(1, 0.12 + p * 0.88));
+      gl.uniform1f(r.P.u.uT, r.clock / 1000);
+      gl.uniform4f(r.P.u.uO, r.o.x * K, (innerHeight - r.o.y) * K, Math.max(3, r.o.r) * K, r.o.sun ? 1 : 0);
+      gl.uniform4f(r.P.u.uX, r.o.phase == null ? 0.5 : r.o.phase, r.full ? 1 : 0, 0, 0);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    } else {
+      el.style.setProperty("--gp", p.toFixed(3));
+    }
+    if (p >= 1) { finish(false); return; }
+    // the journey's scenes start compiling once the first frame is out (the moon still where it was: a pause there
+    // can't be seen), so they are ready when the page turns
+    if (!r.warmed) { r.warmed = true; if (CB.cosmos && CB.cosmos.warm) CB.cosmos.warm(); }
+    r.raf = requestAnimationFrame(frame);
+  }
+  function switchNow(r) {
+    r.switched = true;
+    try { r.doSwitch(); } catch (_) { CB.errors = (CB.errors || 0) + 1; }
+  }
+  function clear() { if (gl) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); } }
+  function finish(fast, noSwitch) {
+    const r = run;
+    if (!r) return;
+    run = null;
+    cancelAnimationFrame(r.raf);
+    clearInterval(r.guard);
+    if (!r.switched && !noSwitch) switchNow(r);
+    root.classList.remove("is-flying");
+    if (fast) {
+      el.style.transition = "opacity .25s ease";
+      el.style.opacity = "0";
+      setTimeout(() => { if (!run) { el.classList.remove("is-on"); el.style.transition = ""; el.style.opacity = ""; clear(); } }, 260);
+    } else { el.classList.remove("is-on"); clear(); }
+  }
+  const skip = () => { if (run) finish(true); };
+  // a tap or a key while flying: arrive now
+  addEventListener("pointerdown", () => { if (run && performance.now() - run.t0 > 120) skip(); }, true);
+  addEventListener("keydown", (e) => { if (run && e.key !== "Tab") skip(); }, true);
+
+  /* ---------- the door: the sun or the moon of the home page ---------- */
+  const hero = doc.getElementById("top"), door = doc.getElementById("orb-door");
+  // the sun or the moon, as the sea draws it now: its middle and radius on the screen, and which it is
+  // (none while the sea's picture doesn't fit the hero as it is: hidden on another page, or just back, or resized,
+  // the sea measures itself again a moment later)
+  function orbNow() {
+    if (!hero || !CB.sea) return null;
+    const s = CB.sea.state(), L = s.layout, fx = CB.seaFx || {};
+    const r = hero.getBoundingClientRect();
+    const W = r.width, H = r.height;
+    if (!W || !H || !(s.W > 2 && s.H > 2) || Math.abs(s.W / s.H - W / H) > 0.04) return null;
+    return {
+      x: r.left + (L.ox + (fx.pan || 0)) * W + (fx.moonDX || 0) * H,
+      y: r.top + (1 - ((s.orbY == null ? L.oy : s.orbY) - (fx.dip || 0))) * H,
+      r: (s.orbR == null ? L.r : s.orbR) * H,
+      sun: (s.sun || 0) > 0.5 ? 1 : 0,
+      phase: fx.phase == null ? 0.5 : fx.phase % 1,
+      vis: s.vis == null ? 1 : s.vis,
+    };
+  }
+  function enter(o) {
+    from = o ? Object.assign({}, o, { t: performance.now() }) : null;
+    if (CB.go) CB.go("#cosmos");
+  }
+  let again = 0, tries = 0;
+  function placeDoor() {
+    if (!door) return;
+    const home = !CB.view || CB.view.current() === "home";
+    const o = home ? orbNow() : null;
+    // the home page is shown but the sea hasn't measured itself yet: look again in a moment (for a few seconds)
+    if (home && !o && CB.sea) { if (!again && tries < 25) { tries++; again = setTimeout(() => { again = 0; placeDoor(); }, 160); } }
+    else tries = 0;
+    const js = CB.journey && CB.journey.state ? CB.journey.state().state : "lake";
+    const show = !!o && js === "lake" && o.vis > 0.5 && home;
+    door.hidden = !show;
+    if (!show) return;
+    const r = hero.getBoundingClientRect();
+    door.style.setProperty("--od-x", (o.x - r.left).toFixed(1) + "px");
+    door.style.setProperty("--od-y", (o.y - r.top).toFixed(1) + "px");
+    door.style.setProperty("--od-d", (o.r * 2.1).toFixed(1) + "px");
+    const label = o.sun ? "השמש: למסע אל הכוכבים" : "הירח: למסע אל הכוכבים";
+    if (door.getAttribute("aria-label") !== label) door.setAttribute("aria-label", label);
+    door.classList.toggle("is-sun", !!o.sun);
+  }
+  if (door && hero) {
+    // the keyboard's way (Enter or Space on the button); a tap goes through the button to the hero (journey.js)
+    door.addEventListener("click", () => enter(orbNow()));
+    // with a mouse: the ring of light and the words while the pointer is on the orb (not on a gate or a link in front)
+    let hov = false, pm = null, pmRaf = 0;
+    const setHover = (on) => { if (on !== hov) { hov = on; door.classList.toggle("is-hover", on); hero.classList.toggle("orb-point", on); } };
+    hero.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      pm = e;
+      if (pmRaf) return;
+      pmRaf = requestAnimationFrame(() => {
+        pmRaf = 0;
+        const ev = pm, o = !door.hidden && getComputedStyle(door).display !== "none" ? orbNow() : null;
+        setHover(!!o && !ev.target.closest("a, button, input, select, textarea, .water-ui__bar") && Math.hypot(ev.clientX - o.x, ev.clientY - o.y) < o.r * 1.1);
+      });
+    }, { passive: true });
+    hero.addEventListener("pointerleave", () => setHover(false));
+    CB.bus.addEventListener("view", () => setHover(false));
+    if ("ResizeObserver" in window) new ResizeObserver(placeDoor).observe(hero);
+    // the boat sails off and comes back (journey.js marks the hero): the door goes and returns with the moon
+    if ("MutationObserver" in window) new MutationObserver(placeDoor).observe(hero, { attributes: true, attributeFilter: ["class"] });
+    addEventListener("resize", placeDoor);
+    setInterval(placeDoor, 4000);
+    CB.bus.addEventListener("view", placeDoor);
+    requestAnimationFrame(placeDoor);
+    // once a visit, a moment after the home page settles: a ring of light around it, to say it can be touched
+    const call = () => {
+      let done = false;
+      try { done = !!sessionStorage.getItem("natasha-orb-call"); } catch (_) { done = true; }
+      if (done || CB.still || door.hidden) return;
+      try { sessionStorage.setItem("natasha-orb-call", "1"); } catch (_) { /* fine */ }
+      door.classList.add("is-call");
+      setTimeout(() => door.classList.remove("is-call"), 4200);
+    };
+    if (!TEST) setTimeout(call, 7000);
+  }
+
+  CB.cosmos = Object.assign(CB.cosmos || {}, {
+    enter,
+    orb: orbNow,
+    gate: {
+      wants, play, skip,
+      busy: () => !!run,
+      cancel: () => { if (run) finish(true, true); },
+      state: () => ({ on: !!run, full: run && run.full, plain: !!(run && !run.P), switched: !!(run && run.switched), p: run ? +Math.min(1, run.clock / run.dur).toFixed(3) : null, from: run && run.o }),
+    },
+  });
+  // for tests: one frame of the way in at progress p, standing still, from the sun or the moon as it is now
+  if (TEST) CB.cosmos.gate.preview = (p, o) => {
+    ensureDom();
+    const P2 = program();
+    if (!P2) return false;
+    o = o || orbNow() || origin();
+    el.classList.add("is-on");
+    size();
+    gl.viewport(0, 0, cv.width, cv.height);
+    gl.useProgram(P2.p);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(P2.u.uRes, cv.width, cv.height);
+    gl.uniform1f(P2.u.uP, p);
+    gl.uniform1f(P2.u.uT, p * 2.6);
+    gl.uniform4f(P2.u.uO, o.x * K, (innerHeight - o.y) * K, Math.max(3, o.r) * K, o.sun ? 1 : 0);
+    gl.uniform4f(P2.u.uX, o.phase == null ? 0.5 : o.phase, 1, 0, 0);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    return true;
+  };
+  if (TEST) CB.cosmos.gate.hide = () => { if (el && !run) { el.classList.remove("is-on"); clear(); } };
 })();
 
 </script>
