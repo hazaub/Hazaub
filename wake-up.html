@@ -110,6 +110,7 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 .hero__en > .sp { flex: 0 0 .3em; }
 .hero__he { display: block; justify-self: center; font-weight: 500; }
 .hero__sub { margin-top: .7rem; font-weight: 600; font-size: clamp(1rem, 4.4vw, 1.1875rem); line-height: 1.4; }
+.hero__date { margin-top: .1rem; font-weight: 500; font-size: clamp(.95rem, 4.1vw, 1.125rem); line-height: 1.4; letter-spacing: .03em; font-variant-numeric: tabular-nums lining-nums; }
 
 .hero__foot {
   grid-area: 2 / 1; position: relative; z-index: 1;
@@ -147,6 +148,7 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
   .hero__name { font-size: clamp(3.25rem, 8.4vw, 7.75rem); }
   .hero__he { justify-self: start; }
   .hero__sub { margin-top: 1.1rem; font-size: clamp(1.125rem, 1.7vw, 1.375rem); }
+  .hero__date { margin-top: .25rem; font-size: clamp(1.0625rem, 1.5vw, 1.25rem); }
   .hero__foot { gap: 1.75rem; }
   .hero__lede { font-size: clamp(1.4rem, 2.5vw, 2rem); max-width: 16em; }
 }
@@ -155,17 +157,36 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 }
 
 /* ───────── על מה היום הזה ───────── */
-.layers { display: grid; gap: 0 clamp(1.5rem, 3.5vw, 3rem); margin-top: clamp(1.5rem, 5vw, 3.5rem); }
-.layer { position: relative; margin-top: 4.25rem; padding-top: 1.5rem; border-top: 1px solid var(--line); display: grid; gap: .6rem; align-content: start; }
-/* a sun that climbs over the card's top rule: one step higher per layer */
-.layer__sky { position: absolute; inset-inline-start: 0; bottom: 100%; width: 5.5rem; height: 4.25rem; overflow: hidden; pointer-events: none; }
-.layer__sun {
-  position: absolute; inset-inline-start: 1rem; bottom: calc(var(--rise) - 2.5rem);
-  width: 2.5rem; height: 2.5rem; border-radius: 50%;
-  background: radial-gradient(circle at 50% 38%, #ffd98a, var(--saffron) 68%);
-  box-shadow: 0 0 1.5rem .25rem rgba(249, 168, 38, .5);
+.about { position: relative; }
+.about > .wrap { position: relative; z-index: 1; }
+.about__col { display: grid; gap: clamp(1.75rem, 5vw, 3rem); }
+.layer { display: grid; gap: .55rem; padding-block: 1.6rem; border-top: 1px solid var(--line); }
+.layer:last-child { padding-bottom: 0; }
+.layer p { max-width: 34em; }
+
+/* one sun behind the text: it climbs from the bottom of the screen to the top while this section is read.
+   --dawn runs 0 → 1 across the section and is set from the scroll position. */
+.dawn { --dawn: .62; position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.dawn__stage { --stage: 100vh; position: sticky; top: 0; height: var(--stage); overflow: hidden; }
+@supports (height: 100svh) { .dawn__stage { --stage: 100svh; } }
+.dawn__stage::after { /* warm haze low on the screen that thins as the sun climbs */
+  content: ""; position: absolute; inset: auto 0 0 0; height: 42%;
+  background: linear-gradient(180deg, rgba(243, 184, 132, 0), rgba(243, 184, 132, .4));
+  opacity: calc(1 - var(--dawn) * .75);
 }
-.layer p { color: var(--umber-soft); }
+.dawn__sun {
+  --size: min(74vw, 20rem);
+  position: absolute; top: 0; left: 50%; width: var(--size); height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2); border-radius: 50%;
+  background: radial-gradient(circle closest-side, rgba(255, 224, 166, .8) 0%, rgba(251, 186, 82, .6) 84%, rgba(249, 168, 38, .5) 93%, rgba(249, 168, 38, 0) 100%);
+  transform: translate3d(0, calc((1.06 - var(--dawn) * .84) * var(--stage)), 0);
+  opacity: .78;
+  will-change: transform;
+}
+.dawn__sun::before {
+  content: ""; position: absolute; inset: -55%; border-radius: 50%;
+  background: radial-gradient(circle closest-side, rgba(249, 168, 38, .3), rgba(243, 184, 132, .14) 55%, rgba(243, 184, 132, 0) 100%);
+}
 
 /* ───────── מה מחכה לך ───────── */
 .awaits { background: var(--shell); }
@@ -179,6 +200,7 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 /* ───────── עם מה תצאי ───────── */
 .takeaway .lead { font-size: clamp(1.5rem, 3.3vw, 2.2rem); line-height: 1.42; max-width: 22em; }
 .takeaway .prose p + p { color: var(--umber-soft); }
+.takeaway__cta { margin-top: .9rem; }
 
 /* ───────── למה דווקא בחנוכה ───────── */
 .miracle { position: relative; overflow: hidden; background: var(--umber); color: var(--ivory); }
@@ -217,6 +239,42 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 .person__role { font-weight: 600; color: var(--clay); }
 .person__text p:last-child { margin-top: .5rem; max-width: 34em; }
 
+/* ───────── שליפת קלף ───────── */
+.draw { background: var(--umber); color: var(--ivory); text-align: center; overflow: hidden; }
+.draw__wrap { display: grid; justify-items: center; gap: clamp(1.75rem, 5vw, 2.75rem); }
+.draw h2 { color: #ffd9a0; }
+.deck { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(.6rem, 2.5vw, 1.5rem); width: min(100%, 40rem); }
+.card {
+  position: relative; aspect-ratio: 2 / 3; padding: 0; border: 0; background: none; color: inherit; font: inherit;
+  cursor: pointer; perspective: 60rem; -webkit-tap-highlight-color: transparent;
+  transition: transform .5s cubic-bezier(.22, .8, .24, 1), opacity .5s ease;
+}
+.card__inner { position: absolute; inset: 0; display: block; transform-style: preserve-3d; transition: transform .9s cubic-bezier(.3, .75, .2, 1); }
+.card.is-flipped .card__inner { transform: rotateY(180deg); }
+.card__face {
+  position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden;
+  border-radius: clamp(.6rem, 2.2vw, 1rem); backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.card__back { background: linear-gradient(160deg, #7a3c22, #4a2112 60%, #3a190f); box-shadow: 0 0 0 1px rgba(255, 217, 160, .35), 0 1.2rem 2.4rem -1rem rgba(0, 0, 0, .7); }
+.card__back svg { width: 100%; height: 100%; }
+.card__front {
+  transform: rotateY(180deg); padding: clamp(.55rem, 2.6vw, 1.25rem);
+  background: linear-gradient(180deg, #fffaf2, var(--shell)); color: var(--umber);
+  box-shadow: inset 0 0 0 1px rgba(249, 168, 38, .6), 0 1.2rem 2.4rem -1rem rgba(0, 0, 0, .7);
+}
+.card__msg { font-family: var(--font-display); font-size: clamp(1.05rem, 4.4vw, 1.6rem); line-height: 1.35; text-wrap: balance; }
+.card:not(.is-flipped):not(.is-rest):hover { transform: translateY(-.4rem); }
+.card.is-flipped { transform: translateY(-.4rem) scale(1.04); cursor: default; }
+.card.is-rest { opacity: .38; transform: scale(.96); cursor: default; }
+.card:focus-visible { outline: 3px solid #ffd9a0; outline-offset: 4px; border-radius: 1rem; }
+.draw__hint { font-family: var(--font-display); font-size: clamp(1.2rem, 4.6vw, 1.5rem); line-height: 1.4; }
+.draw__again {
+  padding: .5rem 1rem; border: 0; background: none; color: #ffd9a0; cursor: pointer;
+  font: 600 1rem/1.4 var(--font-body); text-decoration: underline; text-underline-offset: .25em;
+}
+.draw__again[hidden] { display: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
 /* ───────── פרטים והרשמה ───────── */
 .register {
   background:
@@ -247,19 +305,45 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 .price.is-current .price__now { display: block; }
 .price.is-past { opacity: .55; }
 .price.is-past .price__sum { text-decoration: line-through; text-decoration-thickness: 2px; }
+.pay { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem; margin-top: -.75rem; font-size: .9375rem; color: var(--umber-soft); }
+.pay__mark { padding: .15rem .8rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--umber); font-weight: 700; line-height: 1.5; }
 .register__cta { display: grid; gap: .75rem; }
-.register__note { min-height: 1.6em; text-align: center; font-size: .9375rem; color: var(--umber-soft); }
+.register__note { text-align: center; font-size: .9375rem; color: var(--umber-soft); }
+.register__note:empty { display: none; }
+.btn--dark { background: var(--umber); color: var(--ivory); box-shadow: none; }
+.btn--dark:hover { box-shadow: 0 .8rem 1.6rem -.6rem rgba(47, 22, 14, .65); }
+.callback { display: grid; gap: 1rem; padding-top: 1.75rem; border-top: 1px solid var(--line); }
+.callback__title { font-family: var(--font-display); font-size: 1.375rem; line-height: 1.3; }
+.callback__fields { display: grid; gap: .75rem; }
+.field { display: grid; gap: .3rem; }
+.field label { font-size: .9375rem; font-weight: 600; color: var(--clay); }
+.field input {
+  width: 100%; min-height: 3rem; padding: .6rem .9rem;
+  border: 1px solid rgba(47, 22, 14, .32); border-radius: .75rem; background: #fff; color: var(--umber); font: inherit;
+}
+.field input:focus-visible { outline: 3px solid var(--saffron); outline-offset: 1px; border-color: var(--clay); }
+.field input[aria-invalid="true"] { border-color: #a3231c; }
+.field input[type="tel"] { direction: ltr; text-align: right; }
+.callback__note { text-align: center; font-size: .9375rem; color: var(--umber-soft); }
+.callback__note:empty { display: none; }
+.callback__note.is-error { color: #a3231c; }
 
 /* ───────── Footer ───────── */
 .foot { background: var(--umber); color: rgba(253, 246, 238, .78); padding-block: 2.25rem; font-size: .9375rem; text-align: center; }
 .foot strong { display: block; font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; color: var(--ivory); }
+.social { display: flex; justify-content: center; gap: 1.75rem; margin-top: 1.1rem; }
+.social a { color: var(--ivory); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(249, 168, 38, .85); text-underline-offset: .3em; }
+.social a:hover { color: #ffd9a0; }
+.social a:not([href]) { opacity: .6; text-decoration-style: dotted; cursor: default; }
 
 /* sections ease in as they approach the viewport; at rest everything is visible */
 .reveal.is-in { animation: reveal .95s cubic-bezier(.22, .8, .24, 1) both; }
 @keyframes reveal { from { opacity: 0; transform: translate3d(0, 1.25rem, 0); } to { opacity: 1; transform: none; } }
 
+@media (min-width: 30rem) {
+  .callback__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (min-width: 40rem) {
-  .layers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .agenda li:not(.agenda__extra) { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); align-items: baseline; }
   .person { grid-template-columns: 17rem minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
   .person--flip .person__photo { order: 2; }
@@ -267,6 +351,14 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 }
 @media (min-width: 56rem) {
   .split { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); align-items: start; }
+  /* wide screens: the heading stays in view and the sun rises behind it, beside the text column */
+  .about h2 { position: sticky; top: clamp(4rem, 16vh, 8rem); }
+  .dawn__sun {
+    opacity: 1;
+    --size: min(21rem, 27vw);
+    --w: min(100% - 2 * var(--gutter), var(--wrap));
+    left: calc(50% + var(--w) / 2 - (var(--w) - 3rem) * 2 / 11);
+  }
   .miracle__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: center; justify-items: start; }
   .miracle__grid .candle { order: 2; justify-self: center; width: 7.5rem; }
 }
@@ -294,11 +386,12 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
         <span class="hero__he anim" style="--d:1250ms" aria-hidden="true">להתעורר</span>
       </h1>
       <p class="hero__sub anim" style="--d:1650ms">יום התעוררות לנשים</p>
+      <p class="hero__date anim" style="--d:1850ms">10.12.2026 · חנוכה</p>
     </div>
 
     <div class="hero__foot">
-      <p class="hero__lede anim" style="--d:2000ms">שינוי מתחיל כשאת רואה מה עוצר אותך.</p>
-      <div class="anim" style="--d:2350ms"><a class="btn" href="#register">אני רוצה להצטרף</a></div>
+      <p class="hero__lede anim" style="--d:2150ms">שינוי מתחיל כשאת רואה מה עוצר אותך.</p>
+      <div class="anim" style="--d:2500ms"><a class="btn" href="#register">אני רוצה להצטרף</a></div>
     </div>
   </div>
 </header>
@@ -306,31 +399,29 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 <main>
 
   <section class="section about" id="about">
+    <div class="dawn" id="dawn" aria-hidden="true"><div class="dawn__stage"><span class="dawn__sun"></span></div></div>
     <div class="wrap split">
       <h2 class="reveal">על מה היום הזה?</h2>
-      <div class="prose reveal">
-        <p class="lead">לפעמים אנחנו יודעות שאנחנו רוצות שינוי. אנחנו חושבות עליו, מתכננות אותו, ואפילו מתחילות. ובכל זאת, משהו מושך אותנו בחזרה למה שמוכר.</p>
-        <p>ביום הזה נצא למסע של זיהוי ונכיר את מה שאני קוראת לו <mark>״מערכת ההפעלה שלנו״</mark>. נבין איך מה שלמדנו להאמין על עצמנו, מה שאנחנו חוששות להרגיש והדרך שבה התרגלנו להגיב משפיעים על הבחירות שלנו.</p>
+      <div class="about__col">
+        <div class="prose reveal">
+          <p class="lead">לפעמים אנחנו יודעות שאנחנו רוצות שינוי. אנחנו חושבות עליו, מתכננות אותו, ואפילו מתחילות. ובכל זאת, משהו מושך אותנו בחזרה למה שמוכר.</p>
+          <p>ביום הזה נצא למסע של זיהוי ונכיר את מה שאני קוראת לו <mark>״מערכת ההפעלה שלנו״</mark>. נבין איך מה שלמדנו להאמין על עצמנו, מה שאנחנו חוששות להרגיש והדרך שבה התרגלנו להגיב משפיעים על הבחירות שלנו.</p>
+        </div>
+        <ul class="layers">
+          <li class="layer reveal">
+            <h3>אמונות מגבילות</h3>
+            <p>נבין איך חוויות ומסרים שספגנו לאורך החיים הופכים לאמונות על עצמנו, ואיך האמונות האלה משפיעות על מה שאנחנו חושבות שאפשרי בשבילנו. למשל, אם שמענו שוב ושוב ש״צריך להסתפק במה שיש״, יכול להיות שגם היום, כשנרצה לבקש העלאה, ישר נחשוב ״מי אני בכלל שאבקש יותר?״</p>
+          </li>
+          <li class="layer reveal">
+            <h3>פחדים ורגשות לא פתורים</h3>
+            <p>נבדוק מה מתעורר בנו כשאנחנו מתקרבות לשינוי ואיך רגשות שנשארו איתנו מהעבר משפיעים על ההחלטות שלנו היום. למשל, אולי פעם העזנו להתחיל משהו שרצינו מאוד והתאכזבנו. היום, גם כשיש הזדמנות שמרגשת אותנו, הפחד להתאכזב שוב יכול לגרום לנו לדחות את הצעד הראשון.</p>
+          </li>
+          <li class="layer reveal">
+            <h3>דפוסי התנהגות</h3>
+            <p>נזהה את הדרכים שבהן התרגלנו להגיב ונראה איך מה שאנחנו מאמינות בו ומה שאנחנו מרגישות מתחברים למה שאנחנו עושות בפועל. למשל, חברה מבקשת מאיתנו טובה ביום שכבר אין לנו בו רגע לעצמנו. אנחנו רוצות להגיד לא, אבל מפחדות לאכזב אותה, אז עונות ״כן, בטח״. אחר כך אנחנו שוב כועסות על עצמנו שהסכמנו.</p>
+          </li>
+        </ul>
       </div>
-    </div>
-    <div class="wrap">
-      <ul class="layers">
-        <li class="layer reveal" style="--rise: .7rem">
-          <span class="layer__sky" aria-hidden="true"><span class="layer__sun"></span></span>
-          <h3>אמונות מגבילות</h3>
-          <p>נבין איך חוויות ומסרים שספגנו לאורך החיים הופכים לאמונות על עצמנו, ואיך האמונות האלה משפיעות על מה שאנחנו חושבות שאפשרי בשבילנו.</p>
-        </li>
-        <li class="layer reveal" style="--rise: 1.5rem">
-          <span class="layer__sky" aria-hidden="true"><span class="layer__sun"></span></span>
-          <h3>פחדים ורגשות לא פתורים</h3>
-          <p>נבדוק מה מתעורר בנו כשאנחנו מתקרבות לשינוי ואיך רגשות שנשארו איתנו מהעבר משפיעים על ההחלטות שלנו היום.</p>
-        </li>
-        <li class="layer reveal" style="--rise: 3.1rem">
-          <span class="layer__sky" aria-hidden="true"><span class="layer__sun"></span></span>
-          <h3>דפוסי התנהגות</h3>
-          <p>נזהה את הדרכים שבהן התרגלנו להגיב ונראה איך מה שאנחנו מאמינות בו ומה שאנחנו מרגישות מתחברים למה שאנחנו עושות בפועל.</p>
-        </li>
-      </ul>
     </div>
   </section>
 
@@ -368,6 +459,7 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
       <div class="prose reveal">
         <p class="lead">עם הבנה ברורה יותר של מה מעכב את השינוי שאת רוצה, ועם כלים פרקטיים שתוכלי לקחת לחיים.</p>
         <p>כלים שיעזרו לך ברגע האמת לעצור, לזהות מה קורה בתוכך ולבחור את הצעד שמתאים לך.</p>
+        <div class="takeaway__cta"><a class="btn" href="#register">אני בפנים</a></div>
       </div>
     </div>
   </section>
@@ -438,6 +530,47 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
     </div>
   </section>
 
+  <section class="section draw" id="cards">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="cardBack" viewBox="0 0 120 180">
+        <rect x="7" y="7" width="106" height="166" rx="7" fill="none" stroke="#ffd9a0" stroke-opacity=".5"/>
+        <g fill="none" stroke="#ffd9a0" stroke-width="1.6" stroke-linecap="round">
+          <path d="M85.400 94.800 93.800 91.700M79.100 84.900 86.900 77.100M69.200 78.600 72.300 70.200M60 77V64M50.800 78.600 47.700 70.200M40.900 84.900 33.100 77.100M34.600 94.800 26.200 91.700"/>
+          <path d="M22 104H98"/>
+          <path d="M34 113H86M43 121H77M51 129H69" stroke-opacity=".55"/>
+        </g>
+        <path d="M40 104a20 20 0 0 1 40 0Z" fill="#f9a826"/>
+        <path d="M60 22l4 6-4 6-4-6ZM60 146l4 6-4 6-4-6Z" fill="#ffd9a0" fill-opacity=".7"/>
+      </symbol>
+    </svg>
+    <div class="wrap draw__wrap">
+      <h2 class="reveal">מה מבקש להתעורר בך עכשיו?</h2>
+      <div class="deck reveal" id="deck">
+        <button type="button" class="card">
+          <span class="card__inner">
+            <span class="card__face card__back"><svg viewBox="0 0 120 180" aria-hidden="true"><use href="#cardBack"/></svg></span>
+            <span class="card__face card__front"><span class="card__msg"></span></span>
+          </span>
+        </button>
+        <button type="button" class="card">
+          <span class="card__inner">
+            <span class="card__face card__back"><svg viewBox="0 0 120 180" aria-hidden="true"><use href="#cardBack"/></svg></span>
+            <span class="card__face card__front"><span class="card__msg"></span></span>
+          </span>
+        </button>
+        <button type="button" class="card">
+          <span class="card__inner">
+            <span class="card__face card__back"><svg viewBox="0 0 120 180" aria-hidden="true"><use href="#cardBack"/></svg></span>
+            <span class="card__face card__front"><span class="card__msg"></span></span>
+          </span>
+        </button>
+      </div>
+      <p class="draw__hint">בחרי קלף וגלי את המסר שלך</p>
+      <button type="button" class="draw__again" id="drawAgain" hidden>לשלוף קלף חדש</button>
+      <p class="sr-only" id="drawLive" aria-live="polite"></p>
+    </div>
+  </section>
+
   <section class="section register" id="register">
     <div class="wrap split">
       <h2 class="reveal">פרטים והרשמה</h2>
@@ -463,10 +596,32 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
           </div>
         </div>
 
+        <div class="pay">
+          <span>אפשר לשלם גם ב־</span>
+          <span class="pay__mark" lang="en" dir="ltr">bit</span>
+          <span class="pay__mark" lang="en" dir="ltr">Apple Pay</span>
+        </div>
+
         <div class="register__cta">
           <a class="btn btn--wide" id="registerLink" href="#register">אני רוצה להצטרף ל־WAKE UP</a>
           <p class="register__note" id="registerNote" role="status"></p>
         </div>
+
+        <form class="callback" id="callbackForm" novalidate>
+          <p class="callback__title">מעדיפה שנחזור אלייך?</p>
+          <div class="callback__fields">
+            <div class="field">
+              <label for="cbName">שם</label>
+              <input id="cbName" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="cbPhone">טלפון</label>
+              <input id="cbPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
+            </div>
+          </div>
+          <button class="btn btn--dark btn--wide" type="submit">תחזרו אליי</button>
+          <p class="callback__note" id="callbackNote" role="status"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -477,6 +632,10 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
   <div class="wrap">
     <strong>WAKE UP | להתעורר</strong>
     <p>יום התעוררות לנשים · יום חמישי, 10 בדצמבר 2026 · חולון</p>
+    <ul class="social">
+      <li><a id="facebookLink">פייסבוק</a></li>
+      <li><a id="instagramLink">אינסטגרם</a></li>
+    </ul>
   </div>
 </footer>
 
@@ -494,28 +653,146 @@ window.WAKEUP_ASSETS = {
 
   /* ───── להשלמה ─────────────────────────────────────────────
      EVENT_HOURS      שעות האירוע, למשל '09:30–16:00'
-     REGISTRATION_URL קישור ההרשמה, למשל 'https://…'
+     PAYMENT_URL      קישור לעמוד התשלום במערכת התשלום, למשל 'https://…'
+     WHATSAPP_NUMBER  מספר הוואטסאפ של נטע לי, למשל '050-1234567'
+     FACEBOOK_URL     קישור לעמוד הפייסבוק
+     INSTAGRAM_URL    קישור לעמוד האינסטגרם
+     CARD_MESSAGES    המסרים שבקלפים (טיוטות לאישור). בכל שליפה מוצגים שלושה מתוכם.
      ─────────────────────────────────────────────────────────── */
   var EVENT_HOURS = '';
-  var REGISTRATION_URL = '';
+  var PAYMENT_URL = '';
+  var WHATSAPP_NUMBER = '';
+  var FACEBOOK_URL = '';
+  var INSTAGRAM_URL = '';
+  var CARD_MESSAGES = [
+    'מותר לך לרצות יותר.',
+    'עצרי רגע. מה את מרגישה עכשיו?',
+    'צעד אחד קטן אחרת, וכבר התחיל שינוי.',
+    'מה שהיה נכון פעם לא חייב להוביל אותך היום.',
+    'כשמשהו מפחיד אותך, סימן שהוא חשוב לך.',
+    'גם ״לא״ היא תשובה שמותר לך לתת.',
+    'את לא צריכה לראות את כל הדרך כדי להתחיל.',
+    'הגוף שלך כבר יודע. תקשיבי לו.',
+    'מה היית בוחרת בלי הפחד לאכזב?'
+  ];
 
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-  /* ───────── Details and registration ───────── */
+  function externalLink(el, url) {
+    el.href = url;
+    el.target = '_blank';
+    el.rel = 'noopener';
+  }
+
+  /* ───────── Details, payment and registration ───────── */
   var hoursEl = document.getElementById('eventHours');
   if (EVENT_HOURS) { hoursEl.textContent = EVENT_HOURS; hoursEl.classList.remove('is-tbd'); }
 
   var regLink = document.getElementById('registerLink');
   var regNote = document.getElementById('registerNote');
-  if (REGISTRATION_URL) {
-    regLink.href = REGISTRATION_URL;
-    regLink.target = '_blank';
-    regLink.rel = 'noopener';
+  if (PAYMENT_URL) {
+    externalLink(regLink, PAYMENT_URL);
   } else {
     regLink.addEventListener('click', function (e) {
       e.preventDefault();
-      regNote.textContent = 'קישור ההרשמה יתווסף כאן בקרוב.';
+      regNote.textContent = 'קישור התשלום יתווסף כאן בקרוב.';
     });
+  }
+
+  if (FACEBOOK_URL) externalLink(document.getElementById('facebookLink'), FACEBOOK_URL);
+  if (INSTAGRAM_URL) externalLink(document.getElementById('instagramLink'), INSTAGRAM_URL);
+
+  /* ───────── "תחזרו אליי": opens a ready WhatsApp message to Neta Li ───────── */
+  var cbForm = document.getElementById('callbackForm');
+  var cbNote = document.getElementById('callbackNote');
+  function cbSay(text, isError) {
+    cbNote.textContent = text;
+    cbNote.classList.toggle('is-error', !!isError);
+  }
+  cbForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nameEl = cbForm.elements.name, phoneEl = cbForm.elements.phone;
+    var name = nameEl.value.trim();
+    var digits = phoneEl.value.replace(/\D/g, '');
+    var phoneOk = /^(0\d{8,9}|972\d{8,9})$/.test(digits);
+    nameEl.setAttribute('aria-invalid', String(!name));
+    phoneEl.setAttribute('aria-invalid', String(!phoneOk));
+    if (!name) { cbSay('חסר שם. כתבי איך לפנות אלייך.', true); nameEl.focus(); return; }
+    if (!phoneOk) { cbSay('מספר הטלפון לא תקין. כתבי אותו עם קידומת, למשל 050-1234567.', true); phoneEl.focus(); return; }
+    var target = WHATSAPP_NUMBER.replace(/\D/g, '').replace(/^0/, '972');
+    if (!target) { cbSay('הטופס עוד לא מחובר לוואטסאפ של נטע לי, ולכן הפרטים לא נשלחו.', true); return; }
+    var text = 'היי נטע לי, אשמח שתחזרו אליי לגבי WAKE UP.\nשמי ' + name + ', והטלפון שלי ' + phoneEl.value.trim() + '.';
+    var url = 'https://wa.me/' + target + '?text=' + encodeURIComponent(text);
+    var opened = window.open(url, '_blank');
+    if (!opened) window.location.href = url;
+    cbSay('נפתחה הודעת וואטסאפ מוכנה לנטע לי. נשאר רק ללחוץ על שליחה.', false);
+  });
+
+  /* ───────── Three face-down cards: pick one, it turns over ───────── */
+  var cards = Array.prototype.slice.call(document.querySelectorAll('#deck .card'));
+  var drawAgain = document.getElementById('drawAgain');
+  var drawLive = document.getElementById('drawLive');
+  var pool = CARD_MESSAGES.slice();
+  for (var i = pool.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1)), swap = pool[i];
+    pool[i] = pool[j]; pool[j] = swap;
+  }
+  var dealt = 0;
+  function fitMessage(card) {
+    var face = card.querySelector('.card__front'), msg = card.querySelector('.card__msg');
+    msg.style.fontSize = '';
+    var size = parseFloat(getComputedStyle(msg).fontSize);
+    while (size > 11 && (face.scrollHeight > face.clientHeight + 1 || face.scrollWidth > face.clientWidth + 1)) {
+      size -= 1;
+      msg.style.fontSize = size + 'px';
+    }
+  }
+  function deal() {
+    cards.forEach(function (card, n) {
+      card.querySelector('.card__msg').textContent = pool[(dealt + n) % pool.length];
+      card.setAttribute('aria-label', 'קלף ' + (n + 1) + ' מתוך ' + cards.length + ', הפוך');
+      fitMessage(card);
+    });
+    dealt = (dealt + cards.length) % pool.length;
+  }
+  window.addEventListener('resize', function () { cards.forEach(fitMessage); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { cards.forEach(fitMessage); });
+  cards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      if (card.classList.contains('is-flipped') || card.classList.contains('is-rest')) return;
+      var message = card.querySelector('.card__msg').textContent;
+      card.classList.add('is-flipped');
+      card.setAttribute('aria-label', 'המסר שלך: ' + message);
+      cards.forEach(function (other) { if (other !== card) other.classList.add('is-rest'); });
+      drawLive.textContent = 'המסר שלך: ' + message;
+      drawAgain.hidden = false;
+    });
+  });
+  drawAgain.addEventListener('click', function () {
+    cards.forEach(function (card) { card.classList.remove('is-flipped', 'is-rest'); });
+    drawAgain.hidden = true;
+    drawLive.textContent = '';
+    // swap the messages once the turned card is edge-on, so the old one is never seen changing
+    setTimeout(deal, reduceMotion ? 0 : 450);
+    cards[0].focus();
+  });
+  deal();
+
+  /* ───────── A sun that rises behind "על מה היום הזה?" as it is read ───────── */
+  var aboutEl = document.getElementById('about');
+  var dawnEl = document.getElementById('dawn');
+  if (!reduceMotion) {
+    var dawnQueued = false;
+    var updateDawn = function () {
+      dawnQueued = false;
+      var r = aboutEl.getBoundingClientRect(), vh = window.innerHeight || 1;
+      var p = (0.75 * vh - r.top) / (r.height + 0.15 * vh);
+      dawnEl.style.setProperty('--dawn', Math.max(0, Math.min(1, p)).toFixed(4));
+    };
+    var queueDawn = function () { if (!dawnQueued) { dawnQueued = true; requestAnimationFrame(updateDawn); } };
+    window.addEventListener('scroll', queueDawn, { passive: true });
+    window.addEventListener('resize', queueDawn);
+    updateDawn();
   }
 
   // early price holds through 1 December 2026, Israel time
