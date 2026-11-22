@@ -305,11 +305,10 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 .price.is-current .price__now { display: block; }
 .price.is-past { opacity: .55; }
 .price.is-past .price__sum { text-decoration: line-through; text-decoration-thickness: 2px; }
-.pay { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem; margin-top: -.75rem; font-size: .9375rem; color: var(--umber-soft); }
-.pay__mark { padding: .15rem .8rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--umber); font-weight: 700; line-height: 1.5; }
-.register__cta { display: grid; gap: .75rem; }
-.register__note { text-align: center; font-size: .9375rem; color: var(--umber-soft); }
-.register__note:empty { display: none; }
+.register__cta { display: grid; gap: .9rem; }
+.register__join { font-family: var(--font-display); font-size: clamp(1.3rem, 4.6vw, 1.5rem); line-height: 1.3; text-align: center; }
+.pay { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .75rem; }
+.pay .btn { padding-inline: 1rem; }
 .btn--dark { background: var(--umber); color: var(--ivory); box-shadow: none; }
 .btn--dark:hover { box-shadow: 0 .8rem 1.6rem -.6rem rgba(47, 22, 14, .65); }
 .callback { display: grid; gap: 1rem; padding-top: 1.75rem; border-top: 1px solid var(--line); }
@@ -334,7 +333,6 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
 .social { display: flex; justify-content: center; gap: 1.75rem; margin-top: 1.1rem; }
 .social a { color: var(--ivory); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(249, 168, 38, .85); text-underline-offset: .3em; }
 .social a:hover { color: #ffd9a0; }
-.social a:not([href]) { opacity: .6; text-decoration-style: dotted; cursor: default; }
 
 /* sections ease in as they approach the viewport; at rest everything is visible */
 .reveal.is-in { animation: reveal .95s cubic-bezier(.22, .8, .24, 1) both; }
@@ -596,15 +594,12 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
           </div>
         </div>
 
-        <div class="pay">
-          <span>אפשר לשלם גם ב־</span>
-          <span class="pay__mark" lang="en" dir="ltr">bit</span>
-          <span class="pay__mark" lang="en" dir="ltr">Apple Pay</span>
-        </div>
-
         <div class="register__cta">
-          <a class="btn btn--wide" id="registerLink" href="#register">אני רוצה להצטרף ל־WAKE UP</a>
-          <p class="register__note" id="registerNote" role="status"></p>
+          <p class="register__join">אני רוצה להצטרף ל־WAKE UP</p>
+          <div class="pay">
+            <a class="btn" id="payBit" href="https://www.bitpay.co.il/app/share-info?i=-vax2vMq&amp;j=true" target="_blank" rel="noopener">תשלום ב־bit</a>
+            <a class="btn" id="payPaybox" href="https://links.payboxapp.com/ZHwLNe6ah8b" target="_blank" rel="noopener">תשלום ב־PayBox</a>
+          </div>
         </div>
 
         <form class="callback" id="callbackForm" novalidate>
@@ -633,8 +628,8 @@ mark { color: inherit; background: linear-gradient(transparent 62%, rgba(249, 16
     <strong>WAKE UP | להתעורר</strong>
     <p>יום התעוררות לנשים · יום חמישי, 10 בדצמבר 2026 · חולון</p>
     <ul class="social">
-      <li><a id="facebookLink">פייסבוק</a></li>
-      <li><a id="instagramLink">אינסטגרם</a></li>
+      <li id="facebookItem" hidden><a id="facebookLink">פייסבוק</a></li>
+      <li><a id="instagramLink" href="https://www.instagram.com/neta_lee_natasha" target="_blank" rel="noopener">אינסטגרם</a></li>
     </ul>
   </div>
 </footer>
@@ -653,17 +648,14 @@ window.WAKEUP_ASSETS = {
 
   /* ───── להשלמה ─────────────────────────────────────────────
      EVENT_HOURS      שעות האירוע, למשל '09:30–16:00'
-     PAYMENT_URL      קישור לעמוד התשלום במערכת התשלום, למשל 'https://…'
      WHATSAPP_NUMBER  מספר הוואטסאפ של נטע לי, למשל '050-1234567'
-     FACEBOOK_URL     קישור לעמוד הפייסבוק
-     INSTAGRAM_URL    קישור לעמוד האינסטגרם
+     FACEBOOK_URL     קישור לעמוד הפייסבוק (הקישור מוסתר בתחתית הדף עד שיתווסף)
      CARD_MESSAGES    המסרים שבקלפים (טיוטות לאישור). בכל שליפה מוצגים שלושה מתוכם.
+     קישורי התשלום (bit, PayBox) והאינסטגרם כתובים ישירות ב-HTML.
      ─────────────────────────────────────────────────────────── */
   var EVENT_HOURS = '';
-  var PAYMENT_URL = '';
   var WHATSAPP_NUMBER = '';
   var FACEBOOK_URL = '';
-  var INSTAGRAM_URL = '';
   var CARD_MESSAGES = [
     'מותר לך לרצות יותר.',
     'עצרי רגע. מה את מרגישה עכשיו?',
@@ -678,29 +670,17 @@ window.WAKEUP_ASSETS = {
 
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-  function externalLink(el, url) {
-    el.href = url;
-    el.target = '_blank';
-    el.rel = 'noopener';
-  }
-
-  /* ───────── Details, payment and registration ───────── */
+  /* ───────── Details ───────── */
   var hoursEl = document.getElementById('eventHours');
   if (EVENT_HOURS) { hoursEl.textContent = EVENT_HOURS; hoursEl.classList.remove('is-tbd'); }
 
-  var regLink = document.getElementById('registerLink');
-  var regNote = document.getElementById('registerNote');
-  if (PAYMENT_URL) {
-    externalLink(regLink, PAYMENT_URL);
-  } else {
-    regLink.addEventListener('click', function (e) {
-      e.preventDefault();
-      regNote.textContent = 'קישור התשלום יתווסף כאן בקרוב.';
-    });
+  if (FACEBOOK_URL) {
+    var facebookLink = document.getElementById('facebookLink');
+    facebookLink.href = FACEBOOK_URL;
+    facebookLink.target = '_blank';
+    facebookLink.rel = 'noopener';
+    document.getElementById('facebookItem').hidden = false;
   }
-
-  if (FACEBOOK_URL) externalLink(document.getElementById('facebookLink'), FACEBOOK_URL);
-  if (INSTAGRAM_URL) externalLink(document.getElementById('instagramLink'), INSTAGRAM_URL);
 
   /* ───────── "תחזרו אליי": opens a ready WhatsApp message to Neta Li ───────── */
   var cbForm = document.getElementById('callbackForm');
